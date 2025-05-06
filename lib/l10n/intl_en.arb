@@ -1,0 +1,11 @@
+{
+  "connectionToServerFailed":"Connection to server failed",
+  "requestToTheServerWasCancelled":"requestToTheServerWasCancelled",
+  "connectionTimeoutWithTheServer":"Connection timeout with the server",
+  "connectionToTheServerFailedDueToInternetConnection":"Connection to the server failed due to internet connection",
+  "receiveTimeOutInConnectionWithTheServer":"Receive timeout in connection with the server",
+  "sendTimeoutInConnectionWithTheServer":"Send timeout in connection with the server",
+  "somethingWentWrong":"Something went wrong",
+  "UnexpectedErrorOccurred":"Unexpected error occurred",
+  "Card": "Card"
+}
