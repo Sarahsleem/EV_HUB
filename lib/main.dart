@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import 'core/db/cash_helper.dart';
@@ -12,3 +13,4 @@ void main()async {
 
   runApp( EvHubApp(appRouter: AppRouter(),));
 }
+
