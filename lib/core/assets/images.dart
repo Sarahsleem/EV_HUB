@@ -1,0 +1,4 @@
+class ImagesManager {
+  static const String logo = 'images/png/car_onboard.png';
+  static const String splash = 'images/png/splash.png';
+}
