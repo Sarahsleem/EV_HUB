@@ -21,7 +21,7 @@ class EvHubApp extends StatelessWidget {
         BlocProvider(create: (_) => ThemeCubit()),
       ],
       child: ScreenUtilInit(
-        designSize: const Size(393, 852),
+        designSize: const Size(375, 812),
         minTextAdapt: true,
         child: BlocBuilder<LocalizationCubit, LocalizationState>(
           builder: (context, localizationState) {

@@ -127,4 +127,13 @@ class TextStyles {
   static TextStyle font21SemiBoldsecondPurple=GoogleFonts.poppins(fontWeight: FontWeightHelper.semiBold,fontSize: 21.sp,color: ColorsManager.secondaryPurple);
 
   static TextStyle font16SemiBoldRed=GoogleFonts.poppins(fontWeight: FontWeightHelper.semiBold,fontSize: 16.sp,color: Color(0xffD34657));
+
+  static  TextStyle latoKprimary28Bold=GoogleFonts.lato(fontSize: 28.sp,color: ColorsManager.kPrimaryColor,fontWeight: FontWeight.bold);
+
+  static TextStyle inter19BlackBold=GoogleFonts.inter(fontWeight: FontWeight.bold,fontSize: 19.5.sp,color: ColorsManager.darkBlack);
+  static TextStyle inter16greyMedium=GoogleFonts.inter(fontWeight: FontWeightHelper.medium,fontSize: 16.sp,color: ColorsManager.lighterGray);
+
+  static TextStyle latoWhite16Bold=GoogleFonts.lato(fontSize: 16.sp,color: Colors.white,fontWeight: FontWeight.bold);
+
+  static TextStyle inter20greyBold=GoogleFonts.inter(fontWeight: FontWeight.bold,fontSize: 20.sp,color: ColorsManager.lightGrey);
 }
