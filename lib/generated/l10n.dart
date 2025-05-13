@@ -139,6 +139,171 @@ class S {
   String get Card {
     return Intl.message('Card', name: 'Card', desc: '', args: []);
   }
+
+  /// `Login`
+  String get login {
+    return Intl.message('Login', name: 'login', desc: '', args: []);
+  }
+
+  /// `Enter your mobile number`
+  String get enteryourmobilenumber {
+    return Intl.message(
+      'Enter your mobile number',
+      name: 'enteryourmobilenumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your password`
+  String get enteryourpassword {
+    return Intl.message(
+      'Enter your password',
+      name: 'enteryourpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot password`
+  String get forgotpassword {
+    return Intl.message(
+      'Forgot password',
+      name: 'forgotpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login with Facebook`
+  String get loginwithfacebook {
+    return Intl.message(
+      'Login with Facebook',
+      name: 'loginwithfacebook',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login with Google`
+  String get loginwithgoogle {
+    return Intl.message(
+      'Login with Google',
+      name: 'loginwithgoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login with Apple`
+  String get loginwithapple {
+    return Intl.message(
+      'Login with Apple',
+      name: 'loginwithapple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password`
+  String get password {
+    return Intl.message('Password', name: 'password', desc: '', args: []);
+  }
+
+  /// `Phone`
+  String get phone {
+    return Intl.message('Phone', name: 'phone', desc: '', args: []);
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message('Email', name: 'email', desc: '', args: []);
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message('Name', name: 'name', desc: '', args: []);
+  }
+
+  /// `Sign up`
+  String get signup {
+    return Intl.message('Sign up', name: 'signup', desc: '', args: []);
+  }
+
+  /// `Log In`
+  String get signin {
+    return Intl.message('Log In', name: 'signin', desc: '', args: []);
+  }
+
+  /// `Don't have an account?`
+  String get donthaveaccount {
+    return Intl.message(
+      'Don\'t have an account?',
+      name: 'donthaveaccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Already have an account?`
+  String get alreadyhaveaccount {
+    return Intl.message(
+      'Already have an account?',
+      name: 'alreadyhaveaccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Name`
+  String get enteryourname {
+    return Intl.message(
+      'Enter Your Name',
+      name: 'enteryourname',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name can't be empty`
+  String get namecannotbeempty {
+    return Intl.message(
+      'Name can\'t be empty',
+      name: 'namecannotbeempty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email can't be empty`
+  String get emailcannotbeempty {
+    return Intl.message(
+      'Email can\'t be empty',
+      name: 'emailcannotbeempty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your Email`
+  String get EnterEmail {
+    return Intl.message(
+      'Enter your Email',
+      name: 'EnterEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid email address`
+  String get Enteravalidemailaddress {
+    return Intl.message(
+      'Enter a valid email address',
+      name: 'Enteravalidemailaddress',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

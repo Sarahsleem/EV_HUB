@@ -15,7 +15,7 @@ class ColorsManager {
   static const Color hintGray = Color(0xFF696969);
   static const Color kPrimaryColor = Color(0xFF68A850);
   static const Color primaryGreenNeon=Color(0xffB4EB52);
-  static const Color darkGrey = Color(0xFF101A21);
+  static const Color darkGrey = Color(0xFF72A850);
   static const Color lightGrey = Color(0xFF757575);
   static const Color GrayLIght = Color(0xFFCCCCCC);
   static const Color darkKprimaryColor = Color(0xFF5B6740);

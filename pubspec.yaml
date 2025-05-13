@@ -46,8 +46,11 @@ dependencies:
   pretty_dio_logger:
   flutter_svg: ^2.0.10+1
   intl: 0.19.0
-  flutter_localization: ^0.2.1
-
+  flutter_localization: 0.2.3
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+  intl_phone_field: ^3.2.0
+  connectivity_plus: ^6.0.5
 
 dev_dependencies:
   flutter_test:

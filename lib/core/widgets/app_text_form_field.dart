@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theming/colors.dart';
 import '../theming/styles.dart';
+import '../theming/theming_change/cubit/theme_cubit.dart';
+
 
 class AppTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
@@ -18,7 +20,7 @@ class AppTextFormField extends StatelessWidget {
   final Widget? prefexIcon;
   final TextInputType? keyboardType;
   final bool? readOnly;
- final List<TextInputFormatter>? inputFormatters;
+  final List<TextInputFormatter>? inputFormatters;
   final VoidCallback? onTap;
   final Function(String)? onFieldSubmitted;
   final TextEditingController? controller;
@@ -89,17 +91,17 @@ class AppTextFormField extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(borderRadius?.r ?? 16.0.r),
         ),
-        hintStyle: hintStyle ?? TextStyles.font32BlueBold,
+        hintStyle: hintStyle ?? TextStyles.lato15RegularLightgray,
         hintText: hintText,
         suffixIcon: suffixIcon,
         prefixIcon: prefexIcon,
-        fillColor: backgroundColor ?? ColorsManager.moreLightGray,
-        filled: true,
+      //  fillColor: backgroundColor ?? ColorsManager.moreLightGray,
+     //   filled: true,
       ),
       obscureText: isObscureText ?? false,
-      style: TextStyles.font16WhiteRegular,
+      style: TextStyles.lato15RegularLightgray,
       validator: validator ??
-          (value) {
+              (value) {
             if (value == null || value.isEmpty) {
               return "Must not be empty";
             }

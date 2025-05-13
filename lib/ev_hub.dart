@@ -42,7 +42,7 @@ class EvHubApp extends StatelessWidget {
                   navigatorKey: NavigationService.navigatorKey,// Use the themeMode from the ThemeCubit
                   //theme: ThemeData.light(),
                   theme: ThemeCubit.get(context).getTheme(),
-                  initialRoute: Routes.splashScreen,
+                  initialRoute: Routes.signInScreen,
                   onGenerateRoute: appRouter.generateRoute,
                   supportedLocales: const [
                     Locale('en'),

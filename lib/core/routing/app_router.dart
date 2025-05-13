@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../features/login/logic/sign_in_cubit.dart';
+import '../../features/login/ui/sign_in_screen.dart';
 import '../../features/onboarding/ui/onboard_screen.dart';
+import '../../features/signup/logic/sign_up_cubit.dart';
+import '../../features/signup/ui/screens/sign_up_screen.dart';
 import '../../features/splash/ui/screen/splash_screen.dart';
+import '../di/Dependency_inj.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -17,7 +22,30 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) =>  OnBoardScreen(),
         );
+      case Routes.signUpScreen:
+        return MaterialPageRoute(
+          builder: (_) =>
+              BlocProvider(
+                create: (context) => getIt<SignUpCubit>(),
+                child: SignUpScreen(),
+              ),
+        );
+
+      case Routes.signInScreen:
+        return MaterialPageRoute(
+         builder: (_) =>MultiBlocProvider(
+        providers: [
+         
+          BlocProvider<SignUpCubit>.value(
+            value: getIt<SignUpCubit>(),
+          ),
+          BlocProvider<SignInCubit>.value(
+            value: getIt<SignInCubit>(),
+          ),
+        ], child: const SignInScreen()),
+        );
     }
+
     return null;
   }
 }

@@ -11,7 +11,26 @@ class TextStyles {
     fontWeight: FontWeightHelper.bold,
     color: Colors.black,
   );
-
+  static TextStyle latoRegular14lightBlack = GoogleFonts.lato(
+    fontSize: 14.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.lightBlack,
+  );
+  static TextStyle poppinsMedium12contantGray= GoogleFonts.poppins(
+    fontSize: 12.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.contantGray,
+  );
+  static TextStyle poppinsRegular16Gray= GoogleFonts.poppins(
+    fontSize: 16.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.daGray,
+  );
+  static TextStyle poppinsRegular16LightGray= GoogleFonts.poppins(
+    fontSize: 16.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.LigGthGray,
+  );
   static TextStyle font32BlueBold = GoogleFonts.poppins(
     fontSize: 32.sp,
     fontWeight: FontWeightHelper.bold,
@@ -127,4 +146,39 @@ class TextStyles {
   static TextStyle font21SemiBoldsecondPurple=GoogleFonts.poppins(fontWeight: FontWeightHelper.semiBold,fontSize: 21.sp,color: ColorsManager.secondaryPurple);
 
   static TextStyle font16SemiBoldRed=GoogleFonts.poppins(fontWeight: FontWeightHelper.semiBold,fontSize: 16.sp,color: Color(0xffD34657));
+  static TextStyle lato28BoldGreen= GoogleFonts.lato(
+    fontSize: 28.sp,
+    fontWeight: FontWeightHelper.bold,
+    color: ColorsManager.authGreen,
+  );
+
+  static TextStyle lato15RegularLightgray= GoogleFonts.lato(
+    fontSize: 15.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.hintGray,
+  );
+
+  static TextStyle lato14RegularDark= GoogleFonts.lato(
+    fontSize: 14.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.dark,
+  );
+
+  static TextStyle lato16SemiBoldLight= GoogleFonts.lato(
+    fontSize: 16.sp,
+    fontWeight: FontWeightHelper.semiBold,
+    color: Colors.white,
+  );
+
+  static TextStyle lato16RegularhintGray= GoogleFonts.lato(
+    fontSize: 16.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.hintGray,
+  );
+  static TextStyle lato16BoldBlack= GoogleFonts.lato(
+    fontSize: 16.sp,
+    fontWeight: FontWeightHelper.bold,
+    color: Colors.black,
+  );
+
 }
