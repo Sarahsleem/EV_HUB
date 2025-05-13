@@ -1,8 +1,10 @@
 // otp_input_field.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../theming/colors.dart';
+import '../theming/styles.dart';
 
 class OtpInputField extends StatelessWidget {
   final TextEditingController controller;
@@ -21,9 +23,10 @@ class OtpInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 70,
-      width: 56,
+      height: 63.h,
+      width: 63.w,
       child: TextFormField(
+        style: TextStyles.inter20greyBold,
         validator: validator,
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
@@ -37,7 +40,7 @@ class OtpInputField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(
-              color: ColorsManager.gry,
+              color: Color(0xFFDDDDDD),
             ),
           ),
           focusedBorder: OutlineInputBorder(
@@ -58,10 +61,8 @@ class OtpInputField extends StatelessWidget {
               color: Colors.red,
             ),
           ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 40,
-          ),
+         contentPadding: EdgeInsets.zero
+            ,
         ),
         onChanged: onChanged,
       ),

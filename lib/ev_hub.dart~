@@ -21,7 +21,7 @@ class EvHubApp extends StatelessWidget {
         BlocProvider(create: (_) => ThemeCubit()),
       ],
       child: ScreenUtilInit(
-        designSize: const Size(393, 852),
+        designSize: const Size(375, 812),
         minTextAdapt: true,
         child: BlocBuilder<LocalizationCubit, LocalizationState>(
           builder: (context, localizationState) {
@@ -42,7 +42,7 @@ class EvHubApp extends StatelessWidget {
                   navigatorKey: NavigationService.navigatorKey,// Use the themeMode from the ThemeCubit
                   //theme: ThemeData.light(),
                   theme: ThemeCubit.get(context).getTheme(),
-                  initialRoute: Routes.signInScreen,
+                  initialRoute: Routes.splashScreen,
                   onGenerateRoute: appRouter.generateRoute,
                   supportedLocales: const [
                     Locale('en'),
