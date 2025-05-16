@@ -20,4 +20,8 @@ class ImagesManager {
   static const String addGray='images/png/add-gray.png';
 
   static const String carGray='images/png/car-gray.png';
+
+  static const String fav='images/png/fav.png';
+
+  static const String sellCar='images/png/sell-car.png';
 }

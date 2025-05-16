@@ -2,7 +2,9 @@ import 'package:evhub/core/assets/images.dart';
 import 'package:evhub/core/helpers/spacing.dart';
 import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/core/theming/styles.dart';
+import 'package:evhub/core/widgets/app_text_button.dart';
 import 'package:evhub/core/widgets/app_text_form_field.dart';
+import 'package:evhub/core/widgets/image_network.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:evhub/features/home/ui/widgets/ADS_widget.dart';
 import 'package:evhub/features/home/ui/widgets/Ads_loader.dart';
@@ -25,6 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     HomeCubit.get(context).getAds();
+    HomeCubit.get(context).getAds2();
+    HomeCubit.get(context).getCars().then((_) {
+      HomeCubit.get(context).getBrands();
+    });
+    // HomeCubit.get(context).getBrands();
   }
 
   @override
@@ -154,10 +161,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: BlocBuilder<HomeCubit, HomeState>(
                     builder: (context, state) {
-                      if (state is HomeLoadingADSState) {
+                      if (state is HomeLoadingADS1State) {
                         return AdsLoader();
                       }
-                      return AdsSlider(ads: HomeCubit.get(context).ads);
+                      return AdsSlider(ads: HomeCubit.get(context).ads1);
                     },
                   ),
                 ),
@@ -233,39 +240,221 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 verticalSpace(12),
-                Container(
-                  //padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(19.r),
-                    color: Color(0xffEFEFEF),
-                  ),
-                  height: 217.h,
-                  width: 165.w,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                       // verticalSpace(11),
-                    Padding(
-                      padding:  EdgeInsets.only(top: 11.0.h,left: 11.w,right: 11.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                        Text('Tesla',style: TextStyles.lato17BoldDarkBlue,),
-                          Text('4M',style: TextStyles.lato12MediumDarkBlue,),
-
-                      ]),
-                    ),
-                        Image.asset('images/png/imageCar.png'),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                          Text('      Explore',style: TextStyles.lato12MediumDarkBlue,),
-                            Container(padding:EdgeInsets.symmetric(vertical: 9.h,horizontal: 11.w),decoration:BoxDecoration(color: ColorsManager.darkBlue,borderRadius: BorderRadius.only(topLeft: Radius.circular(12.r),bottomRight: Radius.circular(19.r))),child: Text('add to Fav',style: TextStyles.latoWhite12Bold,),)
-                        ])
-
-                  ]),
+                BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                    var cars = HomeCubit.get(context).cars;
+                    return SizedBox(
+                      height: 217.h,
+                      child: ListView.builder(
+                        // separatorBuilder: (context, index) => horizontalSpace(5.w),
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: cars.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10.w),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(19.r),
+                              color: Color(0xffEFEFEF),
+                            ),
+                            height: 217.h,
+                            width: 165.w,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // verticalSpace(11),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 11.0.h,
+                                    left: 11.w,
+                                    right: 11.w,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 80.w,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              cars[index].title!,
+                                              style:
+                                                  TextStyles.lato17BoldDarkBlue.copyWith(fontSize: 14.sp),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              cars[index].carBrand?[0]["name"],
+                                              style:
+                                                  TextStyles.latogrey12Medium,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        cars[index].acf!["price"].toString(),
+                                        style: TextStyles.lato12MediumDarkBlue,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                AppCachedNetworkImage(
+                                  image: cars[index].featuredImage,
+                                  height: 110.h,
+                                  radius: 0,
+                                ),
+                                //Image.asset('images/png/imageCar.png'),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '      Explore',
+                                      style: TextStyles.lato12MediumDarkBlue,
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 9.h,
+                                        horizontal: 11.w,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff22323B),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(12.r),
+                                          bottomRight: Radius.circular(19.r),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            ImagesManager.fav,
+                                            height: 16.h,
+                                            width: 16.w,
+                                          ),
+                                          Text(
+                                            'add to Fav',
+                                            style: TextStyles.latoWhite12Bold,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
-                verticalSpace(170)
+                verticalSpace(17),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 21.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Car Brands',
+                        style: TextStyles.lato15SemiBoldBlack,
+                      ),
+                      horizontalSpace(4),
+                      GestureDetector(
+                        child: Row(
+                          children: [
+                            Text(
+                              'See all',
+                              style: TextStyles.lato13RegularGrey,
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: ColorsManager.gry,
+                              size: 18.sp,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                verticalSpace(16),
+                BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomeLoadingBrandsState) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    return SizedBox(
+                      height: 64.h,
+                      child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          return AppCachedNetworkImage(
+                            fit: BoxFit.contain,
+                            radius: 30.r,
+                            image:
+                                HomeCubit.get(
+                                  context,
+                                ).carBrands[index].acf.brandLogo.url,
+                            height: 64.h,
+                            width: 64.w,
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return horizontalSpace(4);
+                        },
+                        itemCount: HomeCubit.get(context).carBrands.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                      ),
+                    );
+                  },
+                ),
+                verticalSpace(16),
+                Stack(
+                  children: [
+                    Container(
+                      height: 185.h,
+                      padding: EdgeInsetsDirectional.only(start: 30.w),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 84.w,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('sell', style: TextStyles.lato21Regulargrey),
+                                Text('your car', style: TextStyles.lato21SemiBoldDarkBlue),
+                                AppTextButton(buttonText: 'sell now', textStyle: TextStyles.latoWhite12Bold, onPressed: (){},backgroundColor: Color(0xff263F4D),buttonHeight: 23,borderRadius: 13.r,horizontalPadding: 0,)
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    ),
+                    Positioned(right: 0,child: Image.asset(ImagesManager.sellCar,height: 185.h,)),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 18.w,
+                    vertical: 10.h,
+                  ),
+                  child: BlocBuilder<HomeCubit, HomeState>(
+                    builder: (context, state) {
+                      if (state is HomeLoadingADSState) {
+                        return AdsLoader();
+                      }
+                      return AdsSlider(ads: HomeCubit.get(context).ads2);
+                    },
+                  ),
+                ),
+                verticalSpace(60),
                 //Image.asset(ImagesManager.logo),
               ],
             ),

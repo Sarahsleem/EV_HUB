@@ -458,15 +458,17 @@ class _SignInScreenState extends State<SignInScreen> {
                                                                     TextStyles
                                                                         .lato16SemiBoldLight,
                                                                 onPressed: () async {
-                                                                  context.pushNamed(Routes.navigationBar);
-                                                                  // if (formKey.currentState!.validate()) {
-                                                                  //   await signUpCubit.(
-                                                                  //     SignIn(
-                                                                  //       phone: _phoneController.text,
-                                                                  //       password: _passwordController.text,
-                                                                  //     ),
-                                                                  //   );
-                                                                  // }
+                                                                  //context.pushNamed(Routes.navigationBar);
+                                                                  if (formKey.currentState!.validate()) {
+                                                                    await signUpCubit.signUp(
+                                                                      SignUp(
+                                                                        name: _nameController.text,
+                                                                        email: _emailController.text,
+                                                                        phone: _phoneController.text,
+                                                                        password: _passwordController.text,
+                                                                      ),
+                                                                    );
+                                                                  }
                                                                 },
                                                               ),
                                                             ],
