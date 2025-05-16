@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../../core/theming/colors.dart';
@@ -14,6 +15,7 @@ class PhoneTextForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IntlPhoneField(
+
       validator: (p){
         if (p!.completeNumber.length < 10) {
           return "phone number is not valid";
@@ -24,6 +26,7 @@ class PhoneTextForm extends StatelessWidget {
 
       controller: controller,
       decoration: InputDecoration(
+
         isDense: true,
         contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
         focusedBorder: OutlineInputBorder(

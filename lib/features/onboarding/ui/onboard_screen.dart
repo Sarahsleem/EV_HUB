@@ -18,9 +18,10 @@ class OnBoardScreen extends StatelessWidget{
       body:SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
-
-           crossAxisAlignment: CrossAxisAlignment.center,
+          child: ListView(
+shrinkWrap: true,
+           physics: ScrollPhysics(),
+           // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               verticalSpace(15),
             Image.asset(ImagesManager.splash,width: 100.w,height: 100.h,),
@@ -52,7 +53,7 @@ class OnBoardScreen extends StatelessWidget{
               ),
 
               Image.asset(ImagesManager.logo),
-              SwipeButton(
+              SwipeButton.expand(
                 height: 72.h,
                 activeTrackColor: Color(0xff101a21),
                 activeThumbColor: Colors.white,
@@ -76,8 +77,8 @@ class OnBoardScreen extends StatelessWidget{
                   ),
                 ),
                 onSwipe: () {
-                  context.pushReplacementNamed(Routes.verifyCode);
-                  //context.pushReplacementNamed(Routes.signUpScreen);
+                  //context.pushReplacementNamed(Routes.verifyCode);
+                  context.pushReplacementNamed(Routes.signInScreen);
 
                 },
               )

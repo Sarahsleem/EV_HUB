@@ -52,7 +52,7 @@ class AssetsData {
   static const export="assets/images/Export.svg";
   static const locationGreen="assets/images/Location-green.svg";
 
-  static const noImageFound="assets/images/no_image_found.jpg";
+  static const noImageFound="assets/png/no_image_found.jpg";
   static const primer ="assets/images/primer.png";
 
 

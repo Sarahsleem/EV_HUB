@@ -12,4 +12,7 @@ class Routes {
   static const String verifyCode = '/verifyCode';
   static const String deleteAccountScreen = '/deleteAccountScreen';
 
+  static const String homeScreen='/homeScreen';
+  static const String webPage='/webPage';
+
 }

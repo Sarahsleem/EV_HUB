@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/networking/dio_factory.dart';
+import 'package:evhub/core/routing/routes.dart';
+import 'package:evhub/ev_hub.dart';
 import 'package:evhub/features/login/data/models/sign_in_reponse.dart';
 import 'package:evhub/features/signup/data/models/sign_up_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,7 +72,11 @@ int index = 0;
             key: Keys.token,
             value: r.data!.authToken!,
           );
-
+          CashHelper.putString(
+            key: Keys.email,
+            value: signUpModel.email!,
+          );
+NavigationService.navigatorKey.currentContext?.pushNamed(Routes.verifyCode);
           emit(SignUpSuccess());
           print('saved ${r.toString()}');
         }

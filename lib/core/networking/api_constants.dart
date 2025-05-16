@@ -5,5 +5,8 @@ class ApiConstants{
 
 
 
+  static const String otp = 'custom-api/v1/verify-registration';
+
+  static const String ads='wp/v2/ads2';
 
 }

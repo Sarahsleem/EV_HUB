@@ -1,3 +1,8 @@
+import 'package:evhub/features/home/data/repo/home_repo.dart';
+import 'package:evhub/features/home/logic/home_cubit.dart';
+import 'package:evhub/features/navbar/logic/nav_bar_cubit.dart';
+import 'package:evhub/features/otp/data/repo/otp_repo.dart';
+import 'package:evhub/features/otp/logic/otp_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/login/data/repo/sign_in_repo.dart';
@@ -16,6 +21,10 @@ Future<void> setupGetIt() async {
 
   getIt.registerFactory<SignInRepo>(() => (SignInRepo(dio)));
   getIt.registerFactory<SignInCubit>(() => (SignInCubit(getIt())));
-  // Register AuthRepo and AuthCubit
-
+  // Register AuthRepo and AuthC
+  getIt.registerLazySingleton<OtpCubit>(() => OtpCubit(getIt()));
+  getIt.registerFactory<OTPRepo>(()=>OTPRepo(dio: dio));
+  getIt.registerLazySingleton<NavBarCubit>(() => NavBarCubit());
+  getIt.registerLazySingleton<HomeCubit>(() => HomeCubit(getIt()));
+  getIt.registerFactory<HomeRepo>(()=>HomeRepo( dio));
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:evhub/core/assets/images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -42,7 +43,7 @@ class AppCachedNetworkImage extends StatelessWidget {
                   child: Skeletonizer(
                     enabled: true,
                     child: loadingWidget ?? Image.asset(
-                      AssetsData.noImageFound,
+                                  ImagesManager.noImage,
                                   width: width ?? 234.w,
                                   height: height ?? 145.h,
                                   fit: BoxFit.fill,
@@ -50,14 +51,14 @@ class AppCachedNetworkImage extends StatelessWidget {
                   )),
               errorWidget: (context, url, error) =>
                   errorWidget ??  Image.asset(
-                    AssetsData.noImageFound,
+                    ImagesManager.noImage,
               width: width ?? 234.w,
               height: height ?? 145.h,
               fit: BoxFit.fill,
             ),
             )
           : Image.asset(
-              AssetsData.noImageFound,
+              ImagesManager.noImage,
               width: width ?? 234.w,
               height: height ?? 145.h,
               fit: BoxFit.fill,

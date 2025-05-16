@@ -1,3 +1,5 @@
+import 'package:evhub/core/db/cash_helper.dart';
+import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/helpers/spacing.dart';
 import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/core/theming/styles.dart';
@@ -8,7 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/assets/images.dart';
+import '../../../../core/routing/routes.dart';
 import '../../../../core/widgets/app_otp_text_field.dart';
+import '../../data/model/otp_model.dart';
 
 class OTPScreen extends StatefulWidget {
   @override
@@ -112,7 +116,18 @@ class _OTPScreenState extends State<OTPScreen> {
                       AppTextButton(
                         buttonText: "Confirm",
                         textStyle: TextStyles.latoWhite16Bold,
-                        onPressed: () {},
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            final email=  CashHelper.getString(key: Keys.email);
+                            final otpValue = otpControllers.map((controller) => controller.text).join();
+                           // CashHelper.putString(key: Keys.otpValue, value: otpValue);
+                            OtpCubit.get(context).sendOTP(OTPModel(
+                              email:email,
+                              otp: otpValue,
+                            ));
+                          }
+                          context.pushNamed(Routes.navigationBar);
+                        },
                         backgroundColor: ColorsManager.kPrimaryColor,
                         borderRadius: 44.r,
                       ),
