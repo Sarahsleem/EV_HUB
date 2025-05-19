@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 
 import '../../../core/assets/images.dart';
 import '../../../core/di/Dependency_inj.dart';
+import '../../car_market_place/ui/car_market_place_screen.dart';
 import '../../home/logic/home_cubit.dart';
 import '../../home/ui/screen/home_screen.dart';
 
@@ -22,7 +23,7 @@ class NavBarCubit extends Cubit<NavBarState> {
       child: HomeScreen(),
     ),
     Container(color: Colors.red,),
-    Container(color: Colors.green,),
+    CarMarketPlaceScreen(),
 
   ];
   List<String> navIcon =[

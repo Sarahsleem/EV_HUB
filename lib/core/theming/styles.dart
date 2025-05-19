@@ -189,4 +189,9 @@ class TextStyles {
   static TextStyle lato21Regulargrey=GoogleFonts.lato(fontSize: 21.sp,fontWeight: FontWeightHelper.regular,color: ColorsManager.lightGrey);
 
   static TextStyle lato21SemiBoldDarkBlue=GoogleFonts.lato(fontSize: 21.sp,fontWeight: FontWeightHelper.semiBold,color: Color(0xff263F4D));
+
+  static TextStyle inter18WhiteMedium=GoogleFonts.inter(fontSize: 18.sp,color: Colors.white,fontWeight: FontWeightHelper.medium);
+
+  static TextStyle inter13greyRegular=GoogleFonts.inter(fontSize: 13.sp,fontWeight: FontWeightHelper.regular,color: Color(
+      0xbaffffff));
 }

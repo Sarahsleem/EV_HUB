@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -89,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text(
                   'Battery Low?\nFind a Charger',
-                  style: TextStyles.latoWhite16Bold,
+                  style: TextStyles.latoWhite12Bold.copyWith(fontSize: 34.sp),
                 ),
                 horizontalSpace(11),
                 Image.asset(ImagesManager.charge, width: 40.w, height: 40.h),
@@ -99,36 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
           verticalSpace(8),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: AppTextFormField(
-              prefexIcon: Icon(
-                CupertinoIcons.search,
-                color: ColorsManager.borderGrey,
-                size: 34.sp,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Color(0x5ffffff),
-                  width: 1.3,
-                ),
-                borderRadius: BorderRadius.circular(54.r),
-              ),
-              hintText: 'Search for anything',
-              backgroundColor: Color(0x5ffffff),
-              hintStyle: TextStyles.latoGrey16SemiBold,
-              borderRadius: 54.r,
-              suffixIcon: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: CircleAvatar(
-                  radius: 22.5.r,
-                  backgroundColor: Color(0x5ffffff),
-                  child: Icon(
-                    size: 31.sp,
-                    Icons.filter_alt_outlined,
-                    color: ColorsManager.borderGrey,
-                  ),
-                ),
-              ),
-            ),
+            child: CustomSearch(),
           ),
           verticalSpace(17),
           Container(
@@ -273,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       SizedBox(
                                         width: 80.w,
@@ -295,7 +268,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       Text(
-                                        cars[index].acf!["price"].toString(),
+                                          NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')
+                                        ,
                                         style: TextStyles.lato12MediumDarkBlue,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -460,6 +434,47 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomSearch extends StatelessWidget {
+  const CustomSearch({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppTextFormField(
+
+      prefexIcon: Icon(
+        CupertinoIcons.search,
+        color: ColorsManager.borderGrey,
+        size: 34.sp,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: Color(0x5ffffff),
+          width: 1.3,
+        ),
+        borderRadius: BorderRadius.circular(54.r),
+      ),
+      hintText: 'Search for anything',
+      backgroundColor: Color(0x5ffffff),
+      hintStyle: TextStyles.latoGrey16SemiBold,
+      borderRadius: 54.r,
+      suffixIcon: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: CircleAvatar(
+          radius: 22.5.r,
+          backgroundColor: Color(0x5ffffff),
+          child: Icon(
+            size: 31.sp,
+            Icons.filter_alt_outlined,
+            color: ColorsManager.borderGrey,
+          ),
+        ),
       ),
     );
   }

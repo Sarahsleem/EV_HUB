@@ -1,3 +1,5 @@
+import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
+import 'package:evhub/features/new_cars/ui/screens/new_cars_screen.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,16 +37,17 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) =>
               BlocProvider(
-                create:(context)=> getIt<OtpCubit>(),
+                create: (context) => getIt<OtpCubit>(),
                 child: OTPScreen(),
               ),
         );
       case Routes.navigationBar:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
-            value: getIt<NavBarCubit>(),
-            child: NavBarScreen(),
-          ),
+          builder: (_) =>
+              BlocProvider.value(
+                value: getIt<NavBarCubit>(),
+                child: NavBarScreen(),
+              ),
         );
       case Routes.homeScreen:
         return MaterialPageRoute(
@@ -55,7 +58,6 @@ class AppRouter {
               ),
         );
       case Routes.webPage:
-
         return MaterialPageRoute(
           builder: (_) =>
               BlocProvider.value(
@@ -71,19 +73,33 @@ class AppRouter {
                 child: SignUpScreen(),
               ),
         );
-
+      case Routes.newCars:
+        return MaterialPageRoute(
+          builder: (_) =>
+              MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: getIt< NewCarsCubit>(),
+                  ),
+                  BlocProvider.value(
+                    value: getIt<HomeCubit>(),                  ),
+                ],
+                child: NewCarScreen(),
+              ),
+        );
       case Routes.signInScreen:
         return MaterialPageRoute(
-         builder: (_) =>MultiBlocProvider(
-        providers: [
+          builder: (_) =>
+              MultiBlocProvider(
+                  providers: [
 
-          BlocProvider<SignUpCubit>.value(
-            value: getIt<SignUpCubit>(),
-          ),
-          BlocProvider<SignInCubit>.value(
-            value: getIt<SignInCubit>(),
-          ),
-        ], child: const SignInScreen()),
+                    BlocProvider<SignUpCubit>.value(
+                      value: getIt<SignUpCubit>(),
+                    ),
+                    BlocProvider<SignInCubit>.value(
+                      value: getIt<SignInCubit>(),
+                    ),
+                  ], child: const SignInScreen()),
         );
     }
 

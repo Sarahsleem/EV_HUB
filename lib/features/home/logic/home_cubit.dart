@@ -18,6 +18,13 @@ List<AdsModel> ads2=[];
 List<AdsModel> ads1=[];
 List<Brand> carBrands=[];
 List<Car> cars=[];
+  int visibleCarsCount = 4;
+  void loadMoreCars() {
+    if (visibleCarsCount < cars.length) {
+      visibleCarsCount += 4;
+      emit(LoadMoreCarsState()); // Create a dummy state
+    }
+  }
 Future<void> getAds2()async{
   emit(HomeLoadingADSState());
   var response =await homeRepo.getADS2();

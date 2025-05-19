@@ -9,5 +9,6 @@ class ApiConstants{
 
   static const String ads2='wp/v2/ads2';
   static const String ads1='wp/v2/ads';
+  static const String cars='wp/v2/cars';
 
 }
