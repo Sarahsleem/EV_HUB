@@ -7,6 +7,8 @@ import 'package:evhub/features/otp/data/repo/otp_repo.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../features/forget_password/data/repo/forget_password_repo.dart';
+import '../../features/forget_password/logic/forget_password_cubit.dart';
 import '../../features/login/data/repo/sign_in_repo.dart';
 import '../../features/login/logic/sign_in_cubit.dart';
 import '../../features/signup/data/repo/sign_up_repo.dart';
@@ -31,4 +33,6 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<HomeRepo>(()=>HomeRepo( dio));
   getIt.registerLazySingleton<NewCarsCubit>(() => NewCarsCubit(getIt()));
   getIt.registerFactory<CarsRepo>(()=>CarsRepo( dio));
+  getIt.registerLazySingleton<ForgetPasswordCubit>(() => ForgetPasswordCubit(getIt()));
+  getIt.registerFactory<ForgetPasswordRepo>(()=>ForgetPasswordRepo( dio));
 }

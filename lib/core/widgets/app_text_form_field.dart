@@ -58,6 +58,8 @@ class AppTextFormField extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       decoration: InputDecoration(
+fillColor: backgroundColor??Colors.transparent,
+        filled: backgroundColor != null ? true : false,
         isDense: true,
         contentPadding: contentPadding ??
             EdgeInsets.only(left: 10.w, right: 10.w, bottom: 25.h,),

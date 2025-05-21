@@ -16,6 +16,7 @@ class PhoneTextForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return IntlPhoneField(
 
+style: TextStyles.lato15RegularLightgray,
       validator: (p){
         if (p!.completeNumber.length < 10) {
           return "phone number is not valid";
@@ -37,6 +38,7 @@ class PhoneTextForm extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.0),
         ),
         enabledBorder: OutlineInputBorder(
+
           borderSide: BorderSide(
             color: ColorsManager.lighterGray,
             width: 1.3,

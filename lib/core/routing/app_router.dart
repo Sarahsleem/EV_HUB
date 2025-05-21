@@ -4,6 +4,8 @@ import 'package:evhub/features/otp/logic/otp_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../features/forget_password/logic/forget_password_cubit.dart';
+import '../../features/forget_password/ui/screen/forget_password_email.dart';
 import '../../features/home/logic/home_cubit.dart';
 import '../../features/home/ui/screen/home_screen.dart';
 import '../../features/navbar/logic/nav_bar_cubit.dart';
@@ -71,6 +73,14 @@ class AppRouter {
               BlocProvider(
                 create: (context) => getIt<SignUpCubit>(),
                 child: SignUpScreen(),
+              ),
+        );
+        case Routes.forgetPasswordEmail:
+        return MaterialPageRoute(
+          builder: (_) =>
+              BlocProvider(
+                create: (context) => getIt<ForgetPasswordCubit>(),
+                child: ForgetPasswordEmail(),
               ),
         );
       case Routes.newCars:

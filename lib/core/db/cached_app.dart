@@ -1,4 +1,4 @@
-enum CachedDataType { categories,  profile ,products, wishList, productsCategory, Tracks, workouts}
+enum CachedDataType { categories,  profile ,products, wishList, productsCategory, Tracks, workouts, brands, cars}
 
 class CachedKeys {
   static Map<String, int> expirationCacheTime = {

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:evhub/core/assets/images.dart';
+import 'package:evhub/core/db/cash_helper.dart';
 import 'package:evhub/features/home/data/model/Ads_model.dart';
 import 'package:evhub/features/home/data/model/car_brand.dart';
 import 'package:evhub/features/home/data/model/car_model.dart';
@@ -7,6 +8,8 @@ import 'package:evhub/features/home/data/model/feature_model.dart';
 import 'package:evhub/features/home/data/repo/home_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+
+import '../../../core/db/cached_app.dart';
 
 part 'home_state.dart';
 
@@ -47,25 +50,35 @@ Future<void> getAds2()async{
 
 }
 Future<void> getBrands()async{
-  emit(HomeLoadingBrandsState());
-  var response =await homeRepo.fetchBrands();
-  response.fold((l){
-    emit(HomeErrorBrandsState());
-  }, (r){
-    carBrands=r;
-    emit(HomeSuccessBrandsState());
-  });
+  try{
+carBrands =CachedApp.getCachedData(CachedDataType.brands.name);
+  }catch(e){
+    emit(HomeLoadingBrandsState());
+    var response = await homeRepo.fetchBrands();
+    response.fold((l) {
+      emit(HomeErrorBrandsState());
+    }, (r) {
+      carBrands = r;
+      CachedApp.saveData(carBrands,CachedDataType.brands.name);
+      emit(HomeSuccessBrandsState());
+    });
+  }
 
 }
 Future<void> getCars()async{
-  emit(HomeLoadingCarsState());
-  var response =await homeRepo.fetchCars();
-  response.fold((l){
-    emit(HomeErrorCarsState());
-  }, (r){
-    cars=r;
-    emit(HomeSuccessCarsState());
-  });
+ try{
+   cars=CachedApp.getCachedData(CachedDataType.cars.name);
+ }catch(e) {
+    emit(HomeLoadingCarsState());
+    var response = await homeRepo.fetchCars();
+    response.fold((l) {
+      emit(HomeErrorCarsState());
+    }, (r) {
+      cars = r;
+      CachedApp.saveData(cars,CachedDataType.cars.name);
+      emit(HomeSuccessCarsState());
+    });
+  }
 
 }
 List<Feature> features=[

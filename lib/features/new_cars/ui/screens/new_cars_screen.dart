@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/colors.dart';
@@ -50,27 +51,58 @@ class _NewCarScreenState extends State<NewCarScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: CustomSearch(),
               ),
+
               verticalSpace(17),
+
               Padding(
                 padding: EdgeInsetsDirectional.only(start: 15.w),
-                child: BlocBuilder<HomeCubit, HomeState>(
+                child: BlocBuilder<NewCarsCubit, NewCarsState>(
+  builder: (context, state) {
+    return BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
                     if (state is HomeLoadingBrandsState) {
                       return Center(child: BrandLoader());
                     }
                     return SizedBox(
-                      height: 64.h,
+                      height: 74.h,
                       child: ListView.separated(
                         itemBuilder: (context, index) {
-                          return AppCachedNetworkImage(
-                            fit: BoxFit.contain,
-                            radius: 30.r,
-                            image:
-                                HomeCubit.get(
-                                  context,
-                                ).carBrands[index].acf.brandLogo.url,
-                            height: 64.h,
-                            width: 64.w,
+                          return GestureDetector(
+                            onTap: () {
+                              NewCarsCubit.get(context).chooseBrand(
+                                HomeCubit.get(context).carBrands[index].id,
+                              );
+                              NewCarsCubit.get(context).getNewCarsByBrand();
+                            },
+                            child: Container(
+                              height: 64.h,
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40.r),
+                                border: Border.all(
+                                  color:
+                                  NewCarsCubit.get(
+                                    context,
+                                  ).selectedBrandId==HomeCubit.get(
+                                                context,
+                                              ).carBrands[index].id
+
+                                          ? ColorsManager.kPrimaryColor
+                                          : ColorsManager.borderGrey,
+                                  width: 1.3,
+                                ),
+                              ),
+                              child: AppCachedNetworkImage(
+                                fit: BoxFit.contain,
+                                radius: 30.r,
+                                image:
+                                    HomeCubit.get(
+                                      context,
+                                    ).carBrands[index].acf.brandLogo.url,
+                                height: 64.h,
+                                width: 64.w,
+                              ),
+                            ),
                           );
                         },
                         separatorBuilder: (context, index) {
@@ -83,91 +115,139 @@ class _NewCarScreenState extends State<NewCarScreen> {
                       ),
                     );
                   },
-                ),
+                );
+  },
+),
               ),
               verticalSpace(17),
-              ListView.separated(
-                separatorBuilder: (context,index){
-                  return verticalSpace(12);
+              BlocBuilder<NewCarsCubit, NewCarsState>(
+                builder: (context, state) {
+                  if (state is NewCarsLoadingState) {
+                    return SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: EdgeInsetsDirectional.only(end: 30.w),
+                    child: Text(
+                      textAlign: TextAlign.end,
+                      '${NewCarsCubit.get(context).newCars.length} Result',
+                      style: TextStyles.inter16greyMedium.copyWith(
+                        fontSize: 11.sp,
+                      ),
+                    ),
+                  );
                 },
-                padding: EdgeInsets.symmetric(horizontal: 27.w),
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w,vertical: 23.h),
-                    decoration: BoxDecoration(
-                      color: Color(0xff1C2F39),
-                      borderRadius: BorderRadius.circular(24.r),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              verticalSpace(13),
+              BlocBuilder<NewCarsCubit, NewCarsState>(
+                builder: (context, state) {
+                  var cars = NewCarsCubit.get(context).newCars;
+                  if (state is NewCarsLoadingState) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  else if(cars.isEmpty){
+                    return Center(child: Text('No Cars Found'),);
+                  }
+                  return ListView.separated(
+                    separatorBuilder: (context, index) {
+                      return verticalSpace(12);
+                    },
+                    padding: EdgeInsets.symmetric(horizontal: 27.w),
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    itemCount: NewCarsCubit.get(context).newCars.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 23.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(0xff1C2F39),
+                          borderRadius: BorderRadius.circular(24.r),
+                        ),
+                        child: Column(
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'Volkswagen',
-                                  style: TextStyles.inter18WhiteMedium.copyWith(
-                                    fontSize: 15.3.sp,
+                                SizedBox(
+                                  width: 150.w,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        cars[index].title ?? '',
+                                        style: TextStyles.inter18WhiteMedium
+                                            .copyWith(fontSize: 15.3.sp),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        cars[index].carBrand?[0]["name"],
+                                        style: TextStyles.inter13greyRegular
+                                            .copyWith(fontSize: 15.3.sp),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  'Golf E',
-                                  style: TextStyles.inter13greyRegular.copyWith(
-                                    fontSize: 15.3.sp,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'starts From',
+                                      style: TextStyles.inter13greyRegular,
+                                    ),
+                                    Text(
+                                      '${NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')} LE',
+                                      style: TextStyles.inter13greyRegular
+                                          .copyWith(
+                                            fontSize: 15.3.sp,
+                                            fontWeight: FontWeightHelper.medium,
+                                          ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            verticalSpace(10),
+                            AppCachedNetworkImage(
+                              image: cars[index].featuredImage,
+                              height: 160.h,
+                              width: 304.w,
+                              radius: 20.r,
+                            ),
+                            verticalSpace(10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'starts From',
-                                  style: TextStyles.inter13greyRegular,
+                                Container(
+                                  width: 225.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(59.r),
+                                    color: Color(0x2ed9d9d9),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(
+                                      'Explore',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
-                                Text(
-                                  '3,000,000 LE',
-                                  style: TextStyles.inter13greyRegular.copyWith(
-                                    fontSize: 15.3.sp,
-                                    fontWeight: FontWeightHelper.medium,
+                                CircleAvatar(
+                                  backgroundColor: Color(0xff1B262C),
+                                  child: Icon(
+                                    CupertinoIcons.heart_fill,
+                                    color: Color(0xa8ffffff),
+                                    size: 20.sp,
                                   ),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        verticalSpace(160),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width:225.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(59.r),
-                                color: Color(0x2ed9d9d9),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Text('Explore',textAlign: TextAlign.center,),
-                              ),
-                            ),
-                            CircleAvatar(
-                              backgroundColor:Color(0xff1B262C),
-                              child: Icon(
-                                CupertinoIcons.heart_fill,
-                                color: Color(0xa8ffffff),
-                                size: 20.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
               ),

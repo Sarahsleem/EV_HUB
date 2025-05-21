@@ -13,7 +13,7 @@ class CarsRepo{
         ApiConstants.cars,
         queryParameters: {
           'car-brand': brandId,  // استخدام الـ brandId بدلاً من القيمة الثابتة
-          'per_page': 100,
+          'per_page': 7,
           'condition': 13
           // تحديد العدد الأقصى للسيارات المسترجعة
         },

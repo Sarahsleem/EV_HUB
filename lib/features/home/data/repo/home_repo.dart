@@ -28,7 +28,7 @@ return left('f');
   Future<Either<String,List<Brand>>> fetchBrands() async {
     try {
       final response = await dio.get(
-        'https://evhubtl.com/wp-json/wp/v2/car-brand?per_page=100',
+        'https://evhubtl.com/wp-json/wp/v2/car-brand?per_page=7',
         options: Options(
           validateStatus: (status) => status! < 500, // Allow status codes less than 500
         ),
@@ -61,7 +61,7 @@ return left('f');
   }
   Future<Either<String,List<Car>>> fetchCars() async {
     try {
-      final response = await dio.get('/wp/v2/cars');
+      final response = await dio.get('/wp/v2/cars?per_page=7');
       List<Car> cars = (response.data as List)
           .map((car) => Car.fromMap(car))
           .toList();

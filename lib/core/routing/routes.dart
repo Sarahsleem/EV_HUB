@@ -17,4 +17,6 @@ class Routes {
 
   static const String newCars='/newCars';
 
+  static const String forgetPasswordEmail='/forgetPasswordEmail';
+
 }

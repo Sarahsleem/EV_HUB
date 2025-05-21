@@ -24,4 +24,5 @@ class ImagesManager {
   static const String fav='images/png/fav.png';
 
   static const String sellCar='images/png/sell-car.png';
+  static const String forgetpasemail='images/png/forgetpaemail.png';
 }

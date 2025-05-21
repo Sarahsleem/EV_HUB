@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // print(token);
       //context.pushReplacementNamed(Routes.onboardingScreen);
        DioFactory.setTokenIntoHeaderAfterLogin(token);
-      if(  token == null){
+      if(  token == ''){
         context.pushReplacementNamed(Routes.onboardingScreen);
       }else{
         context.pushNamed(Routes.navigationBar);
