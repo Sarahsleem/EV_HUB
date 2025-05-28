@@ -7,14 +7,14 @@ import '../../../home/data/model/car_model.dart';
 class CarsRepo{
   Dio dio;
   CarsRepo(this.dio);
-  Future<Either<String,List<Car>>> fetchCarsByBrandIdFromApi(int brandId) async {
+  Future<Either<String,List<Car>>> fetchCarsByBrandIdFromApi(int brandId,int condition) async {
     try {
       final response = await dio.get(
         ApiConstants.cars,
         queryParameters: {
           'car-brand': brandId,  // استخدام الـ brandId بدلاً من القيمة الثابتة
           'per_page': 7,
-          'condition': 13
+          'condition': condition
           // تحديد العدد الأقصى للسيارات المسترجعة
         },
       );

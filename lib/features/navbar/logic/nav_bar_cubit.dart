@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,39 +15,66 @@ part 'nav_bar_state.dart';
 
 class NavBarCubit extends Cubit<NavBarState> {
   NavBarCubit() : super(NavBarInitial());
+
   static NavBarCubit get(context) => BlocProvider.of(context);
 
   PageController pageController = PageController(initialPage: 0);
   final screens = [
-    BlocProvider.value(
-      value: getIt<HomeCubit>(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: getIt<HomeCubit>()
+            ..loadHomeData(),
+        ),
+        BlocProvider.value(
+          value: getIt<ServicesCubit>()..getServices(),
+        ),
+      ],
       child: HomeScreen(),
     ),
-    Container(color: Colors.red,),
     CarMarketPlaceScreen(),
 
   ];
-  List<String> navIcon =[
+  List<String> navIcon = [
     ImagesManager.homeWhite
-    ,ImagesManager.addGray
-    ,ImagesManager.carGray
+    , ImagesManager.addGray
+    , ImagesManager.carGray
 
   ];
-  List<String> navTitle =[
+  List<String> navTitle = [
     'Home'
-    ,'Add'
-    ,'Car'
+    , 'Add'
+    , 'Car'
 
   ];
-  List<String> navIconYellow =[
+  List<String> navIconYellow = [
     ImagesManager.homeWhite
-    ,ImagesManager.addGray
-    ,ImagesManager.carGray
+    , ImagesManager.addGray
+    , ImagesManager.carGray
 
   ];
-  int selectedIndex=0;
-  void changeIndex(int index){
-    selectedIndex=index;
+  int selectedIndex = 0;
+bool isOneSelected=true;
+bool isTwoSelected=false;
+bool isThreeSelected=false;
+
+  void changeIndex(int index) {
+    selectedIndex = index;
+    if(index==0){
+       isOneSelected=true;
+       isTwoSelected=false;
+       isThreeSelected=false;
+    }
+    else if(index==1){
+      isOneSelected=false;
+      isTwoSelected=false;
+      isThreeSelected=true;
+    }
+    else{
+      isOneSelected=false;
+      isTwoSelected=false;
+      isThreeSelected=true;
+    }
     emit(ChangeIndexState());
   }
 }

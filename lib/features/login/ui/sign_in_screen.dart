@@ -523,12 +523,12 @@ verticalSpace(8),
                                 ),
                               ],
                             ),
-                            SignInStateUi()
+
                           ],
                         ),
                       ),
                     ),
-                    //    SignUpStateUi(),
+                    SignInStateUi()
                   ],
                 ),
               ),

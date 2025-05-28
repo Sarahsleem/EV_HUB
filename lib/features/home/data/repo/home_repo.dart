@@ -25,10 +25,10 @@ try{
 return left('f');
   }
 }
-  Future<Either<String,List<Brand>>> fetchBrands() async {
+  Future<Either<String,List<Brand>>> fetchBrands( int count) async {
     try {
       final response = await dio.get(
-        'https://evhubtl.com/wp-json/wp/v2/car-brand?per_page=7',
+        'https://evhubtl.com/wp-json/wp/v2/car-brand?per_page=$count',
         options: Options(
           validateStatus: (status) => status! < 500, // Allow status codes less than 500
         ),

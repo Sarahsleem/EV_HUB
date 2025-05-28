@@ -23,7 +23,7 @@ class _OTPScreenState extends State<OTPScreen> {
   final formKey = GlobalKey<FormState>();
 
   List<TextEditingController> otpControllers = List.generate(
-    4,
+    6,
     (index) => TextEditingController(),
   );
   List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());

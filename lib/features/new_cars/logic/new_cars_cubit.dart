@@ -21,7 +21,17 @@ class NewCarsCubit extends Cubit<NewCarsState> {
   List<Car> newCars=[];
   Future<void> getNewCarsByBrand()async {
  emit(NewCarsLoadingState());
-      var response= await carsRepo.fetchCarsByBrandIdFromApi(selectedBrandId);
+      var response= await carsRepo.fetchCarsByBrandIdFromApi(selectedBrandId,13);
+  response.fold((l){
+    emit(NewCarsErrorState());
+  },(r){
+    newCars=r;
+    emit(NewCarsSuccessState());
+  });
+
+  }Future<void> getUsedCarsByBrand()async {
+ emit(NewCarsLoadingState());
+      var response= await carsRepo.fetchCarsByBrandIdFromApi(selectedBrandId,14);
   response.fold((l){
     emit(NewCarsErrorState());
   },(r){

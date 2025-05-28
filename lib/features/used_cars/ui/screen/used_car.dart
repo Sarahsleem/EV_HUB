@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/colors.dart';
@@ -16,19 +15,19 @@ import '../../../../core/widgets/brands_loader.dart';
 import '../../../../core/widgets/image_network.dart';
 import '../../../home/logic/home_cubit.dart';
 
-class NewCarScreen extends StatefulWidget {
+class UsedCarScreen extends StatefulWidget {
   @override
-  State<NewCarScreen> createState() => _NewCarScreenState();
+  State<UsedCarScreen> createState() => _UsedCarScreenState();
 }
 
-class _NewCarScreenState extends State<NewCarScreen> {
+class _UsedCarScreenState extends State<UsedCarScreen> {
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
     HomeCubit.get(context).getBrands().then((_) {
-      NewCarsCubit.get(context).getNewCarsByBrand();
+      NewCarsCubit.get(context).getUsedCarsByBrand();
     });
 
     // HomeCubit.get(context).getBrands();
@@ -40,7 +39,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: const AssetImage('images/png/background.png'),
+            image: AssetImage('images/png/background.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -58,81 +57,78 @@ class _NewCarScreenState extends State<NewCarScreen> {
               Padding(
                 padding: EdgeInsetsDirectional.only(start: 15.w),
                 child: BlocBuilder<NewCarsCubit, NewCarsState>(
-  builder: (context, state) {
-    return BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
-                    if (state is HomeLoadingBrandsState) {
-                      return Center(child: BrandLoader());
-                    }
-                    return SizedBox(
-                      height: 74.h,
-                      child: LazyLoadScrollView(
-                        isLoading:  state is LoadMoreBrandsState,
-                        scrollDirection: Axis.horizontal,
-                        onEndOfPage: HomeCubit.get(context).loadMoreBrands,
-                        child: ListView.separated(
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                NewCarsCubit.get(context).chooseBrand(
-                                  HomeCubit.get(context).carBrands[index].id,
-                                );
-                                NewCarsCubit.get(context).getNewCarsByBrand();
-                              },
-                              child: Opacity(
-                                opacity: NewCarsCubit.get(
-                                  context,
-                                ).selectedBrandId==HomeCubit.get(
-                                  context,
-                                ).carBrands[index].id
-
-                                    ?1:0.31,
-                                child: Container(
-                                  height: 64.h,
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(40.r),
-                                    // border: Border.all(
-                                    //   color:
-                                    //   NewCarsCubit.get(
-                                    //     context,
-                                    //   ).selectedBrandId==HomeCubit.get(
-                                    //                 context,
-                                    //               ).carBrands[index].id
-                                    //
-                                    //           ? ColorsManager.kPrimaryColor
-                                    //           : ColorsManager.borderGrey,
-                                    //   width: 1.3,
-                                    // ),
-                                  ),
-                                  child: AppCachedNetworkImage(
-                                    fit: BoxFit.contain,
-                                    radius: 30.r,
-                                    image:
-                                        HomeCubit.get(
-                                          context,
-                                        ).carBrands[index].acf.brandLogo.url,
+                    return BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomeLoadingBrandsState) {
+                          return Center(child: BrandLoader());
+                        }
+                        return SizedBox(
+                          height: 74.h,
+                          child: ListView.separated(
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  NewCarsCubit.get(context).chooseBrand(
+                                    HomeCubit.get(context).carBrands[index].id,
+                                  );
+                                  NewCarsCubit.get(context).getNewCarsByBrand();
+                                },
+                                child: Opacity(
+                                  opacity:
+                                      NewCarsCubit.get(
+                                                context,
+                                              ).selectedBrandId ==
+                                              HomeCubit.get(
+                                                context,
+                                              ).carBrands[index].id
+                                          ? 1
+                                          : 0.31,
+                                  child: Container(
                                     height: 64.h,
-                                    width: 64.w,
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(40.r),
+                                      // border: Border.all(
+                                      //   color:
+                                      //   NewCarsCubit.get(
+                                      //     context,
+                                      //   ).selectedBrandId==HomeCubit.get(
+                                      //                 context,
+                                      //               ).carBrands[index].id
+                                      //
+                                      //           ? ColorsManager.kPrimaryColor
+                                      //           : ColorsManager.borderGrey,
+                                      //   width: 1.3,
+                                      // ),
+                                    ),
+                                    child: AppCachedNetworkImage(
+                                      fit: BoxFit.contain,
+                                      radius: 30.r,
+                                      image:
+                                          HomeCubit.get(
+                                            context,
+                                          ).carBrands[index].acf.brandLogo.url,
+                                      height: 64.h,
+                                      width: 64.w,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return horizontalSpace(4);
-                          },
-                          itemCount: HomeCubit.get(context).visibleBrandsCount,
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          physics: ScrollPhysics(),
-                        ),
-                      ),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return horizontalSpace(4);
+                            },
+                            itemCount: HomeCubit.get(context).carBrands.length,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-  },
-),
+                ),
               ),
               verticalSpace(17),
               BlocBuilder<NewCarsCubit, NewCarsState>(
@@ -158,9 +154,8 @@ class _NewCarScreenState extends State<NewCarScreen> {
                   var cars = NewCarsCubit.get(context).newCars;
                   if (state is NewCarsLoadingState) {
                     return Center(child: CircularProgressIndicator());
-                  }
-                  else if(cars.isEmpty){
-                    return Center(child: Text('No Cars Found'),);
+                  } else if (cars.isEmpty) {
+                    return Center(child: Text('No Cars Found'));
                   }
                   return ListView.separated(
                     separatorBuilder: (context, index) {
@@ -209,7 +204,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'starts From',
+                                      'price',
                                       style: TextStyles.inter13greyRegular,
                                     ),
                                     Text(
@@ -235,8 +230,24 @@ class _NewCarScreenState extends State<NewCarScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(children: [Image.asset("images/png/carused.png",height: 22.h,width: 22.w),Text(formatKm(cars[index].acf!["km"]),style: TextStyles.inter18WhiteMedium,)],),
+                                    Text(
+                                      'Installments',
+                                      style: TextStyles.inter16greyMedium
+                                          .copyWith(fontSize: 11.sp),
+                                    ),
+                                    Text(
+                                      'Good Condition',
+                                      style: TextStyles.inter16greyMedium
+                                          .copyWith(fontSize: 11.sp),
+                                    ),
+                                  ],
+                                ),
                                 Container(
-                                  width: 225.w,
+                                  width: 142.w,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(59.r),
                                     color: Color(0x2ed9d9d9),
@@ -245,6 +256,8 @@ class _NewCarScreenState extends State<NewCarScreen> {
                                     padding: const EdgeInsets.all(12.0),
                                     child: Text(
                                       'Explore',
+                                      style: TextStyles.inter18WhiteMedium
+                                          .copyWith(fontSize: 9.7.sp),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -308,6 +321,16 @@ class CustomSearch extends StatelessWidget {
     );
   }
 }
+String formatKm(dynamic kmValue) {
+  final km = double.tryParse(kmValue.toString());
+  if (km == null) return '0';
+
+  if (km >= 1000) {
+    return '${(km / 1000).toStringAsFixed(0)}k';
+  } else {
+    return km.toStringAsFixed(0);
+  }
+}
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
@@ -327,7 +350,7 @@ class CustomAppBar extends StatelessWidget {
         Center(
           child: Text(
             textAlign: TextAlign.center,
-            'new cars',
+            'Used cars',
             style: TextStyles.inter18WhiteMedium,
           ),
         ),

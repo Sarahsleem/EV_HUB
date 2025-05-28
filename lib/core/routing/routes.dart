@@ -19,4 +19,14 @@ class Routes {
 
   static const String forgetPasswordEmail='/forgetPasswordEmail';
 
+  static const String forgetPasswordOTP='/forgetPasswordOTP';
+
+  static const String forgetPasswordReset='/forgetPasswordReset';
+
+  static const String usedCars='/usedCars';
+
+  static const String addNewCar='/addNewCar';
+
+  static const String addNewChooseBrand='/addNewChooseBrand';
+
 }

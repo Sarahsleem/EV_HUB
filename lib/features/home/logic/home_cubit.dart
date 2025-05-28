@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bloc/bloc.dart';
 import 'package:evhub/core/assets/images.dart';
 import 'package:evhub/core/db/cash_helper.dart';
@@ -21,10 +23,10 @@ List<AdsModel> ads2=[];
 List<AdsModel> ads1=[];
 List<Brand> carBrands=[];
 List<Car> cars=[];
-  int visibleCarsCount = 4;
+  int visibleBrandsCount = 7;
   void loadMoreCars() {
-    if (visibleCarsCount < cars.length) {
-      visibleCarsCount += 4;
+    if (visibleBrandsCount < cars.length) {
+      visibleBrandsCount += 4;
       emit(LoadMoreCarsState()); // Create a dummy state
     }
   }
@@ -49,22 +51,36 @@ Future<void> getAds2()async{
   });
 
 }
-Future<void> getBrands()async{
-  try{
-carBrands =CachedApp.getCachedData(CachedDataType.brands.name);
-  }catch(e){
+void loadHomeData (){
+  getAds2();
+  getCars().then((_) => getBrands());
+  //getBrands();
+  getAds();
+}
+  Future<void> getBrands() async {
     emit(HomeLoadingBrandsState());
-    var response = await homeRepo.fetchBrands();
-    response.fold((l) {
-      emit(HomeErrorBrandsState());
-    }, (r) {
-      carBrands = r;
-      CachedApp.saveData(carBrands,CachedDataType.brands.name);
-      emit(HomeSuccessBrandsState());
-    });
+    final response = await homeRepo.fetchBrands(50); // Fetch a reasonable initial amount
+    response.fold(
+          (l) => emit(HomeErrorBrandsState()),
+          (r) {
+        carBrands = r;
+        visibleBrandsCount = r.length < 7 ? r.length : 7;
+        emit(HomeSuccessBrandsState());
+      },
+    );
   }
 
-}
+  void loadMoreBrands() {
+    print('here');
+    if (visibleBrandsCount < carBrands.length) {
+      emit(LoadMoreBrandsState());
+      print('here2');
+      // Add more items (you could also fetch more from server here)
+      visibleBrandsCount = (visibleBrandsCount + 7).clamp(0, carBrands.length);
+      emit(HomeSuccessBrandsState()); // Or create a specific state for loaded more
+    }
+  }
+
 Future<void> getCars()async{
  try{
    cars=CachedApp.getCachedData(CachedDataType.cars.name);
@@ -87,4 +103,13 @@ List<Feature> features=[
   Feature(image: ImagesManager.stations, title: 'Charging stations', ),
 
 ];
+
+  // void loadMoreBrands() {
+  //   if (visibleBrandsCount < carBrands.length) {
+  //     visibleBrandsCount = (visibleBrandsCount + 7).clamp(0, carBrands.length);
+  //     getBrands(visibleBrandsCount);
+  //     emit(LoadMoreBrandsState()); // trigger UI rebuild
+  //   }
+  // }
+
 }

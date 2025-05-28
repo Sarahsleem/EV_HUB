@@ -25,4 +25,7 @@ class ImagesManager {
 
   static const String sellCar='images/png/sell-car.png';
   static const String forgetpasemail='images/png/forgetpaemail.png';
+  static const String checkEmail='images/png/checkEmail.png';
+
+  static const String forgetpasReset='images/png/resetpass.png';
 }

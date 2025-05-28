@@ -23,8 +23,8 @@ class OtpInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 63.h,
-      width: 63.w,
+      height: 47.h,
+      width: 47.w,
       child: TextFormField(
         style: TextStyles.inter20greyBold,
         validator: validator,

@@ -5,12 +5,14 @@ import 'package:evhub/features/new_cars/data/repo/car_repo.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/otp/data/repo/otp_repo.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
+import 'package:evhub/features/services/data/repo/services_repo.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/forget_password/data/repo/forget_password_repo.dart';
 import '../../features/forget_password/logic/forget_password_cubit.dart';
 import '../../features/login/data/repo/sign_in_repo.dart';
 import '../../features/login/logic/sign_in_cubit.dart';
+import '../../features/services/logic/services_cubit.dart';
 import '../../features/signup/data/repo/sign_up_repo.dart';
 import '../../features/signup/logic/sign_up_cubit.dart';
 import '../networking/dio_factory.dart';
@@ -33,6 +35,8 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<HomeRepo>(()=>HomeRepo( dio));
   getIt.registerLazySingleton<NewCarsCubit>(() => NewCarsCubit(getIt()));
   getIt.registerFactory<CarsRepo>(()=>CarsRepo( dio));
-  getIt.registerLazySingleton<ForgetPasswordCubit>(() => ForgetPasswordCubit(getIt()));
+  getIt.registerFactory<ForgetPasswordCubit>(() => ForgetPasswordCubit(getIt()));
   getIt.registerFactory<ForgetPasswordRepo>(()=>ForgetPasswordRepo( dio));
+  getIt.registerFactory<ServicesCubit>(() => ServicesCubit(getIt()));
+  getIt.registerFactory<Services>(()=>Services( dio));
 }

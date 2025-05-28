@@ -21,3 +21,4 @@ class HomeSuccessCarsState extends HomeState{
 }
 class HomeErrorCarsState extends HomeState{}
 class LoadMoreCarsState extends HomeState{}
+class LoadMoreBrandsState extends HomeState{}

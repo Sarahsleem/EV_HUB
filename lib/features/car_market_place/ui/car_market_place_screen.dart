@@ -11,6 +11,7 @@ class CarMarketPlaceScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(child: Center(child: Text('newCar')), onTap: () {context.pushNamed(Routes.newCars);}),
+            GestureDetector(child: Center(child: Text('usedCar')), onTap: () {context.pushNamed(Routes.usedCars);}),
           ],
         ),
       ),
