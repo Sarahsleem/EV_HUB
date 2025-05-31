@@ -20,6 +20,7 @@ class _WebViewPageState extends State<WebViewPage> {
   bool _isLoading = true;
 
   @override
+  @override
   void initState() {
     super.initState();
 
@@ -40,15 +41,13 @@ class _WebViewPageState extends State<WebViewPage> {
           onNavigationRequest: (NavigationRequest request) {
             final url = request.url;
 
-            // Check if it's an external URL like WhatsApp or Phone
             if (url.contains('whatsapp.com') ||
                 url.startsWith('tel:') ||
                 url.startsWith('mailto:')) {
-              _launchExternalUrl(url); // Launch externally
+              _launchExternalUrl(url);
               return NavigationDecision.prevent;
             }
 
-            // Handle success route
             if (url.contains('/success')) {
               Navigator.pop(context);
               return NavigationDecision.prevent;
@@ -60,12 +59,17 @@ class _WebViewPageState extends State<WebViewPage> {
       )
       ..loadRequest(Uri.parse(widget.url));
 
-    // Enable file uploads on Android
-    if (_webViewController.platform is AndroidWebViewController) {
-      (_webViewController.platform as AndroidWebViewController)
-        ..setMediaPlaybackRequiresUserGesture(false)
-        ..setOnShowFileSelector(_onShowFileSelector);
-    }
+    // 🛠️ Delay setting Android-specific properties until after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_webViewController.platform is AndroidWebViewController) {
+        final androidController =
+        _webViewController.platform as AndroidWebViewController;
+
+        androidController
+          ..setMediaPlaybackRequiresUserGesture(false)
+          ..setOnShowFileSelector(_onShowFileSelector);
+      }
+    });
   }
 
   Future<void> _launchExternalUrl(String url) async {
