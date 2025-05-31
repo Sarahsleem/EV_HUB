@@ -197,4 +197,7 @@ class TextStyles {
       0xbaffffff));
 
   static TextStyle lato9SemiBoldWhite=GoogleFonts.lato(fontSize: 9.sp,color: Colors.white,fontWeight: FontWeightHelper.semiBold);
+
+  static TextStyle inter10GreySemiBold=GoogleFonts.inter(fontSize: 10.sp,color: Color(
+      0xc2ffffff),fontWeight: FontWeightHelper.semiBold);
 }

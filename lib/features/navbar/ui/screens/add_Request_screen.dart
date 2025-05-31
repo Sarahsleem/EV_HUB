@@ -71,14 +71,14 @@ class AddContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 7.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(35.r),
           color: Color(0x6122323b),
         ),
-        height: 95.h,
+       // height: 95.h,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 17.h),

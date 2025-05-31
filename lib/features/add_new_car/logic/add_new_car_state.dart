@@ -4,3 +4,4 @@ part of 'add_new_car_cubit.dart';
 abstract class AddNewCarState {}
 
 class AddNewCarInitial extends AddNewCarState {}
+class ChooseBrandState extends AddNewCarState{}

@@ -7,3 +7,6 @@ class ServicesInitial extends ServicesState {}
 class ServicesLoading extends ServicesState{}
 class ServicesError extends ServicesState{}
 class ServicesSuccess extends ServicesState{}
+class ServicesListLoading extends ServicesState{}
+class ServicesListError extends ServicesState{}
+class ServicesListSuccess extends ServicesState{}

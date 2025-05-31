@@ -49,7 +49,8 @@ class AppTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-
+maxLines: 5,
+      minLines: 1,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       onTap: onTap,

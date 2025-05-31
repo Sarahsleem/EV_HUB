@@ -29,4 +29,10 @@ class Routes {
 
   static const String addNewChooseBrand='/addNewChooseBrand';
 
+  static const String addNewCarDtails='/addNewCarDtails';
+
+  static const String allService='/allService';
+
+  static const String serviceListDetails='/serviceListDetails';
+
 }

@@ -412,6 +412,9 @@ class HomeScreen extends StatelessWidget {
                         Text('Services', style: TextStyles.lato15SemiBoldBlack),
                         horizontalSpace(4),
                         GestureDetector(
+                          onTap: (){
+                            context.pushNamed(Routes.allService);
+                          },
                           child: Row(
                             children: [
                               Text(
