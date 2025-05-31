@@ -1,4 +1,5 @@
 import 'package:evhub/core/helpers/extensions.dart';
+import 'package:evhub/features/login/ui/widgets/sign_in_states_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,7 @@ import '../../../core/widgets/phone_text_field.dart';
 import '../../../generated/l10n.dart';
 import '../../signup/data/models/sign_up_model.dart';
 import '../../signup/logic/sign_up_cubit.dart';
+import '../../signup/ui/widgets/sign_up_states.dart';
 import '../data/models/sign_in_model.dart';
 import '../logic/sign_in_cubit.dart';
 
@@ -129,27 +131,42 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             ),
                             verticalSpace(16),
-                            AppTextButton(
-                              borderRadius: 10,
-                              buttonHeight: 58.h,
-                              buttonWidth: 327,
-                              backgroundColor: Color(0xff101a21),
-                              buttonText: S.of(context).signin,
-                              textStyle: TextStyles.lato16SemiBoldLight,
-                              onPressed: () async {
-                                // Check if the form is valid before proceeding
-                                if (formKey.currentState!.validate()) {
-                                  // Perform login
-                                  await SignInCubit.get(context).login(
-                                    SignIn(
-                                      phone: _phoneController.text,
-                                      password: _passwordController.text,
-                                    ),
-                                  );
-                                }
-                              },
+                            Center(
+                              child: AppTextButton(
+                                borderRadius: 10,
+                                buttonHeight: 58.h,
+                                buttonWidth: 327,
+                                backgroundColor: Color(0xff101a21),
+                                buttonText: S.of(context).signin,
+                                textStyle: TextStyles.lato16SemiBoldLight,
+                                onPressed: () async {
+                                  // Check if the form is valid before proceeding
+                                  if (formKey.currentState!.validate()) {
+                                    // Perform login
+                                    await SignInCubit.get(context).login(
+                                      SignIn(
+                                        phone: _phoneController.text,
+                                        password: _passwordController.text,
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
                             ),
+verticalSpace(8),
+                            GestureDetector(
+                              onTap: (){
+                                context.pushNamed(Routes.forgetPasswordEmail);
+                              },
+                              child: Row(
+                               mainAxisAlignment: MainAxisAlignment.end,
+                                children: [Text(
 
+                                  'forgot password?',
+                                  style: TextStyles.lato15RegularLightgray,
+                                ),],
+                              ),
+                            ),
                             SizedBox(height: 16),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -441,34 +458,46 @@ class _SignInScreenState extends State<SignInScreen> {
                                                                 ),
                                                               ),
                                                               verticalSpace(16),
-                                                              AppTextButton(
-                                                                borderRadius:
-                                                                    10,
-                                                                buttonHeight:
-                                                                    58.h,
-                                                                buttonWidth:
-                                                                    327,
-                                                                buttonText:
-                                                                    S
-                                                                        .of(
-                                                                          context,
-                                                                        )
-                                                                        .signup,
-                                                                textStyle:
-                                                                    TextStyles
-                                                                        .lato16SemiBoldLight,
-                                                                onPressed: () async {
-                                                                  context.pushNamed(Routes.navigationBar);
-                                                                  // if (formKey.currentState!.validate()) {
-                                                                  //   await signUpCubit.(
-                                                                  //     SignIn(
-                                                                  //       phone: _phoneController.text,
-                                                                  //       password: _passwordController.text,
-                                                                  //     ),
-                                                                  //   );
-                                                                  // }
-                                                                },
+                                                              Center(
+                                                                child: AppTextButton(
+                                                                  borderRadius:
+                                                                      10,
+                                                                  buttonHeight:
+                                                                      58.h,
+                                                                  buttonWidth:
+                                                                      327,
+                                                                  buttonText:
+                                                                      S
+                                                                          .of(
+                                                                            context,
+                                                                          )
+                                                                          .signup,
+                                                                  textStyle:
+                                                                      TextStyles
+                                                                          .lato16SemiBoldLight,
+                                                                  onPressed: () async {
+                                                                    //context.pushNamed(Routes.navigationBar);
+                                                                    if (formKey
+                                                                        .currentState!
+                                                                        .validate()) {
+                                                                      await signUpCubit.signUp(
+                                                                        SignUp(
+                                                                          name:
+                                                                              _nameController.text,
+                                                                          email:
+                                                                              _emailController.text,
+                                                                          phone:
+                                                                              _phoneController.text,
+                                                                          password:
+                                                                              _passwordController.text,
+                                                                        ),
+                                                                      );
+                                                                    }
+                                                                  },
+                                                                ),
                                                               ),
+                                                              SignupStateUi()
+
                                                             ],
                                                           ),
                                                         ),
@@ -494,11 +523,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                               ],
                             ),
+
                           ],
                         ),
                       ),
                     ),
-                    //    SignUpStateUi(),
+                    SignInStateUi()
                   ],
                 ),
               ),

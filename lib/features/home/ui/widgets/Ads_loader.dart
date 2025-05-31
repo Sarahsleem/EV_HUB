@@ -15,7 +15,7 @@ class AdsLoader extends StatelessWidget {
     return Skeletonizer(
       enabled: true, // show shimmer
       child: Card(
-        color: ColorsManager.offWhite,
+        color: ColorsManager.lightGray,
         margin: const EdgeInsets.all(12),
         child: Padding(
           padding: const EdgeInsets.all(16),

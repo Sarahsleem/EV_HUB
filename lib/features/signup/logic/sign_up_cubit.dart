@@ -76,7 +76,7 @@ int index = 0;
             key: Keys.email,
             value: signUpModel.email!,
           );
-NavigationService.navigatorKey.currentContext?.pushNamed(Routes.verifyCode);
+//NavigationService.navigatorKey.currentContext?.pushNamed(Routes.verifyCode);
           emit(SignUpSuccess());
           print('saved ${r.toString()}');
         }

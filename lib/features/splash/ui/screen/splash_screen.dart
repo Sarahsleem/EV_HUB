@@ -3,6 +3,7 @@ import 'package:evhub/core/helpers/extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/db/cash_helper.dart';
+import '../../../../core/networking/dio_factory.dart';
 import '../../../../core/routing/routes.dart';
 import '../../../../core/theming/colors.dart';
 
@@ -41,11 +42,12 @@ class _SplashScreenState extends State<SplashScreen> {
       WidgetsFlutterBinding.ensureInitialized();
       String? token = await CashHelper.getStringSecured(key: Keys.token);
       // print(token);
-      context.pushReplacementNamed(Routes.onboardingScreen);
-      //  DioFactory.setTokenIntoHeaderAfterLogin(response.token!);
-      // if(  token == null){
-      //   context.pushReplacementNamed(Routes.welcome);
-      // }else{
+      //context.pushReplacementNamed(Routes.onboardingScreen);
+       DioFactory.setTokenIntoHeaderAfterLogin(token);
+      if(  token == ''){
+        context.pushReplacementNamed(Routes.onboardingScreen);
+      }else{
+        context.pushNamed(Routes.navigationBar);
       // if(await SplashCubit.get(context).checkToken(token)){
       //   DioFactory.setTokenIntoHeaderAfterLogin(token);
       //   context.pushReplacementNamed(Routes.navigationBar);
@@ -59,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // }
       // });
 
-      // }
+      }
 
 
     });

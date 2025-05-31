@@ -1,0 +1,312 @@
+class Insurance {
+  final int id;
+  final String date;
+  final String dateGmt;
+  final Guid guid;
+  final String modified;
+  final String modifiedGmt;
+  final String slug;
+  final String status;
+  final String type;
+  final String link;
+  final Title title;
+  final Content content;
+  final int? featuredMedia;
+  final String? template;
+  final Meta? meta;
+  final List<String> classList;
+  final Acf acf;
+  final String? featuredImage; // ✅ Added
+  final Links? links;
+
+  Insurance({
+    required this.id,
+    required this.date,
+    required this.dateGmt,
+    required this.guid,
+    required this.modified,
+    required this.modifiedGmt,
+    required this.slug,
+    required this.status,
+    required this.type,
+    required this.link,
+    required this.title,
+    required this.content,
+    this.featuredMedia,
+    this.template,
+    this.meta,
+    required this.classList,
+    required this.acf,
+    this.featuredImage, // ✅ Added
+    this.links,
+  });
+
+  factory Insurance.fromJson(Map<String, dynamic> json) {
+    return Insurance(
+      id: json['id'],
+      date: json['date'],
+      dateGmt: json['date_gmt'],
+      guid: Guid.fromJson(json['guid']),
+      modified: json['modified'],
+      modifiedGmt: json['modified_gmt'],
+      slug: json['slug'],
+      status: json['status'],
+      type: json['type'],
+      link: json['link'],
+      title: Title.fromJson(json['title']),
+      content: Content.fromJson(json['content']),
+      featuredMedia: json['featured_media'],
+      template: json['template'],
+      meta: json['meta'] != null ? Meta.fromJson(json['meta']) : null,
+      classList: List<String>.from(json['class_list'] ?? []),
+      acf: Acf.fromJson(json['acf']),
+      featuredImage: json['featured_image'], // ✅ Added
+      links: json['_links'] != null ? Links.fromJson(json['_links']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date,
+      'date_gmt': dateGmt,
+      'guid': guid.toJson(),
+      'modified': modified,
+      'modified_gmt': modifiedGmt,
+      'slug': slug,
+      'status': status,
+      'type': type,
+      'link': link,
+      'title': title.toJson(),
+      'content': content.toJson(),
+      'featured_media': featuredMedia,
+      'template': template,
+      'meta': meta?.toJson(),
+      'class_list': classList,
+      'acf': acf.toJson(),
+      'featured_image': featuredImage, // ✅ Added
+      '_links': links?.toJson(),
+    };
+  }
+}
+
+
+class Guid {
+  final String rendered;
+
+  Guid({required this.rendered});
+
+  factory Guid.fromJson(Map<String, dynamic> json) {
+    return Guid(rendered: json['rendered']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'rendered': rendered};
+  }
+}
+
+class Title {
+  final String rendered;
+
+  Title({required this.rendered});
+
+  factory Title.fromJson(Map<String, dynamic> json) {
+    return Title(rendered: json['rendered']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'rendered': rendered};
+  }
+}
+
+class Content {
+  final String rendered;
+  final bool protected;
+
+  Content({required this.rendered, required this.protected});
+
+  factory Content.fromJson(Map<String, dynamic> json) {
+    return Content(
+      rendered: json['rendered'],
+      protected: json['protected'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'rendered': rendered, 'protected': protected};
+  }
+}
+
+class Meta {
+  final bool acfChanged;
+
+  Meta({required this.acfChanged});
+
+  factory Meta.fromJson(Map<String, dynamic> json) {
+    return Meta(acfChanged: json['_acf_changed']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'_acf_changed': acfChanged};
+  }
+}
+
+class Acf {
+  final String phoneNumber;
+  final String whatsapp;
+  final String address;
+  final String addressLocation;
+  final dynamic companyImage;
+
+  Acf({
+    required this.phoneNumber,
+    required this.whatsapp,
+    required this.address,
+    required this.addressLocation,
+    required this.companyImage,
+  });
+
+  factory Acf.fromJson(Map<String, dynamic> json) {
+    return Acf(
+      phoneNumber: json['phone_number'],
+      whatsapp: json['whatsapp'],
+      address: json['address'],
+      addressLocation: json['address_loction'],
+      companyImage: json['company_image'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'phone_number': phoneNumber,
+      'whatsapp': whatsapp,
+      'address': address,
+      'address_loction': addressLocation,
+      'company_image': companyImage,
+    };
+  }
+}
+
+class Links {
+  final List<LinkHref>? self;
+  final List<LinkHref>? collection;
+  final List<LinkHref>? about;
+  final List<VersionHistory>? versionHistory;
+  final List<LinkHref>? predecessorVersion;
+  final List<LinkHref>? wpFeaturedMedia;
+  final List<LinkHref>? wpAttachment;
+  final List<Cury>? curies;
+
+  Links({
+    this.self,
+    this.collection,
+    this.about,
+    this.versionHistory,
+    this.predecessorVersion,
+    this.wpFeaturedMedia,
+    this.wpAttachment,
+    this.curies,
+  });
+
+  factory Links.fromJson(Map<String, dynamic> json) {
+    return Links(
+      self: json['self'] != null
+          ? (json['self'] as List).map((e) => LinkHref.fromJson(e)).toList()
+          : null,
+      collection: json['collection'] != null
+          ? (json['collection'] as List).map((e) => LinkHref.fromJson(e)).toList()
+          : null,
+      about: json['about'] != null
+          ? (json['about'] as List).map((e) => LinkHref.fromJson(e)).toList()
+          : null,
+      versionHistory: json['version-history'] != null
+          ? (json['version-history'] as List)
+          .map((e) => VersionHistory.fromJson(e))
+          .toList()
+          : null,
+      predecessorVersion: json['predecessor-version'] != null
+          ? (json['predecessor-version'] as List)
+          .map((e) => LinkHref.fromJson(e))
+          .toList()
+          : null,
+      wpFeaturedMedia: json['wp:featuredmedia'] != null
+          ? (json['wp:featuredmedia'] as List)
+          .map((e) => LinkHref.fromJson(e))
+          .toList()
+          : null,
+      wpAttachment: json['wp:attachment'] != null
+          ? (json['wp:attachment'] as List)
+          .map((e) => LinkHref.fromJson(e))
+          .toList()
+          : null,
+      curies: json['curies'] != null
+          ? (json['curies'] as List).map((e) => Cury.fromJson(e)).toList()
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'self': self?.map((e) => e.toJson()).toList(),
+      'collection': collection?.map((e) => e.toJson()).toList(),
+      'about': about?.map((e) => e.toJson()).toList(),
+      'version-history': versionHistory?.map((e) => e.toJson()).toList(),
+      'predecessor-version': predecessorVersion?.map((e) => e.toJson()).toList(),
+      'wp:featuredmedia': wpFeaturedMedia?.map((e) => e.toJson()).toList(),
+      'wp:attachment': wpAttachment?.map((e) => e.toJson()).toList(),
+      'curies': curies?.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class LinkHref {
+  final String href;
+
+  LinkHref({required this.href});
+
+  factory LinkHref.fromJson(Map<String, dynamic> json) {
+    return LinkHref(href: json['href']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'href': href};
+  }
+}
+
+class VersionHistory {
+  final int count;
+  final String href;
+
+  VersionHistory({required this.count, required this.href});
+
+  factory VersionHistory.fromJson(Map<String, dynamic> json) {
+    return VersionHistory(
+      count: json['count'],
+      href: json['href'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'count': count, 'href': href};
+  }
+}
+
+class Cury {
+  final String name;
+  final String href;
+  final bool templated;
+
+  Cury({required this.name, required this.href, required this.templated});
+
+  factory Cury.fromJson(Map<String, dynamic> json) {
+    return Cury(
+      name: json['name'],
+      href: json['href'],
+      templated: json['templated'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name, 'href': href, 'templated': templated};
+  }
+}

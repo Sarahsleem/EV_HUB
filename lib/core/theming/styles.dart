@@ -177,10 +177,27 @@ class TextStyles {
   static TextStyle lato16RegularhintGray=GoogleFonts.lato(fontSize: 16.sp,fontWeight: FontWeightHelper.regular,color: Color(0xff696969));
 
   static TextStyle lato15SemiBoldBlack=GoogleFonts.lato(fontSize: 15.sp,fontWeight: FontWeightHelper.semiBold,color: Colors.black);
+  static TextStyle workSans15RegularBlack=GoogleFonts.workSans(fontSize: 15.sp,fontWeight: FontWeightHelper.regular,color: Colors.black);
 
   static TextStyle lato13RegularGrey=GoogleFonts.lato(fontSize: 13.sp,fontWeight: FontWeightHelper.regular,color: ColorsManager.lightGrey);
 
   static TextStyle lato17BoldDarkBlue=GoogleFonts.lato(fontSize: 17.sp,fontWeight: FontWeight.bold,color: Color(0xff263F4D));
 
   static TextStyle lato12MediumDarkBlue=GoogleFonts.lato(fontSize: 12.sp,fontWeight: FontWeightHelper.medium,color: Color(0xff263F4D));
+
+  static TextStyle latogrey12Medium=GoogleFonts.lato(fontSize: 12.sp,fontWeight: FontWeightHelper.medium,color: Color(0xff4C4C4C));
+
+  static TextStyle lato21Regulargrey=GoogleFonts.lato(fontSize: 21.sp,fontWeight: FontWeightHelper.regular,color: ColorsManager.lightGrey);
+
+  static TextStyle lato21SemiBoldDarkBlue=GoogleFonts.lato(fontSize: 21.sp,fontWeight: FontWeightHelper.semiBold,color: Color(0xff263F4D));
+
+  static TextStyle inter18WhiteMedium=GoogleFonts.inter(fontSize: 18.sp,color: Colors.white,fontWeight: FontWeightHelper.medium);
+
+  static TextStyle inter13greyRegular=GoogleFonts.inter(fontSize: 13.sp,fontWeight: FontWeightHelper.regular,color: Color(
+      0xbaffffff));
+
+  static TextStyle lato9SemiBoldWhite=GoogleFonts.lato(fontSize: 9.sp,color: Colors.white,fontWeight: FontWeightHelper.semiBold);
+
+  static TextStyle inter10GreySemiBold=GoogleFonts.inter(fontSize: 10.sp,color: Color(
+      0xc2ffffff),fontWeight: FontWeightHelper.semiBold);
 }

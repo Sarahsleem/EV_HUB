@@ -1,6 +1,7 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:evhub/core/networking/dio_factory.dart';
 
 import '../../../../core/networking/api_constants.dart';
 import '../../../../core/networking/api_error_model.dart';
@@ -18,6 +19,7 @@ class SignUpRepo {
   // Registration API Call
   Future<Either<ApiErrorModel, SignInResponse>> register(SignUp registerModel) async {
     try {
+      DioFactory.removeTokenIntoHeaderAfterLogout();
       final response = await _dio.post(ApiConstants.registeration, data: registerModel.toMap());
 
 

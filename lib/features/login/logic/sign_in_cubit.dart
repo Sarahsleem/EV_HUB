@@ -58,12 +58,13 @@ class SignInCubit extends Cubit<SignInState> {
     emit(ChangeCheckboxValue());
   }
   Future<void> login( SignIn loginModel) async {
+    DioFactory.removeTokenIntoHeaderAfterLogout();
     emit(SignInLoading());
     final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
     if (!connectivityResult.contains(ConnectivityResult.none)) {
       final response = await authService.login(loginModel);
       response.fold(
-            (r) => emit(SignInFailed(message: r.message!)),
+            (l) => emit(SignInFailed(message: l.message!)),
             (r) {
           // Save sign-in response securely
           CashHelper.setStringSecured(

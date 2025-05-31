@@ -1,0 +1,64 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:path/path.dart';
+
+import '../../../../core/db/cash_helper.dart';
+import '../model/car_request_model.dart';
+
+class AddCarRepo{
+  Dio dio;
+  AddCarRepo(this.dio);
+  Future<void> postCars(CarRequestModel car) async {
+    try {
+
+      final response = await dio.post('https://evhubtl.com/wp-json/wp/v2/cars/',
+        data: car.toJson(),
+
+      );
+
+      print('Response Data: ${response.data}');
+
+    }  catch (e) {
+   //   log('Error fetching cars: $e');
+      throw Exception('Failed to load cars');
+    }
+  }
+  Future<int> postCarImage(File imageFile) async {
+    final String? token = await CashHelper.getStringSecured(key: Keys.token);
+    print('token: $token');
+    final fileName = basename(imageFile.path);
+
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        imageFile.path,
+        filename: fileName,
+      ),
+    });
+
+    try {
+      final response = await dio.post(
+        'https://evhubtl.com/wp-json/custom/v1/upload/',
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('✅ Upload successful: ${response.data}');
+        return response.data['id'];
+      } else {
+        print('❌ Failed: ${response.statusCode}');
+        return -1;
+      }
+    } catch (e) {
+      print('🚫 Error: $e');
+    }
+
+    return -1;
+  }
+
+}

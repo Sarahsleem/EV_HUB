@@ -69,10 +69,10 @@ shrinkWrap: true,
                 elevationThumb: 2,
                 elevationTrack: 1,
                 child: Text(
-                  "Swipe to Explore".toUpperCase(),
+                  "Swipe to Explore",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

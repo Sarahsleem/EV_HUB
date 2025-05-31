@@ -10,6 +10,7 @@ import '../../../../core/theming/theming_change/cubit/theme_cubit.dart';
 import '../../../../core/widgets/app_text_button.dart';
 import '../../../../core/widgets/app_text_form_field.dart';
 import '../../logic/sign_up_cubit.dart';
+import '../widgets/sign_up_states.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -72,11 +73,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         children: [
 
                           verticalSpace(16),
-
+                         // SignupStateUi()
                         ],
                       ),
                     ),
-                //    SignUpStateUi(),
+
                   ],
                 ),
               ),
