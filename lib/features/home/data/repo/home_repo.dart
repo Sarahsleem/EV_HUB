@@ -25,6 +25,7 @@ try{
   var response =await dio.get(ApiConstants.ads1);
   return right((response.data as List).map((e) => AdsModel.fromJson(e)).toList());
   }catch(e){
+  print(e);
 return left('f');
   }
 }

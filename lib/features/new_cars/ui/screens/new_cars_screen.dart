@@ -2,6 +2,7 @@ import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/theming/font_weight.dart';
 import 'package:evhub/core/theming/styles.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
+import 'package:evhub/features/wish_list/logic/wish_list_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +29,8 @@ class _NewCarScreenState extends State<NewCarScreen> {
     super.didChangeDependencies();
 
     HomeCubit.get(context).getBrands().then((_) {
-      NewCarsCubit.get(context).getNewCarsByBrand();
+     // WishListCubit.get(context).getFavorites();
+      //NewCarsCubit.get(context).getNewCarsByBrand();
     });
 
     // HomeCubit.get(context).getBrands();
@@ -63,8 +65,13 @@ class _NewCarScreenState extends State<NewCarScreen> {
                   builder: (context, state) {
                     if (state is HomeLoadingBrandsState) {
                       return Center(child: BrandLoader());
+                    }  if (HomeCubit.get(
+                      context,
+                    ).carBrands.isEmpty) {
+                      return const Center(child: Text('No brands available.'));
                     }
-                    return SizedBox(
+                    else {
+                      return SizedBox(
                       height: 74.h,
                       child: LazyLoadScrollView(
                         isLoading:  state is LoadMoreBrandsState,
@@ -129,6 +136,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
                         ),
                       ),
                     );
+                    }
                   },
                 );
   },
@@ -249,14 +257,34 @@ class _NewCarScreenState extends State<NewCarScreen> {
                                     ),
                                   ),
                                 ),
-                                CircleAvatar(
-                                  backgroundColor: Color(0xff1B262C),
-                                  child: Icon(
-                                    CupertinoIcons.heart_fill,
-                                    color: Color(0xa8ffffff),
-                                    size: 20.sp,
-                                  ),
+                                BlocBuilder<WishListCubit, WishListState>(
+                                  builder: (context, state) {
+                                    final cubit = WishListCubit.get(context);
+                                    final isFavorite = cubit.favCars.any((car) => car.id == cars[index].id);
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        if (isFavorite) {
+                                          cubit.removeFromFavorites(cars[index].id!);
+                                          cubit.favCars.removeWhere((car) => car.id == cars[index].id);
+                                        } else {
+                                          cubit.addToFavorites(cars[index].id!);
+                                          cubit.favCars.add(cars[index]);
+                                        }
+                                        //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundColor: const Color(0xff1B262C),
+                                        child: Icon(
+                                          CupertinoIcons.heart_fill,
+                                          color: isFavorite ? Colors.red : const Color(0xa8ffffff),
+                                          size: 20.sp,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
+
                               ],
                             ),
                           ],

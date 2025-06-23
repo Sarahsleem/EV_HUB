@@ -305,6 +305,11 @@ class S {
     );
   }
 
+  /// `Try again`
+  String get tryagain {
+    return Intl.message('Try again', name: 'tryagain', desc: '', args: []);
+  }
+
   /// `New Cars`
   String get newcars {
     return Intl.message('New Cars', name: 'newcars', desc: '', args: []);

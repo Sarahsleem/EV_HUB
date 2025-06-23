@@ -28,6 +28,7 @@
   "emailcannotbeempty":"Email can't be empty",
   "EnterEmail": "Enter your Email",
   "Enteravalidemailaddress":"Enter a valid email address",
+  "tryagain":"Try again",
 
   "newcars": "New Cars",
   "usedcars": "Used Cars",
@@ -83,5 +84,4 @@
   "contactUs": "Contact Us",
   "settings": "Settings",
   "english": "English",
-  "arabic": "العربية"
-}
+  "arabic": "العربية"}

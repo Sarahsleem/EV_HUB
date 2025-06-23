@@ -70,21 +70,28 @@ Future<void> getAds2()async{
   }
 void loadHomeData (){
   getAds2();
-  getCars().then((_) => getBrands());
+  getCars();
   //getBrands();
   getAds();
 }
   Future<void> getBrands() async {
-    emit(HomeLoadingBrandsState());
-    final response = await homeRepo.fetchBrands(50); // Fetch a reasonable initial amount
-    response.fold(
-          (l) => emit(HomeErrorBrandsState()),
-          (r) {
-        carBrands = r;
-        visibleBrandsCount = r.length < 7 ? r.length : 7;
-        emit(HomeSuccessBrandsState());
-      },
-    );
+    try{
+      carBrands=CachedApp.getCachedData(CachedDataType.brands.name);
+      print('bbb $carBrands');
+    }catch(e) {
+      emit(HomeLoadingBrandsState());
+      final response = await homeRepo.fetchBrands(
+          25); // Fetch a reasonable initial amount
+      response.fold(
+            (l)  {print(l); emit(HomeErrorBrandsState());},
+            (r) {
+          carBrands = r;
+          CachedApp.saveData(carBrands,CachedDataType.brands.name);
+
+          emit(HomeSuccessBrandsState());
+        },
+      );
+    }
   }
 
   void loadMoreBrands() {
@@ -115,9 +122,9 @@ Future<void> getCars()async{
 
 }
 List<Feature> features=[
-  Feature(image:ImagesManager.insurance, title: 'insurance',),
-  Feature(image: ImagesManager.protection, title: 'protection', ),
-  Feature(image: ImagesManager.stations, title: 'Charging stations', ),
+  Feature(image:ImagesManager.insurance, title: 'insurance', route: 'Insurance',),
+  Feature(image: ImagesManager.protection, title: 'protection', route:'Car Protection Film', ),
+  Feature(image: ImagesManager.stations, title: 'Charging stations', route: '', ),
 
 ];
 

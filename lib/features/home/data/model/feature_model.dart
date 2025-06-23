@@ -1,5 +1,6 @@
 class Feature{
   String title;
   String image;
-  Feature({required this.title,required this.image});
+  String? route;
+  Feature({required this.title,required this.image,required this.route});
 }

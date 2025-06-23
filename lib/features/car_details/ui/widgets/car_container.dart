@@ -1,15 +1,14 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/core/theming/styles.dart';
 import 'package:evhub/core/widgets/image_network.dart';
 import 'package:evhub/features/car_details/data/user_model.dart';
+import 'package:evhub/features/car_details/ui/widgets/owener.dart';
 import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:evhub/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 
 class CarDetailCard extends StatelessWidget {
   final Car car;
@@ -54,27 +53,32 @@ class CarDetailCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(car.carBrand?.first.toString() ?? 'Brand',
-                        style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black)),
+                    Text(
+                      car.carBrand?.first.toString() ?? 'Brand',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
                     Row(
                       children: [
                         Text(
                           car.title ?? "Model",
                           style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey[700]),
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey[700],
+                          ),
                         ),
                         const Spacer(),
                         Text(
                           '2025',
                           style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w500),
+                            fontSize: 14.sp,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -102,15 +106,16 @@ class CarDetailCard extends StatelessWidget {
                 viewportFraction: 1.0,
                 autoPlay: true,
               ),
-              items: imagePaths.map((url) {
-                return AppCachedNetworkImage(
-                  image: url,
-                  height: 180.h,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  radius: 12.r,
-                );
-              }).toList(),
+              items:
+                  imagePaths.map((url) {
+                    return AppCachedNetworkImage(
+                      image: url,
+                      height: 180.h,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      radius: 12.r,
+                    );
+                  }).toList(),
             )
           else
             AppCachedNetworkImage(
@@ -120,20 +125,23 @@ class CarDetailCard extends StatelessWidget {
               fit: BoxFit.cover,
               radius: 12.r,
             ),
-
           SizedBox(height: 16.h),
 
           /// Battery Info
           Text('Battery Health', style: TextStyle(color: Colors.black)),
-Text("${S.of(context).status}${car.status}",style: TextStyles.inter12WhiteRegular.copyWith(color:ColorsManager.lightGrey ),),
-          
+          Text(
+            "${S.of(context).status}${car.status}",
+            style: TextStyles.inter12WhiteRegular.copyWith(
+              color: ColorsManager.lightGrey,
+            ),
+          ),
+
           SizedBox(height: 4.h),
           LinearProgressIndicator(
             value: 0.99,
             color: Colors.green,
             backgroundColor: Colors.grey[300],
             minHeight: 6.h,
-            
           ),
           SizedBox(height: 8.h),
           Row(
@@ -152,15 +160,31 @@ Text("${S.of(context).status}${car.status}",style: TextStyles.inter12WhiteRegula
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _SpecItem(
-  title: S.of(context).Battery,
-  value: "300",
-  unit: "kwh",
-  assetIcon: "images/png/image 16 (3).png", // ضع مسار الأيقونة الصحيحة هنا
-),
+                title: S.of(context).Battery,
+                value: "300",
+                unit: "kwh",
+                assetIcon:
+                    "images/png/image 16 (3).png", // ضع مسار الأيقونة الصحيحة هنا
+              ),
 
-              _SpecItem(title: S.of(context).ChargeInfo, value: "${acf['range_per_charge_km'] ?? '--'} ", unit: 'km', assetIcon: 'images/png/image 16.png',),
-              _SpecItem(title: S.of(context).MotorPower, value: "${acf['motor_power_hp'] ?? '--'} ", unit: 'HP', assetIcon: 'images/png/image 16 (1).png',),
-              _SpecItem(title: "Battery", value: "${acf['battery_capacity'] ?? '--'} ", unit: 'kWh', assetIcon: 'images/png/image 16 (2).png',),
+              _SpecItem(
+                title: S.of(context).ChargeInfo,
+                value: "${acf['range_per_charge_km'] ?? '--'} ",
+                unit: 'km',
+                assetIcon: 'images/png/image 16.png',
+              ),
+              _SpecItem(
+                title: S.of(context).MotorPower,
+                value: "${acf['motor_power_hp'] ?? '--'} ",
+                unit: 'HP',
+                assetIcon: 'images/png/image 16 (1).png',
+              ),
+              _SpecItem(
+                title: "Battery",
+                value: "${acf['battery_capacity'] ?? '--'} ",
+                unit: 'kWh',
+                assetIcon: 'images/png/image 16 (2).png',
+              ),
               // _SpecItem(title: "Speed", value: "109 kWh", unit: '', assetIcon: '',), // ثابت من التصميم
               // _SpecItem(title: "Seats", value: "4"),
             ],
@@ -175,19 +199,24 @@ Text("${S.of(context).status}${car.status}",style: TextStyles.inter12WhiteRegula
           SizedBox(height: 20.h),
 
           /// Owner + Map
-         FutureBuilder<UserModel?>(
-            future:HomeCubit.get(context).fetchUserById(car.author.), // استدعاء API لجلب بيانات المستخدم
+          FutureBuilder<UserModel?>(
+            future: HomeCubit.get(context).fetchUserById(
+              car.author ?? 1,
+            ), // استدعاء API لجلب بيانات المستخدم1
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError || snapshot.data == null) {
-                return const Center(child: Text("Failed to load owner data")); // "تعذر تحميل بيانات المالك"
+                return const Center(
+                  child: Text("Failed to load owner data"),
+                ); // "تعذر تحميل بيانات المالك"
               } else {
                 final user = snapshot.data!;
                 return ContactInfoCard(
                   name: user.name,
                   role: "Car Owner", // "مالك السيارة"
-                  imageUrl: user.profileImage ?? "https://via.placeholder.com/150",
+                  imageUrl:
+                      user.profileImage ?? "https://via.placeholder.com/150",
                   // Action for the entire card tap
                   onCardTap: () {
                     print("Card Tapped! Navigating to profile...");
@@ -200,28 +229,29 @@ Text("${S.of(context).status}${car.status}",style: TextStyles.inter12WhiteRegula
                   },
                   // Action for the "Contact Info" button
                   onContactTap: () {
-                     print("Contact Info button tapped!");
-                     print("User Phone: ${user.phoneNumber}");
-                     // You can show a dialog, a bottom sheet, or launch the dialer
-                     showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: Text(user.name),
-                          content: Text("Phone: ${user.phoneNumber}"),
-                          actions: [
-                            TextButton(
-                              child: const Text("Close"),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                          ],
-                        ),
-                     );
+                    print("Contact Info button tapped!");
+                    print("User Phone: ${user.phoneNumber}");
+                    // You can show a dialog, a bottom sheet, or launch the dialer
+                    showDialog(
+                      context: context,
+                      builder:
+                          (_) => AlertDialog(
+                            title: Text(user.name),
+                            content: Text("Phone: ${user.phoneNumber}"),
+                            actions: [
+                              TextButton(
+                                child: const Text("Close"),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                            ],
+                          ),
+                    );
                   },
                 );
               }
             },
           ),
-        ),
+
           SizedBox(height: 20.h),
 
           /// Rating
@@ -243,7 +273,10 @@ Text("${S.of(context).status}${car.status}",style: TextStyles.inter12WhiteRegula
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.w,
+                vertical: 10.h,
+              ),
             ),
           ),
         ],
@@ -251,6 +284,7 @@ Text("${S.of(context).status}${car.status}",style: TextStyles.inter12WhiteRegula
     );
   }
 }
+
 class _SpecItem extends StatelessWidget {
   final String title;
   final String value;
@@ -277,7 +311,7 @@ class _SpecItem extends StatelessWidget {
             color: Colors.grey.withOpacity(0.1),
             blurRadius: 6,
             offset: Offset(0, 3),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -292,10 +326,7 @@ class _SpecItem extends StatelessWidget {
           SizedBox(height: 8.h),
           Text(
             title,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
           ),
           SizedBox(height: 8.h),
           RichText(
@@ -311,10 +342,7 @@ class _SpecItem extends StatelessWidget {
                 ),
                 TextSpan(
                   text: ' $unit',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                 ),
               ],
             ),

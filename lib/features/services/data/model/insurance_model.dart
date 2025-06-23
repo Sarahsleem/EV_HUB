@@ -1,3 +1,5 @@
+import '../../../services/data/model/service_model.dart';
+
 class Insurance {
   final int id;
   final String date;
@@ -9,8 +11,8 @@ class Insurance {
   final String status;
   final String type;
   final String link;
-  final Title title;
-  final Content content;
+  final String title;
+  final String content;
   final int? featuredMedia;
   final String? template;
   final Meta? meta;
@@ -53,19 +55,19 @@ class Insurance {
       status: json['status'],
       type: json['type'],
       link: json['link'],
-      title: Title.fromJson(json['title']),
-      content: Content.fromJson(json['content']),
+      title: json['title']["rendered"]??'',
+      content: json['content']["rendered"] ?? '',
       featuredMedia: json['featured_media'],
       template: json['template'],
       meta: json['meta'] != null ? Meta.fromJson(json['meta']) : null,
       classList: List<String>.from(json['class_list'] ?? []),
-      acf: Acf.fromJson(json['acf']),
+      acf: Acf.fromJson(json['acf'] ?? {}),
       featuredImage: json['featured_image'], // ✅ Added
       links: json['_links'] != null ? Links.fromJson(json['_links']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'date': date,
@@ -77,13 +79,13 @@ class Insurance {
       'status': status,
       'type': type,
       'link': link,
-      'title': title.toJson(),
-      'content': content.toJson(),
+      'title': title,
+      'content': content,
       'featured_media': featuredMedia,
       'template': template,
       'meta': meta?.toJson(),
       'class_list': classList,
-      'acf': acf.toJson(),
+
       'featured_image': featuredImage, // ✅ Added
       '_links': links?.toJson(),
     };
@@ -151,41 +153,7 @@ class Meta {
   }
 }
 
-class Acf {
-  final String phoneNumber;
-  final String whatsapp;
-  final String address;
-  final String addressLocation;
-  final dynamic companyImage;
 
-  Acf({
-    required this.phoneNumber,
-    required this.whatsapp,
-    required this.address,
-    required this.addressLocation,
-    required this.companyImage,
-  });
-
-  factory Acf.fromJson(Map<String, dynamic> json) {
-    return Acf(
-      phoneNumber: json['phone_number'],
-      whatsapp: json['whatsapp'],
-      address: json['address'],
-      addressLocation: json['address_loction'],
-      companyImage: json['company_image'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'phone_number': phoneNumber,
-      'whatsapp': whatsapp,
-      'address': address,
-      'address_loction': addressLocation,
-      'company_image': companyImage,
-    };
-  }
-}
 
 class Links {
   final List<LinkHref>? self;

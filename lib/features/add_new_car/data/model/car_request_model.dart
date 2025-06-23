@@ -6,6 +6,7 @@ class CarRequestModel {
   List<int>? bodyStyle;
   List<int>? usedSince;
   List<int>? condition;
+  List<int>? model;
   int? featuredImage;
   Fields? fields;
   List<int>? carImages;
@@ -18,6 +19,7 @@ class CarRequestModel {
         this.carImages,
         this.usedSince,
         this.condition,
+        this.model,
         this.featuredImage,
         this.fields});
 
@@ -29,6 +31,7 @@ class CarRequestModel {
     bodyStyle = json['body-style'].cast<int>();
     usedSince = json['used-since'].cast<int>();
     condition = json['condition'].cast<int>();
+    model = json['model'].cast<int>();
     featuredImage = json['featured_media'];
     carImages = json['car_images'].cast<int>();
     fields =
@@ -44,6 +47,7 @@ class CarRequestModel {
     data['body-style'] = this.bodyStyle;
     data['used-since'] = this.usedSince;
     data['condition'] = this.condition;
+    data['model'] = this.model;
     data['car_images'] = this.carImages;
     data['featured_media'] = this.featuredImage;
     if (this.fields != null) {

@@ -1,6 +1,10 @@
 import 'package:evhub/core/helpers/extensions.dart';
+import 'package:evhub/core/theming/colors.dart';
+import 'package:evhub/core/widgets/app_text_button.dart';
 import 'package:evhub/core/widgets/app_text_form_field.dart';
+import 'package:evhub/features/add_new_car/data/model/car_request_model.dart';
 import 'package:evhub/features/add_new_car/logic/add_new_car_cubit.dart';
+import 'package:evhub/features/add_new_car/ui/widget/add_car_states_ui.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +14,23 @@ import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/image_network.dart';
 
-class AddCarDetails extends StatelessWidget {
+class AddCarDetails extends StatefulWidget {
+  const AddCarDetails({super.key});
+
+  @override
+  State<AddCarDetails> createState() => _AddCarDetailsState();
+}
+
+class _AddCarDetailsState extends State<AddCarDetails> {
+  @override
+  void didChangeDependencies() {
+  }
+  TextEditingController title = TextEditingController();
+  TextEditingController description = TextEditingController();
+  TextEditingController price = TextEditingController();
+  TextEditingController enginePower = TextEditingController();
+  TextEditingController batteryCapacity = TextEditingController();
+  TextEditingController km = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,14 +110,16 @@ class AddCarDetails extends StatelessWidget {
                             //   style: TextStyles.inter16greyMedium,
                             // ),
                             CarModelSelector(
-                              selectedModel: 'Model X',
+                              selectedModel: 'X1',
                               selectedYear: '2023',
-                              models: ['Model X', 'Model Y', 'Model S'],
+                              models: AddNewCarCubit.get(context).carModel.map((e) => e.name).toList(),
                               years: ['2023', '2024', '2025'],
                               onModelChanged: (value) {
-                                // setState(() {
-                                //   selectedModel = value!;
-                                // });
+                                final cubit = AddNewCarCubit.get(context);
+                                final selectedIndex = cubit.carModel.indexWhere((e) => e.name == value);
+                                if (selectedIndex != -1) {
+                                  cubit.chooseCarModel(selectedIndex); // Send the index of selected value
+                                }
                               },
                               onYearChanged: (value) {
                                 // setState(() {
@@ -113,36 +135,59 @@ class AddCarDetails extends StatelessWidget {
                   verticalSpace(20),
                   Center(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 7.w,vertical: 5.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 7.w,
+                        vertical: 5.h,
+                      ),
                       margin: EdgeInsets.symmetric(vertical: 8.h),
                       width: 197.w,
                       //height: 39.h,
-                      decoration: BoxDecoration(color: Color(0x5743585e),borderRadius: BorderRadius.circular(21.47.r)),
+                      decoration: BoxDecoration(
+                        color: Color(0x5743585e),
+                        borderRadius: BorderRadius.circular(21.47.r),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 30.w,vertical:6.h ),
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(21.47.r),
-                            ),
-                            child: Text(
-                              'new',
-                              style: TextStyles.inter12WhiteRegular.copyWith(
-                                fontSize: 13.48.sp,
+                          GestureDetector(
+                            onTap: () {
+                              AddNewCarCubit.get(context).chooseCondition(0);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 30.w,
+                                vertical: 6.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AddNewCarCubit.get(context).selectedConditionId==14?Colors.transparent:Colors.black,
+                                borderRadius: BorderRadius.circular(21.47.r),
+                              ),
+                              child: Text(
+                                'new',
+                                style: TextStyles.inter12WhiteRegular.copyWith(
+                                  fontSize: 13.48.sp,
+                                ),
                               ),
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 30.w,vertical:6.h ),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(21.47.r)),
-                            child: Text(
-                              'Used',
-                              style: TextStyles.inter12WhiteRegular.copyWith(
-                                fontSize: 13.48.sp,
+                          GestureDetector(
+                            onTap: () {
+                              AddNewCarCubit.get(context).chooseCondition(1);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 30.w,
+                                vertical: 6.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AddNewCarCubit.get(context).selectedConditionId==14?Colors.black:Colors.transparent,
+                                borderRadius: BorderRadius.circular(21.47.r),
+                              ),
+                              child: Text(
+                                'Used',
+                                style: TextStyles.inter12WhiteRegular.copyWith(
+                                  fontSize: 13.48.sp,
+                                ),
                               ),
                             ),
                           ),
@@ -170,6 +215,7 @@ class AddCarDetails extends StatelessWidget {
                             width: 247.w,
                             height: 52.5.h,
                             child: AppTextFormField(
+                              controller: title,
                               hintText: 'your details car title',
                               backgroundColor: Colors.transparent,
                               enabledBorder: OutlineInputBorder(
@@ -188,6 +234,7 @@ class AddCarDetails extends StatelessWidget {
                             width: 247.w,
                             //height: 52.5.h,
                             child: AppTextFormField(
+                              controller: description,
                               hintText: 'your car Description',
                               backgroundColor: Colors.transparent,
                               enabledBorder: OutlineInputBorder(
@@ -198,36 +245,136 @@ class AddCarDetails extends StatelessWidget {
                             ),
                           ),
                         ),
-                        verticalSpace(11),
-                        Container(
-                          padding: EdgeInsets.only(
-                            top: 24.h,
-                            bottom: 15.h,
-                            left: 96.w,
-                            right: 96.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0x17d9d9d9),
-                            borderRadius: BorderRadius.circular(20.r),
-                          ),
-                          child: Column(
+                        verticalSpace(16),
+                      BlocBuilder<AddNewCarCubit, AddNewCarState>(
+                        builder: (context, state) {
+                          final cubit = AddNewCarCubit.get(context);
+                          final isLoading = state is LoadingImage;
+
+                          return Column(
                             children: [
-                              Image.asset(
-                                "images/png/carimages.png",
-                                height: 36.h,
-                                width: 36.w,
+                              GestureDetector(
+                                onTap: cubit.pickFeaturedImage,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 20.h,
+                                    horizontal: 70.w,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0x17d9d9d9),
+                                    borderRadius: BorderRadius.circular(20.r),
+                                  ),
+                                  child: isLoading
+                                      ? Center(
+                                    child: CircularProgressIndicator(
+                                      color: ColorsManager.darkBlue,
+                                    ),
+                                  )
+                                      : Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "images/png/carimages.png",
+                                        height: 36.h,
+                                        width: 36.w,
+                                      ),
+                                      SizedBox(height: 8.h),
+                                      Text(
+                                        'Add Your Main Car Image',
+                                        style: TextStyles.inter10GreySemiBold,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              Text(
-                                'Add Your Car Images',
-                                style: TextStyles.inter10GreySemiBold,
-                              ),
-                              Text(
-                                'max. 8 Photos',
-                                style: TextStyles.inter10GreySemiBold,
-                              ),
+                              SizedBox(height: 12.h),
+
+                              /// Show picked featured image
+                              if (cubit.image != null && cubit.image!.existsSync())
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  child: Image.file(
+                                    cubit.image!,
+                                    width: 100.w,
+                                    height: 100.h,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                             ],
-                          ),
+                          );
+                        },
+                      ),
+
+                        verticalSpace(11),
+                        BlocBuilder<AddNewCarCubit, AddNewCarState>(
+                          builder: (context, state) {
+                            final cubit = AddNewCarCubit.get(context);
+                            final isLoading = state is LoadingImages;
+
+                            return Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: cubit.pickMultipleImages,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 20.h,
+                                      horizontal: 70.w,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0x17d9d9d9),
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: isLoading
+                                        ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: ColorsManager.darkBlue,
+                                      ),
+                                    )
+                                        : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          "images/png/carimages.png",
+                                          height: 36.h,
+                                          width: 36.w,
+                                        ),
+                                        SizedBox(height: 8.h),
+                                        Text(
+                                          'Add Your Car Images',
+                                          style: TextStyles.inter10GreySemiBold,
+                                        ),
+                                        Text(
+                                          'max. 8 Photos',
+                                          style: TextStyles.inter10GreySemiBold,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 12.h),
+
+                                /// Show picked images
+                                if (cubit.selectedImages.isNotEmpty)
+                                  Wrap(
+                                    spacing: 8.w,
+                                    runSpacing: 8.h,
+                                    children: cubit.selectedImages
+                                        .map((file) => ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      child: Image.file(
+                                        file,
+                                        width: 80.w,
+                                        height: 80.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ))
+                                        .toList(),
+                                  ),
+                              ],
+                            );
+                          },
                         ),
+
                         verticalSpace(16),
                         CustomInput(
                           title: 'Price',
@@ -236,6 +383,7 @@ class AddCarDetails extends StatelessWidget {
                             width: 247.w,
                             height: 52.5.h,
                             child: AppTextFormField(
+                              controller: price,
                               keyboardType: TextInputType.phone,
                               hintText: 'LE',
                               backgroundColor: Colors.transparent,
@@ -255,6 +403,7 @@ class AddCarDetails extends StatelessWidget {
                             width: 247.w,
                             height: 52.5.h,
                             child: AppTextFormField(
+                              controller: enginePower,
                               keyboardType: TextInputType.phone,
                               hintText: 'HP',
                               backgroundColor: Colors.transparent,
@@ -274,6 +423,7 @@ class AddCarDetails extends StatelessWidget {
                             width: 247.w,
                             height: 52.5.h,
                             child: AppTextFormField(
+                              controller: batteryCapacity,
                               keyboardType: TextInputType.phone,
                               hintText: 'Kwh',
                               backgroundColor: Colors.transparent,
@@ -285,6 +435,30 @@ class AddCarDetails extends StatelessWidget {
                             ),
                           ),
                         ),
+                        AddNewCarCubit.get(context).selectedConditionId==14?Column(
+                          children: [
+                            verticalSpace(30),
+                            CustomInput(
+                              title: 'Km',
+                              image: 'images/png/carused.png',
+                              endWidget: SizedBox(
+                                width: 247.w,
+                                height: 52.5.h,
+                                child: AppTextFormField(
+                                  controller: km,
+                                  keyboardType: TextInputType.phone,
+                                  hintText: 'Kw',
+                                  backgroundColor: Colors.transparent,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ):SizedBox.shrink(),
                         verticalSpace(30),
                         CustomInput(
                           title: 'Used Since',
@@ -293,13 +467,23 @@ class AddCarDetails extends StatelessWidget {
                             width: 247.w,
                             height: 52.5.h,
                             child: CustomDropdown(
-                              value: '2023',
+                              value: AddNewCarCubit.get(
+                                context,
+                              ).yearsSince[AddNewCarCubit.get(
+                                context,
+                              ).selectedUsedSinceIndex].name,
                               backGround: Colors.transparent,
                               items:
                                   AddNewCarCubit.get(
                                     context,
                                   ).yearsSince.map((e) => e.name).toList(),
-                              onChanged: (v) {},
+                              onChanged: (v)  {
+                            final cubit = AddNewCarCubit.get(context);
+                            final selectedIndex = cubit.yearsSince.indexWhere((e) => e.name == v);
+                            if (selectedIndex != -1) {
+                            cubit.chooseUsedSince(selectedIndex); // Send the index of selected value
+                            }
+                            },
                             ),
                           ),
                         ),
@@ -312,34 +496,74 @@ class AddCarDetails extends StatelessWidget {
                             height: 52.5.h,
                             child: CustomDropdown(
                               value:
-                                  AddNewCarCubit.get(context).carStyles[0].name,
+                                  AddNewCarCubit.get(context).carStyles[ AddNewCarCubit.get(context).selectedBodyStyleIndex].name,
                               backGround: Colors.transparent,
                               items:
                                   AddNewCarCubit.get(
                                     context,
                                   ).carStyles.map((e) => e.name).toList(),
-                              onChanged: (v) {},
+                              onChanged: (v) {
+    final cubit = AddNewCarCubit.get(context);
+    final selectedIndex = cubit.carStyles.indexWhere((e) => e.name == v);
+    if (selectedIndex != -1) {
+    cubit.chooseBodyStyle(selectedIndex); }
+                              },
                             ),
                           ),
                         ),
                         verticalSpace(30),
-                        CustomInput(
-                          title: 'Charge Type',
-                          image: 'images/png/ct.png',
-                          endWidget: SizedBox(
-                            width: 247.w,
-                            height: 52.5.h,
-                            child: CustomDropdown(
-                              value: AddNewCarCubit.get(context).chargeTypes[0],
-                              backGround: Colors.transparent,
-                              items: AddNewCarCubit.get(context).chargeTypes,
-                              onChanged: (v) {},
-                            ),
-                          ),
+                        BlocBuilder<AddNewCarCubit, AddNewCarState>(
+                          builder: (context, state) {
+                            final cubit = AddNewCarCubit.get(context);
+                            final chargeTypes = cubit.chargeTypes;
+                            final selectedValue = chargeTypes.contains(cubit.chargeType)
+                                ? cubit.chargeType
+                                : chargeTypes.first;
+
+                            return CustomInput(
+                              title: 'Charge Type',
+                              image: 'images/png/ct.png',
+                              endWidget: SizedBox(
+                                width: 247.w,
+                                height: 52.5.h,
+                                child: CustomDropdown(
+                                  value: selectedValue,
+                                  backGround: Colors.transparent,
+                                  items: chargeTypes,
+                                  onChanged: (v) {
+                                    final selectedIndex = chargeTypes.indexOf(v!);
+                                    if (selectedIndex != -1) {
+                                      cubit.chooseChargeType(selectedIndex);
+                                    }
+                                  },
+                                ),
+                              ),
+                            );
+                          },
                         ),
+
                       ],
                     ),
                   ),
+                  verticalSpace(16),
+                  Center(
+                    child: AppTextButton(
+                      buttonText: 'Submit',
+                      backgroundColor: ColorsManager.darkBlue.withOpacity(0.27),
+                      buttonWidth: 310,
+                      buttonHeight: 55.h,
+                      borderRadius: 30.r,
+                      textStyle: TextStyles.inter19BlackBold.copyWith(
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        AddNewCarCubit.get(context).postCar(title.text,description.text,price.text,enginePower.text,batteryCapacity.text,km.text);
+                       // context.pushNamed(Routes.addNewCarDtails);
+                      },
+                    ),
+                  )  ,
+                  verticalSpace(16),
+                  AddCarStatesUi()
                 ],
               ),
             ),
@@ -428,16 +652,7 @@ class CarModelSelector extends StatelessWidget {
                 onChanged: onModelChanged,
               ),
             ),
-            SizedBox(width: 4.w),
-            SizedBox(
-              width: 104.w,
-              height: 40.h,
-              child: CustomDropdown(
-                value: selectedYear,
-                items: years,
-                onChanged: onYearChanged,
-              ),
-            ),
+
           ],
         ),
       ],

@@ -1,14 +1,22 @@
 import 'package:evhub/features/add_new_car/data/repo/add_car_repo.dart';
 import 'package:evhub/features/add_new_car/logic/add_new_car_cubit.dart';
+import 'package:evhub/features/edit_car/data/repo/edit_car_repo.dart';
+import 'package:evhub/features/edit_car/logic/edit_car_cubit.dart';
 import 'package:evhub/features/car_marketplace/logic/cubit/car_market_cubit_cubit.dart';
 import 'package:evhub/features/home/data/repo/home_repo.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
+import 'package:evhub/features/my_cars/data/repo/my_cars_Repo.dart';
+import 'package:evhub/features/my_cars/logic/my_cars_cubit.dart';
 import 'package:evhub/features/navbar/logic/nav_bar_cubit.dart';
 import 'package:evhub/features/new_cars/data/repo/car_repo.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/otp/data/repo/otp_repo.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
+import 'package:evhub/features/search/data/repo/search_repo.dart';
+import 'package:evhub/features/search/logic/search_cubit.dart';
 import 'package:evhub/features/services/data/repo/services_repo.dart';
+import 'package:evhub/features/wish_list/data/repo/wishlist_repo.dart';
+import 'package:evhub/features/wish_list/logic/wish_list_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/forget_password/data/repo/forget_password_repo.dart';
@@ -44,6 +52,14 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<ForgetPasswordRepo>(()=>ForgetPasswordRepo( dio));
   getIt.registerLazySingleton<ServicesCubit>(() => ServicesCubit(getIt()));
   getIt.registerFactory<Services>(()=>Services( dio));
-   
+  getIt.registerLazySingleton<WishListCubit>(() => WishListCubit(getIt()));
+  getIt.registerFactory<WishListRepo>(()=>WishListRepo( dio));
+  getIt.registerLazySingleton<MyCarsCubit>(() => MyCarsCubit(getIt()));
+  getIt.registerFactory<MyCars>(()=>MyCars( dio));
+  getIt.registerLazySingleton<EditCarCubit>(() => EditCarCubit(getIt()));
+  getIt.registerFactory<EditCarRepo>(()=>EditCarRepo( dio));
+  getIt.registerLazySingleton<SearchCubit>(() => SearchCubit(getIt()));
+  getIt.registerFactory<SearchRepo>(()=>SearchRepo(  dio: dio));
+
 getIt.registerLazySingleton<CarMarketCubitCubit>(() => CarMarketCubitCubit(getIt()));
 }

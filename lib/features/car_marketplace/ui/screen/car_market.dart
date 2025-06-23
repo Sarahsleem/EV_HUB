@@ -82,8 +82,7 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
                     children: [
                       Text(
                         S.of(context).newcars,
-                        style: TextStyles.inter18WhiteMedium,
-                      ),
+                        style: TextStyles.inter18WhiteMedium,),
                       Spacer(),
                       Image.asset(
                         "images/png/transport 1.png",
@@ -135,7 +134,7 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
                           ),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, Routes.newCars);
+                              context.pushNamed( Routes.newCars);
                             },
                             child: const Center(
                               child: Text(

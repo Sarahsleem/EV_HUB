@@ -157,7 +157,10 @@ class ServicesCubit extends Cubit<ServicesState> {
 
       case 'Insurance':
         final res = await servicesRepo.fetchInsurance();
-        res.fold((l) => emit(ServicesListError()), (r) {
+        res.fold((l) {
+          emit(ServicesListError());
+          print(l);
+        }, (r) {
           currentItems = r;
           emit(ServicesListSuccess());
         });

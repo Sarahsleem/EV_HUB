@@ -48,7 +48,7 @@ class Services{
       final response = await dio.get('wp/v2/car-accessories');
 
       List<CarAccessories> parts = (response.data as List)
-          .map((part) => CarAccessories.fromMap(part))
+          .map((part) => CarAccessories.fromJson(part))
           .toList();
 print(parts);
       return right(parts);
@@ -65,7 +65,7 @@ print(parts);
       final response = await dio.get('https://evhubtl.com/wp-json/wp/v2/solar-energy');
 
       List<SolarEnergy> solarEnergy = (response.data as List)
-          .map((part) => SolarEnergy.fromMap(part))
+          .map((part) => SolarEnergy.fromJson(part))
           .toList();
 
       return right(solarEnergy);
@@ -79,7 +79,7 @@ print(parts);
       final response = await dio.get('wp/v2/establishing-chargin?_embed');
 
       List<EstablishingCharging> films = (response.data as List)
-          .map((film) => EstablishingCharging.fromMap(film))
+          .map((film) => EstablishingCharging.fromJson(film))
           .toList();
 
       return right(films);
@@ -98,17 +98,17 @@ print(parts);
           .toList();
 return right(films);
     } catch (e) {
-
+print(e);
      return left(ApiErrorHandler.handle(e));
     }
   }
 
   Future<Either<ApiErrorModel,List<CarProtectionFilm>>> fetchCarProtectionFilms() async {
     try {
-      final response = await dio.get('v2/car-protection-film?_embed');
+      final response = await dio.get('https://evhubtl.com/wp-json/wp/v2/car-protection-film?_embed');
 
       List<CarProtectionFilm> films = (response.data as List)
-          .map((film) => CarProtectionFilm.fromMap(film))
+          .map((film) => CarProtectionFilm.fromJson(film))
           .toList();
 
       return right(films);
@@ -121,7 +121,7 @@ return right(films);
       final response = await dio.get('wp/v2/car-parts');
 
       List<CarParts> parts = (response.data as List)
-          .map((part) => CarParts.fromMap(part))
+          .map((part) => CarParts.fromJson(part))
           .toList();
 
       return right(parts);

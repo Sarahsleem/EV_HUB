@@ -1,4 +1,6 @@
 import 'package:evhub/core/helpers/extensions.dart';
+import 'package:evhub/core/theming/colors.dart';
+import 'package:evhub/core/widgets/app_text_button.dart';
 import 'package:evhub/core/widgets/image_network.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/spacing.dart';
+import '../../../../core/routing/routes.dart';
 import '../../../../core/theming/styles.dart';
+import '../../../../generated/l10n.dart';
 
 class ServiceListDtailsScreen extends StatefulWidget {
   const ServiceListDtailsScreen({super.key, required this.type});
@@ -27,6 +31,7 @@ class _ServiceListDtailsScreenState extends State<ServiceListDtailsScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           image: DecorationImage(
             image: const AssetImage('images/png/background.png'),
             fit: BoxFit.cover,
@@ -38,18 +43,18 @@ class _ServiceListDtailsScreenState extends State<ServiceListDtailsScreen> {
               final cubit = ServicesCubit.get(context);
 
               if (state is ServicesListLoading) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CircularProgressIndicator(color: ColorsManager.LigGthGray,));
               }
 
               if (state is ServicesListError) {
-                return Center(child: Text("Error loading data"));
+                return Center(child: AppTextButton(buttonText: S.of(context).tryagain, textStyle: TextStyles.lato9SemiBoldWhite, onPressed: () {  didChangeDependencies();}, buttonWidth: 200,));
               }
 
               final items = cubit.currentItems;
 
               return ListView(
                 children: [
-                  CustomAppBar(),
+                  CustomAppBar(type: widget.type,),
                   verticalSpace(13),
                   ListView.separated(
                     padding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -58,9 +63,13 @@ class _ServiceListDtailsScreenState extends State<ServiceListDtailsScreen> {
                     itemBuilder: (context, index) {
                       final item = items[index];
                       return ServiceDetailsContainer(
-                        title: item.title.rendered,
-                        featuredImage: item.featuredImage,
-                        description: item.content.rendered,
+                        onTap: (){
+                          context.pushNamed(Routes.oneServiceDetails, arguments: item);
+                          print(item.acf.toString());
+                        },
+                        title: item.title??'',
+                        featuredImage: item.featuredImage??'',
+                        description:  item.content??'',
                       );
                     },
                     separatorBuilder: (_, __) => verticalSpace(12.8),
@@ -160,8 +169,8 @@ class ServiceDetailsContainer extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key});
-
+  const CustomAppBar({super.key, required this.type});
+final String type;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -177,7 +186,7 @@ class CustomAppBar extends StatelessWidget {
         Center(
           child: Text(
             textAlign: TextAlign.center,
-            'Car Protection',
+            type,
             style: TextStyles.inter18WhiteMedium,
           ),
         ),

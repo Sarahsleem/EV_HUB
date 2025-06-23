@@ -9,8 +9,8 @@ class ServiceCenter {
   final String status;
   final String type;
   final String link;
-  final Title title;
-  final Content content;
+  final String title;
+  final String content;
   final int featuredMedia;
   final String template;
   final Acf acf;
@@ -49,11 +49,11 @@ class ServiceCenter {
       status: json['status'] ?? '',
       type: json['type'] ?? '',
       link: json['link'] ?? '',
-      title: Title.fromJson(json['title'] ?? {}),
-      content: Content.fromJson(json['content'] ?? {}),
+      title:  json['title']['rendered']??'',
+      content: json['content']["rendered"] ?? '',
       featuredMedia: json['featured_media'] ?? 0,
       template: json['template'] ?? '',
-      acf: json['acf'] != null ? Acf.fromJson(json['acf']) : Acf.defaultAcf(),
+      acf: Acf.fromJson(json['acf'] ?? {}),
       featuredImage: json['featured_image'] ?? '',
       meta: Meta.fromJson(json['meta'] ?? {}),
     );
@@ -61,31 +61,114 @@ class ServiceCenter {
 }
 
 class Acf {
-  final String phone;
+  final String phoneNumber;
   final String whatsapp;
   final String address;
-  final String mapLocation;
+  final String addressLocation;
+  final String? companyImage;
+  final CoverModel? cover;
+  final String? website;
 
   Acf({
-    required this.phone,
+    required this.phoneNumber,
     required this.whatsapp,
     required this.address,
-    required this.mapLocation,
+    required this.addressLocation,
+     this.companyImage,
+    this.cover,
+    this.website,
   });
 
   factory Acf.fromJson(Map<String, dynamic> json) {
     return Acf(
-      phone: json['phone_number']?.toString() ?? '',
-      whatsapp: json['whatsapp']?.toString() ?? '',
-      address: json['address']?.toString() ?? '',
-      mapLocation: json['address_loction']?.toString() ?? '',
+      phoneNumber: json['phone_number'] ?? '',
+      whatsapp: json['whatsapp'] ?? '',
+      address: json['address'] ?? '',
+      addressLocation: json['address_loction'] ?? '',
+     // companyImage: json['company_image'] ?? '',
+      cover: json['cover'] != null ? CoverModel.fromJson(json['cover']) : null,
+     website: json['website'],
     );
   }
+}
+class CoverModel {
+  final int id;
+  final String title;
+  final String filename;
+  final int filesize;
+  final String url;
+  final String link;
+  final String alt;
+  final String author;
+  final String description;
+  final String caption;
+  final String name;
+  final String status;
+  final int uploadedTo;
+  final String date;
+  final String modified;
+  final int menuOrder;
+  final String mimeType;
+  final String type;
+  final String subtype;
+  final String icon;
+  final int width;
+  final int height;
 
-  factory Acf.defaultAcf() {
-    return Acf(phone: '', whatsapp: '', address: '', mapLocation: '');
+  CoverModel({
+    required this.id,
+    required this.title,
+    required this.filename,
+    required this.filesize,
+    required this.url,
+    required this.link,
+    required this.alt,
+    required this.author,
+    required this.description,
+    required this.caption,
+    required this.name,
+    required this.status,
+    required this.uploadedTo,
+    required this.date,
+    required this.modified,
+    required this.menuOrder,
+    required this.mimeType,
+    required this.type,
+    required this.subtype,
+    required this.icon,
+    required this.width,
+    required this.height,
+  });
+
+  factory CoverModel.fromJson(Map<String, dynamic> json) {
+    return CoverModel(
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      filename: json['filename'] ?? '',
+      filesize: json['filesize'] ?? 0,
+      url: json['url'] ?? '',
+      link: json['link'] ?? '',
+      alt: json['alt'] ?? '',
+      author: json['author'] ?? '',
+      description: json['description'] ?? '',
+      caption: json['caption'] ?? '',
+      name: json['name'] ?? '',
+      status: json['status'] ?? '',
+      uploadedTo: json['uploaded_to'] ?? 0,
+      date: json['date'] ?? '',
+      modified: json['modified'] ?? '',
+      menuOrder: json['menu_order'] ?? 0,
+      mimeType: json['mime_type'] ?? '',
+      type: json['type'] ?? '',
+      subtype: json['subtype'] ?? '',
+      icon: json['icon'] ?? '',
+      width: json['width'] ?? 0,
+      height: json['height'] ?? 0,
+
+    );
   }
 }
+
 
 class Meta {
   final bool acfChanged;

@@ -145,6 +145,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "status": MessageLookupByLibrary.simpleMessage("Status"),
     "transmission": MessageLookupByLibrary.simpleMessage("Transmission"),
     "trucks": MessageLookupByLibrary.simpleMessage("Trucks"),
+    "tryagain": MessageLookupByLibrary.simpleMessage("Try again"),
     "usedcars": MessageLookupByLibrary.simpleMessage("Used Cars"),
     "year": MessageLookupByLibrary.simpleMessage("Year"),
   };

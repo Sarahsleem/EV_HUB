@@ -13,7 +13,6 @@ import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:evhub/features/home/ui/widgets/ADS_widget.dart';
 import 'package:evhub/features/home/ui/widgets/Ads_loader.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
-import 'package:evhub/generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,8 +24,21 @@ import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../../../../core/widgets/brands_loader.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      HomeCubit.get(context).getBrands(); // or call getBrands() separately here
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +95,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  CircleAvatar(
-                    child: Image.asset('images/png/pirson.png'),
-                    radius: 25.r,
+                  GestureDetector(
+                    onTap: (){
+                      context.pushNamed(Routes.MyCarsScreen);
+                    },
+                    child: CircleAvatar(
+                      child: Image.asset('images/png/pirson.png'),
+                      radius: 25.r,
+                    ),
                   ),
                 ],
               ),
@@ -113,7 +130,12 @@ class HomeScreen extends StatelessWidget {
             verticalSpace(8),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: CustomSearch(),
+              child: GestureDetector(
+                onTap: () {
+                  context.pushNamed(Routes.searchFilter);
+                },
+                child: CustomSearch(),
+              ),
             ),
             verticalSpace(17),
             Container(
@@ -162,32 +184,37 @@ class HomeScreen extends StatelessWidget {
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsetsDirectional.only(start: 6.w),
-                          decoration: BoxDecoration(
-                            color: ColorsManager.lightDarkBlue,
-                            borderRadius: BorderRadius.circular(48.3.r),
-                          ),
-                          height: 56.h,
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 27.r,
-                                backgroundColor: Color(0x3dd9d9d9),
-                                child: Image.asset(
-                                  HomeCubit.get(context).features[index].image,
-                                  height: 25.h,
-                                  width: 25.w,
-                                  fit: BoxFit.scaleDown,
+                        return GestureDetector(
+                          onTap: (){
+                            context.pushNamed(Routes.serviceListDetails,arguments: HomeCubit.get(context).features[index].route);
+                          },
+                          child: Container(
+                            margin: EdgeInsetsDirectional.only(start: 6.w),
+                            decoration: BoxDecoration(
+                              color: ColorsManager.lightDarkBlue,
+                              borderRadius: BorderRadius.circular(48.3.r),
+                            ),
+                            height: 56.h,
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 27.r,
+                                  backgroundColor: Color(0x3dd9d9d9),
+                                  child: Image.asset(
+                                    HomeCubit.get(context).features[index].image,
+                                    height: 25.h,
+                                    width: 25.w,
+                                    fit: BoxFit.scaleDown,
+                                  ),
                                 ),
-                              ),
-                              horizontalSpace(6),
-                              Text(
-                                HomeCubit.get(context).features[index].title,
-                                style: TextStyles.inter12WhiteRegular,
-                              ),
-                              horizontalSpace(11),
-                            ],
+                                horizontalSpace(6),
+                                Text(
+                                  HomeCubit.get(context).features[index].title,
+                                  style: TextStyles.inter12WhiteRegular,
+                                ),
+                                horizontalSpace(11),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -245,8 +272,8 @@ class HomeScreen extends StatelessWidget {
                               return
                                GestureDetector(
                                 onTap: (){
-                                   Navigator.pushNamed(context, Routes.carDetails, arguments:cars[index]);
-                                  
+                                   context.pushNamed( Routes.carDetails, arguments:cars[index]);
+
                                 },
                                  child: Container(
                                   margin: EdgeInsets.symmetric(horizontal: 10.w),
@@ -369,7 +396,10 @@ class HomeScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Car Brands', style: TextStyles.lato15SemiBoldBlack),
+                        Text(
+                          'Car Brands',
+                          style: TextStyles.lato15SemiBoldBlack,
+                        ),
                         horizontalSpace(4),
                         GestureDetector(
                           child: Row(
@@ -437,7 +467,7 @@ class HomeScreen extends StatelessWidget {
                         Text('Services', style: TextStyles.lato15SemiBoldBlack),
                         horizontalSpace(4),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             context.pushNamed(Routes.allService);
                           },
                           child: Row(
@@ -462,15 +492,21 @@ class HomeScreen extends StatelessWidget {
                     height: 134.h,
                     child: BlocBuilder<ServicesCubit, ServicesState>(
                       builder: (context, state) {
-                        if(state is ServicesLoading){
+                        if (state is ServicesLoading) {
                           return Center(child: CircularProgressIndicator());
                         }
                         return ListView.separated(
-                          padding: EdgeInsetsDirectional.only(start: 18.w,end: 18.w),
+                          padding: EdgeInsetsDirectional.only(
+                            start: 18.w,
+                            end: 18.w,
+                          ),
                           itemBuilder: (context, index) {
                             return Container(
                               margin: EdgeInsets.symmetric(vertical: 10.h),
-                              padding: EdgeInsetsDirectional.only(start: 8.4.w,top:8.h),
+                              padding: EdgeInsetsDirectional.only(
+                                start: 8.4.w,
+                                top: 8.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 boxShadow: [
@@ -492,18 +528,24 @@ class HomeScreen extends StatelessWidget {
                                     fit: BoxFit.cover,
                                     radius: 13.5.r,
                                     image:
-                                        ServicesCubit.get(context).serviceCenters[index].featuredImage,
+                                        ServicesCubit.get(
+                                          context,
+                                        ).serviceCenters[index].featuredImage,
                                     height: 38.h,
-                                    width: 40.w,),
-                                  Text(
-                                    ServicesCubit.get(context).serviceCenters[index].title.rendered,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyles.lato17BoldDarkBlue.copyWith(
-                                      fontSize: 13.sp,
-                                    ),
+                                    width: 40.w,
                                   ),
                                   Text(
-                                    ServicesCubit.get(context).serviceCenters[index].acf.address,
+                                    ServicesCubit.get(
+                                      context,
+                                    ).serviceCenters[index].title,
+                                    overflow: TextOverflow.clip,
+                                    style: TextStyles.lato17BoldDarkBlue
+                                        .copyWith(fontSize: 13.sp),
+                                  ),
+                                  Text(
+                                    ServicesCubit.get(
+                                      context,
+                                    ).serviceCenters[index].acf.address,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyles.lato12MediumDarkBlue
                                         .copyWith(
@@ -518,7 +560,8 @@ class HomeScreen extends StatelessWidget {
                           separatorBuilder: (context, index) {
                             return horizontalSpace(9);
                           },
-                          itemCount: ServicesCubit.get(context).serviceCenters.length,
+                          itemCount:
+                              ServicesCubit.get(context).serviceCenters.length,
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
                           physics: ScrollPhysics(),
@@ -551,7 +594,9 @@ class HomeScreen extends StatelessWidget {
                                     buttonText: 'sell now',
                                     textStyle: TextStyles.latoWhite12Bold,
                                     onPressed: () {
-                                      context.pushNamed(Routes.addNewChooseBrand);
+                                      context.pushNamed(
+                                        Routes.addNewChooseBrand,
+                                      );
                                     },
                                     backgroundColor: Color(0xff263F4D),
                                     buttonHeight: 23,
@@ -566,7 +611,10 @@ class HomeScreen extends StatelessWidget {
                       ),
                       Positioned(
                         right: 0,
-                        child: Image.asset(ImagesManager.sellCar, height: 185.h),
+                        child: Image.asset(
+                          ImagesManager.sellCar,
+                          height: 185.h,
+                        ),
                       ),
                     ],
                   ),
@@ -603,31 +651,40 @@ class CustomSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppTextFormField(
-      prefexIcon: Icon(
-        CupertinoIcons.search,
-        color: ColorsManager.borderGrey,
-        size: 34.sp,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0x5ffffff), width: 1.3),
+    return Container(
+      padding: EdgeInsets.only(left: 16),
+      decoration: BoxDecoration(
+        color: Color(0x5ffffff),
         borderRadius: BorderRadius.circular(54.r),
       ),
-      hintText: 'Search for anything',
-      backgroundColor: Color(0x5ffffff),
-      hintStyle: TextStyles.latoGrey16SemiBold,
-      borderRadius: 54.r,
-      suffixIcon: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: CircleAvatar(
-          radius: 22.5.r,
-          backgroundColor: Color(0x5ffffff),
-          child: Icon(
-            size: 31.sp,
-            Icons.filter_alt_outlined,
-            color: ColorsManager.borderGrey,
+      child: Row(
+        children: [
+          Row(
+            children: [
+              Icon(
+                CupertinoIcons.search,
+                color: ColorsManager.borderGrey,
+                size: 34.sp,
+              ),
+              Text(
+                ' Search for anything ',
+                style: TextStyles.latoGrey16SemiBold,)
+            ],
           ),
-        ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: CircleAvatar(
+              radius: 22.5.r,
+              backgroundColor: Color(0x5ffffff),
+              child: Icon(
+                size: 31.sp,
+                Icons.filter_alt_outlined,
+                color: ColorsManager.borderGrey,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

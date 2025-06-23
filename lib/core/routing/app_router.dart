@@ -1,14 +1,18 @@
+import 'package:evhub/features/edit_car/logic/edit_car_cubit.dart';
 import 'package:evhub/features/add_services/ui/screen/add_services_screen.dart';
 import 'package:evhub/features/car_details/ui/sceen/car_details.dart';
 import 'package:evhub/features/car_marketplace/logic/cubit/car_market_cubit_cubit.dart';
 import 'package:evhub/features/car_marketplace/ui/screen/car_market.dart';
 import 'package:evhub/features/forget_password/ui/screen/forget_password_reset.dart';
+import 'package:evhub/features/my_cars/logic/my_cars_cubit.dart';
+import 'package:evhub/features/my_cars/ui/my_car_screen.dart';
 import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/new_cars/ui/screens/new_cars_screen.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:evhub/features/services/ui/screen/service_list_details_screen.dart';
+import 'package:evhub/features/wish_list/logic/wish_list_cubit.dart';
 import 'package:evhub/features/stations_map/ui/station_finder_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/add_new_car/logic/add_new_car_cubit.dart';
 import '../../features/add_new_car/ui/screens/add_car_details_screen.dart';
 import '../../features/add_new_car/ui/screens/choose_brand_screen.dart';
+import '../../features/edit_car/ui/edit_car_page.dart';
 import '../../features/forget_password/logic/forget_password_cubit.dart';
 import '../../features/forget_password/ui/screen/forget_password_email.dart';
 import '../../features/forget_password/ui/screen/forget_password_otp.dart';
@@ -27,7 +32,10 @@ import '../../features/login/logic/sign_in_cubit.dart';
 import '../../features/login/ui/sign_in_screen.dart';
 import '../../features/onboarding/ui/onboard_screen.dart';
 
+import '../../features/search/logic/search_cubit.dart';
+import '../../features/search/ui/search_screen.dart';
 import '../../features/services/ui/screen/all_service.dart';
+import '../../features/services/ui/screen/one_service_details.dart';
 import '../../features/signup/logic/sign_up_cubit.dart';
 import '../../features/signup/ui/screens/sign_up_screen.dart';
 import '../../features/otp/ui/screen/otp_screen.dart';
@@ -62,15 +70,27 @@ class AppRouter {
                 child: NavBarScreen(),
               ),
         );
+      case Routes.stationsScreen:
+        return MaterialPageRoute(builder: (_)=>EVStationFinder());
+      case Routes.carDetails:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider.value(
+                value: getIt<HomeCubit>(),
+                child: CarScreen(data: settings.arguments as Car),
+              ),
+        );
       case Routes.homeScreen:
         return MaterialPageRoute(
-          builder:  (_) => MultiBlocProvider(
+          builder:
+              (_) => MultiBlocProvider(
                 providers: [
                   BlocProvider<HomeCubit>.value(value: getIt<HomeCubit>()),
-                  BlocProvider<ServicesCubit>.value(value: getIt<ServicesCubit>()),
+                  BlocProvider<ServicesCubit>.value(
+                    value: getIt<ServicesCubit>(),
+                  ),
                 ],
-                child:
-             HomeScreen(),
+                child: HomeScreen(),
               ),
         );
       case Routes.webPage:
@@ -115,17 +135,28 @@ class AppRouter {
         );
       case Routes.serviceListDetails:
         return MaterialPageRoute(
-<<<<<<< HEAD
           builder:
               (_) => BlocProvider.value(
-                value: getIt<ServicesCubit>()..getCarAccessories(),
-                child: ServiceListDtailsScreen(),
-=======
-          builder: (_) =>
-              BlocProvider.value(
-                value:  getIt<ServicesCubit>(),
-                child: ServiceListDtailsScreen(type:settings.arguments as String,),
->>>>>>> 0f4e3f96a58810f04f859eb794799fa9b7a672ca
+                value: getIt<ServicesCubit>(),
+                child: ServiceListDtailsScreen(
+                  type: settings.arguments as String,
+                ),
+              ),
+        );
+      case Routes.oneServiceDetails:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider.value(
+                value: getIt<ServicesCubit>(),
+                child: ServiceDetailScreen(data: settings.arguments as dynamic),
+              ),
+        );
+      case Routes.searchFilter:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (context) => getIt<SearchCubit>(),
+                child: SearchScreen(),
               ),
         );
       case Routes.addNewChooseBrand:
@@ -150,6 +181,17 @@ class AppRouter {
                 child: AddCarDetails(),
               ),
         );
+      case Routes.editNewCarDtails:
+        return MaterialPageRoute(
+          builder:
+              (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: getIt<EditCarCubit>()),
+                  BlocProvider.value(value: getIt<HomeCubit>()),
+                ],
+                child: EditCarPage(car: settings.arguments as Car),
+              ),
+        );
       case Routes.forgetPasswordReset:
         return MaterialPageRoute(
           builder:
@@ -165,6 +207,7 @@ class AppRouter {
                 providers: [
                   BlocProvider.value(value: getIt<NewCarsCubit>()),
                   BlocProvider.value(value: getIt<HomeCubit>()),
+                  BlocProvider.value(value: getIt<WishListCubit>()),
                 ],
                 child: NewCarScreen(),
               ),
@@ -180,6 +223,14 @@ class AppRouter {
                 child: UsedCarScreen(),
               ),
         );
+      case Routes.MyCarsScreen:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider.value(
+                value: getIt<MyCarsCubit>(),
+                child: MyCars(),
+              ),
+        );
       case Routes.signInScreen:
         return MaterialPageRoute(
           builder:
@@ -191,29 +242,6 @@ class AppRouter {
                 child: const SignInScreen(),
               ),
         );
-
-      case Routes.carmarket:
-        return MaterialPageRoute(
-          builder:
-              (_) => MultiBlocProvider(
-                providers: [
-                  BlocProvider<HomeCubit>.value(value: getIt<HomeCubit>()),
-                  BlocProvider<CarMarketCubitCubit>.value(
-                    value: getIt<CarMarketCubitCubit>(),
-                  ),
-                ],
-                child: CarMarketScreen(),
-              ),
-        );
-      case Routes.carDetails:
-        return MaterialPageRoute(
-          builder: (_) => CarScreen(data: settings.arguments as Car),
-        );
-      case Routes.stationsScreen:
-        return MaterialPageRoute(builder: (_) => EVStationFinder());
-
-      case Routes.addServices:
-        return MaterialPageRoute(builder: (_) => AddNewServiceScreen(), );
     }
 
     return null;
