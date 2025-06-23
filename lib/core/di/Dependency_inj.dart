@@ -1,5 +1,6 @@
 import 'package:evhub/features/add_new_car/data/repo/add_car_repo.dart';
 import 'package:evhub/features/add_new_car/logic/add_new_car_cubit.dart';
+import 'package:evhub/features/car_marketplace/logic/cubit/car_market_cubit_cubit.dart';
 import 'package:evhub/features/home/data/repo/home_repo.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:evhub/features/navbar/logic/nav_bar_cubit.dart';
@@ -43,4 +44,6 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<ForgetPasswordRepo>(()=>ForgetPasswordRepo( dio));
   getIt.registerLazySingleton<ServicesCubit>(() => ServicesCubit(getIt()));
   getIt.registerFactory<Services>(()=>Services( dio));
+   
+getIt.registerLazySingleton<CarMarketCubitCubit>(() => CarMarketCubitCubit(getIt()));
 }

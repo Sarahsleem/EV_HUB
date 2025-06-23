@@ -1,8 +1,10 @@
 import 'dart:ffi';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:evhub/core/assets/images.dart';
 import 'package:evhub/core/db/cash_helper.dart';
+import 'package:evhub/features/car_details/data/user_model.dart';
 import 'package:evhub/features/home/data/model/Ads_model.dart';
 import 'package:evhub/features/home/data/model/car_brand.dart';
 import 'package:evhub/features/home/data/model/car_model.dart';
@@ -51,6 +53,21 @@ Future<void> getAds2()async{
   });
 
 }
+  Future<UserModel?> fetchUserById(int userId) async {
+    try {
+      Dio dio = Dio();
+      final response = await dio.get("https://evhubtl.com/wp-json/wp/v2/users/$userId");
+
+      if (response.statusCode == 200) {
+        return UserModel.fromJson(response.data);
+      } else {
+        throw Exception("Failed to fetch user: ${response.statusCode}");
+      }
+    } catch (error) {
+      print("Error fetching user: $error");
+      return null;
+    }
+  }
 void loadHomeData (){
   getAds2();
   getCars().then((_) => getBrands());

@@ -1,9 +1,15 @@
+import 'package:evhub/features/add_services/ui/screen/add_services_screen.dart';
+import 'package:evhub/features/car_details/ui/sceen/car_details.dart';
+import 'package:evhub/features/car_marketplace/logic/cubit/car_market_cubit_cubit.dart';
+import 'package:evhub/features/car_marketplace/ui/screen/car_market.dart';
 import 'package:evhub/features/forget_password/ui/screen/forget_password_reset.dart';
+import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/new_cars/ui/screens/new_cars_screen.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:evhub/features/services/ui/screen/service_list_details_screen.dart';
+import 'package:evhub/features/stations_map/ui/station_finder_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,166 +43,170 @@ class AppRouter {
     //this arguments to be passed in any screen like this ( arguments as ClassName )
     switch (settings.name) {
       case Routes.splashScreen:
-        return MaterialPageRoute(
-          builder: (_) => const SplashScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case Routes.onboardingScreen:
-        return MaterialPageRoute(
-          builder: (_) => OnBoardScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => OnBoardScreen());
       case Routes.verifyCode:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider(
+          builder:
+              (_) => BlocProvider(
                 create: (context) => getIt<OtpCubit>(),
                 child: OTPScreen(),
               ),
         );
       case Routes.navigationBar:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider.value(
+          builder:
+              (_) => BlocProvider.value(
                 value: getIt<NavBarCubit>(),
                 child: NavBarScreen(),
               ),
         );
       case Routes.homeScreen:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider.value(
-                value: getIt<HomeCubit>(),
-                child: HomeScreen(),
+          builder:  (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider<HomeCubit>.value(value: getIt<HomeCubit>()),
+                  BlocProvider<ServicesCubit>.value(value: getIt<ServicesCubit>()),
+                ],
+                child:
+             HomeScreen(),
               ),
         );
       case Routes.webPage:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider.value(
+          builder:
+              (_) => BlocProvider.value(
                 value: getIt<HomeCubit>(),
                 child: WebViewPage(url: settings.arguments as String),
               ),
         );
       case Routes.signUpScreen:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider(
+          builder:
+              (_) => BlocProvider(
                 create: (context) => getIt<SignUpCubit>(),
                 child: SignUpScreen(),
               ),
         );
       case Routes.forgetPasswordEmail:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider(
+          builder:
+              (_) => BlocProvider(
                 create: (context) => getIt<ForgetPasswordCubit>(),
                 child: ForgetPasswordEmail(),
               ),
         );
       case Routes.forgetPasswordOTP:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider(
+          builder:
+              (_) => BlocProvider(
                 create: (context) => getIt<ForgetPasswordCubit>(),
-                child: ForgetPasswordOTP(email: settings.arguments as String,),
+                child: ForgetPasswordOTP(email: settings.arguments as String),
               ),
         );
-        case Routes.allService:
+      case Routes.allService:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider.value(
-                value:  getIt<ServicesCubit>(),
+          builder:
+              (_) => BlocProvider.value(
+                value: getIt<ServicesCubit>(),
                 child: AllService(),
               ),
         );
-        case Routes.serviceListDetails:
+      case Routes.serviceListDetails:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider.value(
-                value:  getIt<ServicesCubit>()..getCarAccessories(),
+          builder:
+              (_) => BlocProvider.value(
+                value: getIt<ServicesCubit>()..getCarAccessories(),
                 child: ServiceListDtailsScreen(),
               ),
         );
       case Routes.addNewChooseBrand:
         return MaterialPageRoute(
-          builder: (_) =>
-              MultiBlocProvider(
+          builder:
+              (_) => MultiBlocProvider(
                 providers: [
-                  BlocProvider.value(
-                    value:  getIt<AddNewCarCubit>(),
-                  ),
-                  BlocProvider.value(
-                    value: getIt<HomeCubit>(),
-                  ),
+                  BlocProvider.value(value: getIt<AddNewCarCubit>()),
+                  BlocProvider.value(value: getIt<HomeCubit>()),
                 ],
                 child: ChooseBrand(),
               ),
         );
-        case Routes.addNewCarDtails:
+      case Routes.addNewCarDtails:
         return MaterialPageRoute(
-          builder: (_) =>
-              MultiBlocProvider(
+          builder:
+              (_) => MultiBlocProvider(
                 providers: [
-                  BlocProvider.value(
-                    value:  getIt<AddNewCarCubit>(),
-                  ),
-                  BlocProvider.value(
-                    value: getIt<HomeCubit>(),
-                  ),
+                  BlocProvider.value(value: getIt<AddNewCarCubit>()),
+                  BlocProvider.value(value: getIt<HomeCubit>()),
                 ],
                 child: AddCarDetails(),
               ),
         );
       case Routes.forgetPasswordReset:
         return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider(
+          builder:
+              (_) => BlocProvider(
                 create: (context) => getIt<ForgetPasswordCubit>(),
-                child: ForgetPasswordReset(
-                  email: settings.arguments as String,),
+                child: ForgetPasswordReset(email: settings.arguments as String),
               ),
         );
       case Routes.newCars:
         return MaterialPageRoute(
-          builder: (_) =>
-              MultiBlocProvider(
+          builder:
+              (_) => MultiBlocProvider(
                 providers: [
-                  BlocProvider.value(
-                    value: getIt<NewCarsCubit>(),
-                  ),
-                  BlocProvider.value(
-                    value: getIt<HomeCubit>(),),
+                  BlocProvider.value(value: getIt<NewCarsCubit>()),
+                  BlocProvider.value(value: getIt<HomeCubit>()),
                 ],
                 child: NewCarScreen(),
               ),
         );
       case Routes.usedCars:
         return MaterialPageRoute(
-          builder: (_) =>
-              MultiBlocProvider(
+          builder:
+              (_) => MultiBlocProvider(
                 providers: [
-                  BlocProvider.value(
-                    value: getIt<NewCarsCubit>(),
-                  ),
-                  BlocProvider.value(
-                    value: getIt<HomeCubit>(),),
+                  BlocProvider.value(value: getIt<NewCarsCubit>()),
+                  BlocProvider.value(value: getIt<HomeCubit>()),
                 ],
                 child: UsedCarScreen(),
               ),
         );
       case Routes.signInScreen:
         return MaterialPageRoute(
-          builder: (_) =>
-              MultiBlocProvider(
-                  providers: [
-
-                    BlocProvider<SignUpCubit>.value(
-                      value: getIt<SignUpCubit>(),
-                    ),
-                    BlocProvider<SignInCubit>.value(
-                      value: getIt<SignInCubit>(),
-                    ),
-                  ], child: const SignInScreen()),
+          builder:
+              (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider<SignUpCubit>.value(value: getIt<SignUpCubit>()),
+                  BlocProvider<SignInCubit>.value(value: getIt<SignInCubit>()),
+                ],
+                child: const SignInScreen(),
+              ),
         );
+
+      case Routes.carmarket:
+        return MaterialPageRoute(
+          builder:
+              (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider<HomeCubit>.value(value: getIt<HomeCubit>()),
+                  BlocProvider<CarMarketCubitCubit>.value(
+                    value: getIt<CarMarketCubitCubit>(),
+                  ),
+                ],
+                child: CarMarketScreen(),
+              ),
+        );
+      case Routes.carDetails:
+        return MaterialPageRoute(
+          builder: (_) => CarScreen(data: settings.arguments as Car),
+        );
+      case Routes.stationsScreen:
+        return MaterialPageRoute(builder: (_) => EVStationFinder());
+
+      case Routes.addServices:
+        return MaterialPageRoute(builder: (_) => AddNewServiceScreen(), );
     }
 
     return null;

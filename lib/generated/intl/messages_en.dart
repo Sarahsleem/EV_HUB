@@ -22,17 +22,47 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "Arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
+    "Battery": MessageLookupByLibrary.simpleMessage("Battery"),
     "Card": MessageLookupByLibrary.simpleMessage("Card"),
+    "ChargeInfo": MessageLookupByLibrary.simpleMessage("Charge Info"),
+    "Dark": MessageLookupByLibrary.simpleMessage("Dark"),
+    "DarkMode": MessageLookupByLibrary.simpleMessage("Dark Mode"),
+    "Engine": MessageLookupByLibrary.simpleMessage("Engine"),
+    "Engineapacity": MessageLookupByLibrary.simpleMessage("Engine Capacity"),
+    "English": MessageLookupByLibrary.simpleMessage("English"),
     "EnterEmail": MessageLookupByLibrary.simpleMessage("Enter your Email"),
     "Enteravalidemailaddress": MessageLookupByLibrary.simpleMessage(
       "Enter a valid email address",
     ),
+    "Enteravalidpassword": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid password",
+    ),
+    "Language": MessageLookupByLibrary.simpleMessage("Language"),
+    "LanguageChanged": MessageLookupByLibrary.simpleMessage("Language Changed"),
+    "Light": MessageLookupByLibrary.simpleMessage("Light"),
+    "LightMode": MessageLookupByLibrary.simpleMessage("Light Mode"),
+    "LoginSignup": MessageLookupByLibrary.simpleMessage("Login/Signup"),
+    "Logout": MessageLookupByLibrary.simpleMessage("Logout"),
+    "MotorPower": MessageLookupByLibrary.simpleMessage("Motor Power"),
+    "MotorSpeed": MessageLookupByLibrary.simpleMessage("Motor Speed"),
+    "Nicetomeetyou": MessageLookupByLibrary.simpleMessage("Nice to meet you"),
+    "Save": MessageLookupByLibrary.simpleMessage("Save"),
+    "Seats": MessageLookupByLibrary.simpleMessage("Seats"),
+    "Settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "Theme": MessageLookupByLibrary.simpleMessage("Theme"),
     "UnexpectedErrorOccurred": MessageLookupByLibrary.simpleMessage(
       "Unexpected error occurred",
     ),
+    "YourEmail": MessageLookupByLibrary.simpleMessage("Your Email"),
     "alreadyhaveaccount": MessageLookupByLibrary.simpleMessage(
       "Already have an account?",
     ),
+    "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
+    "bikes": MessageLookupByLibrary.simpleMessage("Bikes"),
+    "brands": MessageLookupByLibrary.simpleMessage("Brands"),
+    "cars": MessageLookupByLibrary.simpleMessage("Cars"),
+    "color": MessageLookupByLibrary.simpleMessage("Color"),
     "connectionTimeoutWithTheServer": MessageLookupByLibrary.simpleMessage(
       "Connection timeout with the server",
     ),
@@ -43,6 +73,11 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Connection to the server failed due to internet connection",
         ),
+    "contactUs": MessageLookupByLibrary.simpleMessage("Contact Us"),
+    "continueasguest": MessageLookupByLibrary.simpleMessage(
+      "Continue as guest",
+    ),
+    "description": MessageLookupByLibrary.simpleMessage("Description"),
     "donthaveaccount": MessageLookupByLibrary.simpleMessage(
       "Don\'t have an account?",
     ),
@@ -50,6 +85,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "emailcannotbeempty": MessageLookupByLibrary.simpleMessage(
       "Email can\'t be empty",
     ),
+    "english": MessageLookupByLibrary.simpleMessage("English"),
     "enteryourmobilenumber": MessageLookupByLibrary.simpleMessage(
       "Enter your mobile number",
     ),
@@ -57,7 +93,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "enteryourpassword": MessageLookupByLibrary.simpleMessage(
       "Enter your password",
     ),
+    "exterior": MessageLookupByLibrary.simpleMessage("Exterior"),
+    "favourite": MessageLookupByLibrary.simpleMessage("Favourite"),
+    "features": MessageLookupByLibrary.simpleMessage("Features"),
+    "filter": MessageLookupByLibrary.simpleMessage("Filter"),
     "forgotpassword": MessageLookupByLibrary.simpleMessage("Forgot password"),
+    "helpFaq": MessageLookupByLibrary.simpleMessage("Help & FAQ"),
+    "home": MessageLookupByLibrary.simpleMessage("Home"),
+    "interior": MessageLookupByLibrary.simpleMessage("Interior"),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
     "loginwithapple": MessageLookupByLibrary.simpleMessage("Login with Apple"),
     "loginwithfacebook": MessageLookupByLibrary.simpleMessage(
@@ -66,12 +109,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "loginwithgoogle": MessageLookupByLibrary.simpleMessage(
       "Login with Google",
     ),
+    "mileage": MessageLookupByLibrary.simpleMessage("Mileage"),
+    "motorcycles": MessageLookupByLibrary.simpleMessage("Motorcycles"),
+    "myCars": MessageLookupByLibrary.simpleMessage("My Cars"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "namecannotbeempty": MessageLookupByLibrary.simpleMessage(
       "Name can\'t be empty",
     ),
+    "newcars": MessageLookupByLibrary.simpleMessage("New Cars"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "phone": MessageLookupByLibrary.simpleMessage("Phone"),
+    "phonenumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
+    "price": MessageLookupByLibrary.simpleMessage("Price"),
     "receiveTimeOutInConnectionWithTheServer":
         MessageLookupByLibrary.simpleMessage(
           "Receive timeout in connection with the server",
@@ -79,14 +128,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "requestToTheServerWasCancelled": MessageLookupByLibrary.simpleMessage(
       "requestToTheServerWasCancelled",
     ),
+    "scooters": MessageLookupByLibrary.simpleMessage("Scooters"),
+    "search": MessageLookupByLibrary.simpleMessage("Search"),
     "sendTimeoutInConnectionWithTheServer":
         MessageLookupByLibrary.simpleMessage(
           "Send timeout in connection with the server",
         ),
+    "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "showrooms": MessageLookupByLibrary.simpleMessage("Showrooms"),
     "signin": MessageLookupByLibrary.simpleMessage("Log In"),
     "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
     "somethingWentWrong": MessageLookupByLibrary.simpleMessage(
       "Something went wrong",
     ),
+    "sortby": MessageLookupByLibrary.simpleMessage("Sort by"),
+    "status": MessageLookupByLibrary.simpleMessage("Status"),
+    "transmission": MessageLookupByLibrary.simpleMessage("Transmission"),
+    "trucks": MessageLookupByLibrary.simpleMessage("Trucks"),
+    "usedcars": MessageLookupByLibrary.simpleMessage("Used Cars"),
+    "year": MessageLookupByLibrary.simpleMessage("Year"),
   };
 }

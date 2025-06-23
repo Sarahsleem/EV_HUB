@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:evhub/core/assets/images.dart';
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/helpers/spacing.dart';
@@ -11,11 +13,13 @@ import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:evhub/features/home/ui/widgets/ADS_widget.dart';
 import 'package:evhub/features/home/ui/widgets/Ads_loader.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
+import 'package:evhub/generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
@@ -33,6 +37,14 @@ class HomeScreen extends StatelessWidget {
 
       },
       child: Scaffold(
+          drawer: CustomDrawer(
+    onItemSelected: (item) {
+      // handle drawer navigation here
+      if (item == 'Home') {
+        Navigator.pop(context); // just close drawer for now
+      }
+    },
+  ),
         backgroundColor: ColorsManager.darkBlue,
         body: ListView(
           children: [
@@ -83,9 +95,15 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    'Battery Low?\nFind a Charger',
-                    style: TextStyles.latoWhite12Bold.copyWith(fontSize: 34.sp),
+                  GestureDetector(
+                    onTap: 
+                    (){
+                        context.pushNamed(Routes.stationsScreen);
+                    },
+                    child: Text(
+                      'Battery Low?\nFind a Charger',
+                      style: TextStyles.latoWhite12Bold.copyWith(fontSize: 34.sp),
+                    ),
                   ),
                   horizontalSpace(11),
                   Image.asset(ImagesManager.charge, width: 40.w, height: 40.h),
@@ -224,113 +242,120 @@ class HomeScreen extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             itemCount: cars.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10.w),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(19.r),
-                                  color: Color(0xffEFEFEF),
-                                ),
-                                height: 217.h,
-                                width: 165.w,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // verticalSpace(11),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        top: 11.0.h,
-                                        left: 11.w,
-                                        right: 11.w,
+                              return
+                               GestureDetector(
+                                onTap: (){
+                                   Navigator.pushNamed(context, Routes.carDetails, arguments:cars[index]);
+                                  
+                                },
+                                 child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(19.r),
+                                    color: Color(0xffEFEFEF),
+                                  ),
+                                  height: 217.h,
+                                  width: 165.w,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // verticalSpace(11),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: 11.0.h,
+                                          left: 11.w,
+                                          right: 11.w,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            SizedBox(
+                                              width: 80.w,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    cars[index].title!,
+                                                    style: TextStyles
+                                                        .lato17BoldDarkBlue
+                                                        .copyWith(fontSize: 14.sp),
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                  Text(
+                                                    cars[index]
+                                                        .carBrand?[0]["name"],
+                                                    style:
+                                                        TextStyles.latogrey12Medium,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              NumberFormat("#,###").format(
+                                                double.tryParse(
+                                                      cars[index].acf!["price"]
+                                                          .toString(),
+                                                    ) ??
+                                                    'N/A',
+                                              ),
+                                              style:
+                                                  TextStyles.lato12MediumDarkBlue,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      child: Row(
+                                      AppCachedNetworkImage(
+                                        image: cars[index].featuredImage,
+                                        height: 110.h,
+                                        radius: 0,
+                                      ),
+                                      //Image.asset('images/png/imageCar.png'),
+                                      Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
                                         children: [
-                                          SizedBox(
-                                            width: 80.w,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                          Text(
+                                            '      Explore',
+                                            style: TextStyles.lato12MediumDarkBlue,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 9.h,
+                                              horizontal: 11.w,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xff22323B),
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(12.r),
+                                                bottomRight: Radius.circular(19.r),
+                                              ),
+                                            ),
+                                            child: Row(
                                               children: [
-                                                Text(
-                                                  cars[index].title!,
-                                                  style: TextStyles
-                                                      .lato17BoldDarkBlue
-                                                      .copyWith(fontSize: 14.sp),
-                                                  overflow: TextOverflow.ellipsis,
+                                                Image.asset(
+                                                  ImagesManager.fav,
+                                                  height: 16.h,
+                                                  width: 16.w,
                                                 ),
                                                 Text(
-                                                  cars[index]
-                                                      .carBrand?[0]["name"],
-                                                  style:
-                                                      TextStyles.latogrey12Medium,
+                                                  'add to Fav',
+                                                  style: TextStyles.latoWhite12Bold,
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          Text(
-                                            NumberFormat("#,###").format(
-                                              double.tryParse(
-                                                    cars[index].acf!["price"]
-                                                        .toString(),
-                                                  ) ??
-                                                  'N/A',
-                                            ),
-                                            style:
-                                                TextStyles.lato12MediumDarkBlue,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
                                         ],
                                       ),
-                                    ),
-                                    AppCachedNetworkImage(
-                                      image: cars[index].featuredImage,
-                                      height: 110.h,
-                                      radius: 0,
-                                    ),
-                                    //Image.asset('images/png/imageCar.png'),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '      Explore',
-                                          style: TextStyles.lato12MediumDarkBlue,
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 9.h,
-                                            horizontal: 11.w,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xff22323B),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(12.r),
-                                              bottomRight: Radius.circular(19.r),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Image.asset(
-                                                ImagesManager.fav,
-                                                height: 16.h,
-                                                width: 16.w,
-                                              ),
-                                              Text(
-                                                'add to Fav',
-                                                style: TextStyles.latoWhite12Bold,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
+                                    ],
+                                  ),
+                                                               ),
+                               );
                             },
                           ),
                         );
@@ -605,5 +630,139 @@ class CustomSearch extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+
+// لو عندك لوجو
+
+class CustomDrawer extends StatelessWidget {
+  final Function(String) onItemSelected;
+
+  const CustomDrawer({super.key, required this.onItemSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      elevation: 0,
+      width: MediaQuery.of(context).size.width * 0.75,
+      backgroundColor: Colors.transparent,
+      child: Stack(
+        children: [
+          // Blur background
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.transparent),
+          ),
+
+          // Drawer content
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              decoration: BoxDecoration(
+                color: const Color(0xFF0F2A36).withOpacity(0.93),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 12,
+                    offset: const Offset(4, 4),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 30),
+                    // Profile
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 28,
+                          backgroundImage: AssetImage('assets/images/profile.jpg'),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Omar Ahmed",
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              "omar@gmail.com",
+                              style: GoogleFonts.lato(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 40),
+
+                    // Menu
+                    ..._buildMenuItem(context, "Home", Icons.home_outlined),
+                    ..._buildMenuItem(context, "My Cars", Icons.directions_car),
+                    ..._buildMenuItem(context, "Favourite", Icons.favorite_border),
+                    ..._buildMenuItem(context, "Help & FAQ", Icons.help_outline),
+                    ..._buildMenuItem(context, "Contact Us", Icons.call_outlined),
+                    ..._buildMenuItem(context, "Settings", Icons.settings_outlined),
+
+                    const Spacer(),
+
+                    const Divider(color: Color(0xFF1A7EFE), thickness: 0.5, height: 1),
+                    const SizedBox(height: 18),
+
+                    // Language switch
+                    Row(
+                      children: [
+                        const Icon(Icons.language, color: Colors.white70, size: 18),
+                        const SizedBox(width: 10),
+                        Text("English", style: GoogleFonts.lato(color: Colors.white)),
+                        const Spacer(),
+                        Text("العربية", style: GoogleFonts.lato(color: Colors.white)),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildMenuItem(BuildContext context, String title, IconData icon) {
+    return [
+      ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(icon, color: Colors.white, size: 22),
+        horizontalTitleGap: 12,
+        title: Text(
+          title,
+          style: GoogleFonts.lato(
+            color: Colors.white,
+            fontSize: 14.5,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        onTap: () => onItemSelected(title),
+      ),
+      const SizedBox(height: 4),
+    ];
   }
 }

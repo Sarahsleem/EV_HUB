@@ -11,11 +11,43 @@ class TextStyles {
     fontWeight: FontWeightHelper.bold,
     color: Colors.black,
   );
+  static TextStyle poppinsRegular16ContantGray= GoogleFonts.poppins(
+    fontSize: 16.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.contantGray,
+  );
   static TextStyle latoRegular14lightBlack = GoogleFonts.lato(
     fontSize: 14.sp,
     fontWeight: FontWeightHelper.regular,
     color: ColorsManager.lightBlack,
   );
+
+  static TextStyle poppinsMedium11ContantGray= GoogleFonts.poppins(
+    fontSize: 11.sp,
+    fontWeight: FontWeightHelper.medium,
+    color: ColorsManager.contantGray,
+  );
+  static TextStyle poppinsSemiBold12White= GoogleFonts.poppins(
+    fontSize: 12.sp,
+    fontWeight: FontWeightHelper.semiBold,
+    color: Colors.white,
+  );
+  static TextStyle poppinsMedium17lighterGray= GoogleFonts.poppins(
+    fontSize: 17.5.sp,
+    fontWeight: FontWeightHelper.medium,
+    color: ColorsManager.maGray,
+  );
+  static TextStyle poppinsRegular12lighterGray= GoogleFonts.poppins(
+    fontSize: 12.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: ColorsManager.contantGray,
+  );
+  static TextStyle  latoBold12red=GoogleFonts.lato(
+    fontSize: 12.sp, // Responsive font size (assuming screen_util is used)
+    fontWeight:  FontWeightHelper.bold, // Custom font weight or directly use FontWeight.bold
+    color: ColorsManager.red, // Custom color
+  );
+
   static TextStyle poppinsMedium12contantGray= GoogleFonts.poppins(
     fontSize: 12.sp,
     fontWeight: FontWeightHelper.regular,
@@ -200,4 +232,19 @@ class TextStyles {
 
   static TextStyle inter10GreySemiBold=GoogleFonts.inter(fontSize: 10.sp,color: Color(
       0xc2ffffff),fontWeight: FontWeightHelper.semiBold);
+      static final TextStyle latoWhite21SemiBold = GoogleFonts.lato(
+  fontSize: 21.sp,
+  fontWeight: FontWeight.w600, // SemiBold
+  height: 29.8 / 21,
+  letterSpacing: -0.88,
+  color: Colors.white,
+);
+static final TextStyle latoWhite9SemiBold = GoogleFonts.lato(
+  fontSize: 9.sp,
+  fontWeight: FontWeight.w600,
+  height: 10 / 9,
+  letterSpacing: 0.0,
+  color: Colors.white,
+);
+
 }

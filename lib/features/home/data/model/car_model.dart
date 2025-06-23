@@ -1,4 +1,4 @@
-class Car {
+class  Car {
   final int? id;
   final String? date;
   final String? dateGmt;

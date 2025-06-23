@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:evhub/core/networking/api_constants.dart';
@@ -6,6 +8,7 @@ import 'package:evhub/features/home/data/model/Ads_model.dart';
 
 import '../model/car_brand.dart';
 import '../model/car_model.dart';
+import '../model/company_model.dart';
 
 class HomeRepo{
   Dio dio;
@@ -76,5 +79,40 @@ return left('f');
      // throw Exception('Failed to load cars');
     }
   }
+  Future<Either<String, List<CompanyModel>>> fetchUsersByRole(String role) async {
+    try {
+      final response = await dio.get(
+        'http://evhubtl.com/wp-json/custom/v1/users-by-role',
+        queryParameters: {'role': role},
+        options: Options(
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      log('Response Status Code: ${response.statusCode}');
+      log('Response Data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        if (response.data is List) {
+          List<CompanyModel> users = (response.data as List)
+              .map((userJson) => CompanyModel.fromJson(userJson))
+              .toList();
+          return right(users);
+        } else {
+          return left(
+              'Unexpected response format: Expected List but got ${response.data.runtimeType}');
+        }
+      } else {
+        return left('Failed to load users, status code: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      log('DioException: ${e.message}');
+      return left(e.message ?? 'DioException occurred');
+    } catch (e) {
+      log('Error fetching users: $e');
+      return left(e.toString());
+    }
+  }
+
 
 }

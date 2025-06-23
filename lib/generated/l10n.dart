@@ -304,6 +304,321 @@ class S {
       args: [],
     );
   }
+
+  /// `New Cars`
+  String get newcars {
+    return Intl.message('New Cars', name: 'newcars', desc: '', args: []);
+  }
+
+  /// `Used Cars`
+  String get usedcars {
+    return Intl.message('Used Cars', name: 'usedcars', desc: '', args: []);
+  }
+
+  /// `Trucks`
+  String get trucks {
+    return Intl.message('Trucks', name: 'trucks', desc: '', args: []);
+  }
+
+  /// `Motorcycles`
+  String get motorcycles {
+    return Intl.message('Motorcycles', name: 'motorcycles', desc: '', args: []);
+  }
+
+  /// `Bikes`
+  String get bikes {
+    return Intl.message('Bikes', name: 'bikes', desc: '', args: []);
+  }
+
+  /// `Scooters`
+  String get scooters {
+    return Intl.message('Scooters', name: 'scooters', desc: '', args: []);
+  }
+
+  /// `Cars`
+  String get cars {
+    return Intl.message('Cars', name: 'cars', desc: '', args: []);
+  }
+
+  /// `Showrooms`
+  String get showrooms {
+    return Intl.message('Showrooms', name: 'showrooms', desc: '', args: []);
+  }
+
+  /// `Brands`
+  String get brands {
+    return Intl.message('Brands', name: 'brands', desc: '', args: []);
+  }
+
+  /// `Search`
+  String get search {
+    return Intl.message('Search', name: 'search', desc: '', args: []);
+  }
+
+  /// `Filter`
+  String get filter {
+    return Intl.message('Filter', name: 'filter', desc: '', args: []);
+  }
+
+  /// `Sort by`
+  String get sortby {
+    return Intl.message('Sort by', name: 'sortby', desc: '', args: []);
+  }
+
+  /// `Price`
+  String get price {
+    return Intl.message('Price', name: 'price', desc: '', args: []);
+  }
+
+  /// `Mileage`
+  String get mileage {
+    return Intl.message('Mileage', name: 'mileage', desc: '', args: []);
+  }
+
+  /// `Year`
+  String get year {
+    return Intl.message('Year', name: 'year', desc: '', args: []);
+  }
+
+  /// `Battery`
+  String get Battery {
+    return Intl.message('Battery', name: 'Battery', desc: '', args: []);
+  }
+
+  /// `Engine`
+  String get Engine {
+    return Intl.message('Engine', name: 'Engine', desc: '', args: []);
+  }
+
+  /// `Transmission`
+  String get transmission {
+    return Intl.message(
+      'Transmission',
+      name: 'transmission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color`
+  String get color {
+    return Intl.message('Color', name: 'color', desc: '', args: []);
+  }
+
+  /// `Interior`
+  String get interior {
+    return Intl.message('Interior', name: 'interior', desc: '', args: []);
+  }
+
+  /// `Exterior`
+  String get exterior {
+    return Intl.message('Exterior', name: 'exterior', desc: '', args: []);
+  }
+
+  /// `Features`
+  String get features {
+    return Intl.message('Features', name: 'features', desc: '', args: []);
+  }
+
+  /// `Description`
+  String get description {
+    return Intl.message('Description', name: 'description', desc: '', args: []);
+  }
+
+  /// `Motor Power`
+  String get MotorPower {
+    return Intl.message('Motor Power', name: 'MotorPower', desc: '', args: []);
+  }
+
+  /// `Engine Capacity`
+  String get Engineapacity {
+    return Intl.message(
+      'Engine Capacity',
+      name: 'Engineapacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Charge Info`
+  String get ChargeInfo {
+    return Intl.message('Charge Info', name: 'ChargeInfo', desc: '', args: []);
+  }
+
+  /// `Motor Speed`
+  String get MotorSpeed {
+    return Intl.message('Motor Speed', name: 'MotorSpeed', desc: '', args: []);
+  }
+
+  /// `Seats`
+  String get Seats {
+    return Intl.message('Seats', name: 'Seats', desc: '', args: []);
+  }
+
+  /// `Status`
+  String get status {
+    return Intl.message('Status', name: 'status', desc: '', args: []);
+  }
+
+  /// `Logout`
+  String get Logout {
+    return Intl.message('Logout', name: 'Logout', desc: '', args: []);
+  }
+
+  /// `Settings`
+  String get Settings {
+    return Intl.message('Settings', name: 'Settings', desc: '', args: []);
+  }
+
+  /// `Language`
+  String get Language {
+    return Intl.message('Language', name: 'Language', desc: '', args: []);
+  }
+
+  /// `Theme`
+  String get Theme {
+    return Intl.message('Theme', name: 'Theme', desc: '', args: []);
+  }
+
+  /// `Dark Mode`
+  String get DarkMode {
+    return Intl.message('Dark Mode', name: 'DarkMode', desc: '', args: []);
+  }
+
+  /// `Light Mode`
+  String get LightMode {
+    return Intl.message('Light Mode', name: 'LightMode', desc: '', args: []);
+  }
+
+  /// `Arabic`
+  String get Arabic {
+    return Intl.message('Arabic', name: 'Arabic', desc: '', args: []);
+  }
+
+  /// `English`
+  String get English {
+    return Intl.message('English', name: 'English', desc: '', args: []);
+  }
+
+  /// `Dark`
+  String get Dark {
+    return Intl.message('Dark', name: 'Dark', desc: '', args: []);
+  }
+
+  /// `Light`
+  String get Light {
+    return Intl.message('Light', name: 'Light', desc: '', args: []);
+  }
+
+  /// `Save`
+  String get Save {
+    return Intl.message('Save', name: 'Save', desc: '', args: []);
+  }
+
+  /// `Language Changed`
+  String get LanguageChanged {
+    return Intl.message(
+      'Language Changed',
+      name: 'LanguageChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Email`
+  String get YourEmail {
+    return Intl.message('Your Email', name: 'YourEmail', desc: '', args: []);
+  }
+
+  /// `Phone Number`
+  String get phonenumber {
+    return Intl.message(
+      'Phone Number',
+      name: 'phonenumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid password`
+  String get Enteravalidpassword {
+    return Intl.message(
+      'Enter a valid password',
+      name: 'Enteravalidpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue as guest`
+  String get continueasguest {
+    return Intl.message(
+      'Continue as guest',
+      name: 'continueasguest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nice to meet you`
+  String get Nicetomeetyou {
+    return Intl.message(
+      'Nice to meet you',
+      name: 'Nicetomeetyou',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login/Signup`
+  String get LoginSignup {
+    return Intl.message(
+      'Login/Signup',
+      name: 'LoginSignup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home`
+  String get home {
+    return Intl.message('Home', name: 'home', desc: '', args: []);
+  }
+
+  /// `My Cars`
+  String get myCars {
+    return Intl.message('My Cars', name: 'myCars', desc: '', args: []);
+  }
+
+  /// `Favourite`
+  String get favourite {
+    return Intl.message('Favourite', name: 'favourite', desc: '', args: []);
+  }
+
+  /// `Help & FAQ`
+  String get helpFaq {
+    return Intl.message('Help & FAQ', name: 'helpFaq', desc: '', args: []);
+  }
+
+  /// `Contact Us`
+  String get contactUs {
+    return Intl.message('Contact Us', name: 'contactUs', desc: '', args: []);
+  }
+
+  /// `Settings`
+  String get settings {
+    return Intl.message('Settings', name: 'settings', desc: '', args: []);
+  }
+
+  /// `English`
+  String get english {
+    return Intl.message('English', name: 'english', desc: '', args: []);
+  }
+
+  /// `العربية`
+  String get arabic {
+    return Intl.message('العربية', name: 'arabic', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
