@@ -115,10 +115,17 @@ class AppRouter {
         );
       case Routes.serviceListDetails:
         return MaterialPageRoute(
+<<<<<<< HEAD
           builder:
               (_) => BlocProvider.value(
                 value: getIt<ServicesCubit>()..getCarAccessories(),
                 child: ServiceListDtailsScreen(),
+=======
+          builder: (_) =>
+              BlocProvider.value(
+                value:  getIt<ServicesCubit>(),
+                child: ServiceListDtailsScreen(type:settings.arguments as String,),
+>>>>>>> 0f4e3f96a58810f04f859eb794799fa9b7a672ca
               ),
         );
       case Routes.addNewChooseBrand:

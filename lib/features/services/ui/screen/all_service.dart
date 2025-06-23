@@ -36,10 +36,11 @@ class AllService extends StatelessWidget {
                         image: listServices[index].image,
                         title: listServices[index].title,
                         description: listServices[index].description,
-                        onTap: () {
-                          ServicesCubit.get(context).getCarAccessories();
-                          context.pushNamed(Routes.serviceListDetails);
-                        },
+                        onTap:listServices[index].onTap
+                        //     () {
+                        //   ServicesCubit.get(context).getCarAccessories();
+                        //   context.pushNamed(Routes.serviceListDetails);
+                        // },
                       );
                     },
                     separatorBuilder: (context, index) {

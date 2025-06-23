@@ -2,12 +2,26 @@ import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/widgets/image_network.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
 
-class ServiceListDtailsScreen extends StatelessWidget {
+class ServiceListDtailsScreen extends StatefulWidget {
+  const ServiceListDtailsScreen({super.key, required this.type});
+final String type;
+  @override
+  State<ServiceListDtailsScreen> createState() => _ServiceListDtailsScreenState();
+}
+
+class _ServiceListDtailsScreenState extends State<ServiceListDtailsScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // TODO: implement didChangeDependencies
+    ServicesCubit.get(context).loadData(widget.type);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,37 +33,46 @@ class ServiceListDtailsScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: ListView(
-            children: [
-              CustomAppBar(),
-              verticalSpace(13),
-              ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 14.w),
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return ServiceDetailsContainer(
-                    title:
-                        ServicesCubit.get(context).carAccessories[index].title,
-                    image:
-                        ServicesCubit.get(
-                          context,
-                        ).carAccessories[index].featured_image,
-                    description:
-                        ServicesCubit.get(
-                          context,
-                        ).carAccessories[index].content,
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return verticalSpace(12.8);
-                },
-                itemCount: ServicesCubit.get(context).carAccessories.length,
-              ),
-            ],
+          child: BlocBuilder<ServicesCubit, ServicesState>(
+            builder: (context, state) {
+              final cubit = ServicesCubit.get(context);
+
+              if (state is ServicesListLoading) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (state is ServicesListError) {
+                return Center(child: Text("Error loading data"));
+              }
+
+              final items = cubit.currentItems;
+
+              return ListView(
+                children: [
+                  CustomAppBar(),
+                  verticalSpace(13),
+                  ListView.separated(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return ServiceDetailsContainer(
+                        title: item.title.rendered,
+                        featuredImage: item.featuredImage,
+                        description: item.content.rendered,
+                      );
+                    },
+                    separatorBuilder: (_, __) => verticalSpace(12.8),
+                    itemCount: items.length,
+                  ),
+                ],
+              );
+            },
           ),
         ),
-      ),
+      )
+
     );
   }
 }
@@ -57,13 +80,13 @@ class ServiceListDtailsScreen extends StatelessWidget {
 class ServiceDetailsContainer extends StatelessWidget {
   const ServiceDetailsContainer({
     super.key,
-    required this.image,
+    required this.featuredImage,
     required this.title,
     this.onTap,
     required this.description,
   });
 
-  final String image;
+  final String featuredImage;
   final String title;
   final String description;
   final Function()? onTap;
@@ -84,7 +107,7 @@ class ServiceDetailsContainer extends StatelessWidget {
           children: [
             Center(
               child: AppCachedNetworkImage(
-                image: image,
+                image: featuredImage,
                 height: 113.h,
                 width: 119.w,
               ),
