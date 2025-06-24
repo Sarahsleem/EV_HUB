@@ -48,4 +48,6 @@ class Routes {
   static const String carDetails = '/cardetails';
   static const String stationsScreen = '/stationsScreen';
   static const String addServices = '/addServices';
+
+  static const String searchResult='/searchResult';
 }

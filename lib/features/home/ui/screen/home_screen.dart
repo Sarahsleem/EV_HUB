@@ -50,12 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
           drawer: CustomDrawer(
-    onItemSelected: (item) {
-      // handle drawer navigation here
-      if (item == 'Home') {
-        Navigator.pop(context); // just close drawer for now
-      }
-    },
+
   ),
         backgroundColor: ColorsManager.darkBlue,
         body: ListView(
@@ -180,48 +175,59 @@ class _HomeScreenState extends State<HomeScreen> {
                   verticalSpace(6),
                   SizedBox(
                     height: 56.h,
-                    child: ListView.separated(
+                    child: ListView(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: (){
-                            context.pushNamed(Routes.serviceListDetails,arguments: HomeCubit.get(context).features[index].route);
-                          },
-                          child: Container(
-                            margin: EdgeInsetsDirectional.only(start: 6.w),
-                            decoration: BoxDecoration(
-                              color: ColorsManager.lightDarkBlue,
-                              borderRadius: BorderRadius.circular(48.3.r),
-                            ),
-                            height: 56.h,
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 27.r,
-                                  backgroundColor: Color(0x3dd9d9d9),
-                                  child: Image.asset(
-                                    HomeCubit.get(context).features[index].image,
-                                    height: 25.h,
-                                    width: 25.w,
-                                    fit: BoxFit.scaleDown,
+                      children: [
+                        GestureDetector(onTap: (){context.pushNamed(Routes.allService);},child: CircleAvatar(backgroundColor: ColorsManager.lightDarkBlue,radius: 27.r,child: Text('see\n All',style: TextStyles.font12WhiteRegular,),)),
+                        SizedBox(
+                          height: 56.h,
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: (){
+                                  context.pushNamed(Routes.serviceListDetails,arguments: HomeCubit.get(context).features[index].route);
+                                },
+                                child: Container(
+                                  margin: EdgeInsetsDirectional.only(start: 6.w),
+                                  decoration: BoxDecoration(
+                                    color: ColorsManager.lightDarkBlue,
+                                    borderRadius: BorderRadius.circular(48.3.r),
+                                  ),
+                                  height: 56.h,
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 27.r,
+                                        backgroundColor: Color(0x3dd9d9d9),
+                                        child: Image.asset(
+                                          HomeCubit.get(context).features[index].image,
+                                          height: 25.h,
+                                          width: 25.w,
+                                          fit: BoxFit.scaleDown,
+                                        ),
+                                      ),
+                                      horizontalSpace(6),
+                                      Text(
+                                        HomeCubit.get(context).features[index].title,
+                                        style: TextStyles.inter12WhiteRegular,
+                                      ),
+                                      horizontalSpace(11),
+                                    ],
                                   ),
                                 ),
-                                horizontalSpace(6),
-                                Text(
-                                  HomeCubit.get(context).features[index].title,
-                                  style: TextStyles.inter12WhiteRegular,
-                                ),
-                                horizontalSpace(11),
-                              ],
-                            ),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return horizontalSpace(6);
+                            },
+                            itemCount: 3,
                           ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return horizontalSpace(6);
-                      },
-                      itemCount: 3,
+                        ),
+                      ],
                     ),
                   ),
                   verticalSpace(16),
@@ -694,9 +700,8 @@ class CustomSearch extends StatelessWidget {
 // لو عندك لوجو
 
 class CustomDrawer extends StatelessWidget {
-  final Function(String) onItemSelected;
 
-  const CustomDrawer({super.key, required this.onItemSelected});
+  const CustomDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -707,10 +712,10 @@ class CustomDrawer extends StatelessWidget {
       child: Stack(
         children: [
           // Blur background
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(color: Colors.transparent),
-          ),
+          // BackdropFilter(
+          //   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          //   child: Container(color: Colors.transparent),
+          // ),
 
           // Drawer content
           ClipRRect(
@@ -742,7 +747,7 @@ class CustomDrawer extends StatelessWidget {
                       children: [
                         const CircleAvatar(
                           radius: 28,
-                          backgroundImage: AssetImage('assets/images/profile.jpg'),
+                          backgroundImage: AssetImage('images/png/pirson.png'),
                         ),
                         const SizedBox(width: 12),
                         Column(
@@ -770,12 +775,12 @@ class CustomDrawer extends StatelessWidget {
                     const SizedBox(height: 40),
 
                     // Menu
-                    ..._buildMenuItem(context, "Home", Icons.home_outlined),
-                    ..._buildMenuItem(context, "My Cars", Icons.directions_car),
-                    ..._buildMenuItem(context, "Favourite", Icons.favorite_border),
-                    ..._buildMenuItem(context, "Help & FAQ", Icons.help_outline),
-                    ..._buildMenuItem(context, "Contact Us", Icons.call_outlined),
-                    ..._buildMenuItem(context, "Settings", Icons.settings_outlined),
+                    ..._buildMenuItem(context, "Home", Icons.home_outlined,(){context.pop();}),
+                    ..._buildMenuItem(context, "My Cars", Icons.directions_car,(){context.pushNamed(Routes.MyCarsScreen);}),
+                    ..._buildMenuItem(context, "Favourite", Icons.favorite_border,(){}),
+                    ..._buildMenuItem(context, "Help & FAQ", Icons.help_outline,(){}),
+                    ..._buildMenuItem(context, "Contact Us", Icons.call_outlined,(){}),
+                    ..._buildMenuItem(context, "Settings", Icons.settings_outlined,(){}),
 
                     const Spacer(),
 
@@ -803,21 +808,24 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildMenuItem(BuildContext context, String title, IconData icon) {
+  List<Widget> _buildMenuItem(BuildContext context, String title, IconData icon,Function()on) {
     return [
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: Icon(icon, color: Colors.white, size: 22),
-        horizontalTitleGap: 12,
-        title: Text(
-          title,
-          style: GoogleFonts.lato(
-            color: Colors.white,
-            fontSize: 14.5,
-            fontWeight: FontWeight.w500,
+      GestureDetector(
+        onTap: on,
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Icon(icon, color: Colors.white, size: 22),
+          horizontalTitleGap: 12,
+          title: Text(
+            title,
+            style: GoogleFonts.lato(
+              color: Colors.white,
+              fontSize: 14.5,
+              fontWeight: FontWeight.w500,
+            ),
           ),
+          onTap: on,
         ),
-        onTap: () => onItemSelected(title),
       ),
       const SizedBox(height: 4),
     ];

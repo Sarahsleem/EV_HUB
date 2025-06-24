@@ -10,6 +10,7 @@ import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/new_cars/ui/screens/new_cars_screen.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
+import 'package:evhub/features/search/ui/search_result.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:evhub/features/services/ui/screen/service_list_details_screen.dart';
 import 'package:evhub/features/wish_list/logic/wish_list_cubit.dart';
@@ -154,10 +155,31 @@ class AppRouter {
       case Routes.searchFilter:
         return MaterialPageRoute(
           builder:
-              (_) => BlocProvider(
-                create: (context) => getIt<SearchCubit>(),
-                child: SearchScreen(),
-              ),
+              (_) => MultiBlocProvider(
+  providers: [
+    BlocProvider.value(
+                value: getIt<SearchCubit>(),
+),
+    BlocProvider.value(
+      value:   getIt<HomeCubit>(),
+    ),
+  ],
+  child: SearchScreen(),
+),
+        );case Routes.searchResult:
+        return MaterialPageRoute(
+          builder:
+              (_) => MultiBlocProvider(
+  providers: [
+    BlocProvider.value(
+                value:getIt<SearchCubit>(),
+),
+    BlocProvider.value(
+      value:   getIt<WishListCubit>(),
+    ),
+  ],
+  child: SearchResultScreen(carsResult: settings.arguments as List<Car>),
+),
         );
       case Routes.addNewChooseBrand:
         return MaterialPageRoute(

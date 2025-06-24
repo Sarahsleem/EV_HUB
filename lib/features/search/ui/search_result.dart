@@ -1,0 +1,221 @@
+import 'package:evhub/core/helpers/extensions.dart';
+import 'package:evhub/features/home/data/model/car_model.dart';
+import 'package:evhub/features/search/logic/search_cubit.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+
+import '../../../core/helpers/spacing.dart';
+import '../../../core/theming/font_weight.dart';
+import '../../../core/theming/styles.dart';
+import '../../../core/widgets/image_network.dart';
+import '../../wish_list/logic/wish_list_cubit.dart';
+
+class SearchResultScreen extends StatefulWidget{
+  const SearchResultScreen({super.key, required this.carsResult});
+final List<Car> carsResult;
+
+  @override
+  State<SearchResultScreen> createState() => _SearchResultScreenState();
+}
+
+class _SearchResultScreenState extends State<SearchResultScreen> {
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    //WishListCubit.get(context).getFavorites();
+  }
+  @override
+  Widget build(BuildContext context) {
+   return Scaffold(
+     body: Container(
+       decoration: BoxDecoration(
+         image: DecorationImage(
+           image: const AssetImage('images/png/background.png'),
+           fit: BoxFit.cover,
+         ),
+       ),
+       child: SafeArea(
+         child: ListView(
+           children: [
+             CustomAppBar(),
+
+
+             verticalSpace(17),
+
+
+             Padding(
+                   padding: EdgeInsetsDirectional.only(end: 30.w),
+                   child: Text(
+                     textAlign: TextAlign.end,
+                     '${widget.carsResult.length} Result',
+                     style: TextStyles.inter16greyMedium.copyWith(
+                       fontSize: 11.sp,
+                     ),
+                   ),
+                 ),
+             verticalSpace(13),
+             BlocBuilder<SearchCubit,SearchState>(
+               builder: (context, state) {
+                 if(widget.carsResult.isEmpty){
+                   return Center(child: Text('No Cars Found'),);
+                 }
+                 return ListView.separated(
+                   separatorBuilder: (context, index) {
+                     return verticalSpace(12);
+                   },
+                   padding: EdgeInsets.symmetric(horizontal: 27.w),
+                   shrinkWrap: true,
+                   physics: ScrollPhysics(),
+                   itemCount:widget.carsResult.length,
+                   itemBuilder: (context, index) {
+                     return Container(
+                       padding: EdgeInsets.symmetric(
+                         horizontal: 12.w,
+                         vertical: 23.h,
+                       ),
+                       decoration: BoxDecoration(
+                         color: Color(0xff1C2F39),
+                         borderRadius: BorderRadius.circular(24.r),
+                       ),
+                       child: Column(
+                         children: [
+                           Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                               SizedBox(
+                                 width: 150.w,
+                                 child: Column(
+                                   crossAxisAlignment:
+                                   CrossAxisAlignment.start,
+                                   children: [
+                                     Text(
+                                       widget.carsResult[index].title ?? '',
+                                       style: TextStyles.inter18WhiteMedium
+                                           .copyWith(fontSize: 15.3.sp),
+                                       overflow: TextOverflow.ellipsis,
+                                     ),
+                                     Text(
+                                       widget.carsResult[index].carBrand?[0],
+                                       style: TextStyles.inter13greyRegular
+                                           .copyWith(fontSize: 15.3.sp),
+                                     ),
+                                   ],
+                                 ),
+                               ),
+                               Column(
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 children: [
+                                   Text(
+                                     'starts From',
+                                     style: TextStyles.inter13greyRegular,
+                                   ),
+                                   Text(
+                                     '${NumberFormat("#,###").format(double.tryParse(widget.carsResult[index].acf!["price"].toString()) ?? 'N/A')} LE',
+                                     style: TextStyles.inter13greyRegular
+                                         .copyWith(
+                                       fontSize: 15.3.sp,
+                                       fontWeight: FontWeightHelper.medium,
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ],
+                           ),
+                           verticalSpace(10),
+                           AppCachedNetworkImage(
+                             image: widget.carsResult[index].featuredImage,
+                             height: 160.h,
+                             width: 304.w,
+                             radius: 20.r,
+                           ),
+                           verticalSpace(10),
+                           Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                               Container(
+                                 width: 225.w,
+                                 decoration: BoxDecoration(
+                                   borderRadius: BorderRadius.circular(59.r),
+                                   color: Color(0x2ed9d9d9),
+                                 ),
+                                 child: Padding(
+                                   padding: const EdgeInsets.all(12.0),
+                                   child: Text(
+                                     'Explore',
+                                     textAlign: TextAlign.center,
+                                   ),
+                                 ),
+                               ),
+                               BlocBuilder<WishListCubit, WishListState>(
+                                 builder: (context, state) {
+                                   final cubit = WishListCubit.get(context);
+                                   final isFavorite = cubit.favCars.any((car) => car.id == widget.carsResult[index].id);
+
+                                   return GestureDetector(
+                                     onTap: () {
+                                       if (isFavorite) {
+                                         cubit.removeFromFavorites(widget.carsResult[index].id!);
+                                         cubit.favCars.removeWhere((car) => car.id == widget.carsResult[index].id);
+                                       } else {
+                                         cubit.addToFavorites(widget.carsResult[index].id!);
+                                         cubit.favCars.add(widget.carsResult[index]);
+                                       }
+                                       //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
+                                     },
+                                     child: CircleAvatar(
+                                       backgroundColor: const Color(0xff1B262C),
+                                       child: Icon(
+                                         CupertinoIcons.heart_fill,
+                                         color: isFavorite ? Colors.red : const Color(0xa8ffffff),
+                                         size: 20.sp,
+                                       ),
+                                     ),
+                                   );
+                                 },
+                               ),
+
+                             ],
+                           ),
+                         ],
+                       ),
+                     );
+                   },
+                 );
+               },
+             ),
+           ],
+         ),
+       ),
+     ),
+   );
+  }
+}class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            context.pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_rounded, size: 16.sp),
+        ),
+        Center(
+          child: Text(
+            textAlign: TextAlign.center,
+            'Search Result',
+            style: TextStyles.inter18WhiteMedium,
+          ),
+        ),
+        SizedBox(width: 20.w),
+      ],
+    );
+  }
+}

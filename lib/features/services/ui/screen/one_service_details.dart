@@ -23,12 +23,15 @@ class ServiceDetailScreen extends StatelessWidget {
       //  mainAxisAlignment: MainAxisAlignment.end,
         children: [
           (data.acf.cover != null && data.acf.cover.url != null)
-              ? AppCachedNetworkImage(
-                height: 570.h,
-                width: double.infinity,
-                image: data.acf.cover.url!,
-                fit: BoxFit.cover,
-            radius: 0,
+              ? Transform.rotate(
+                angle: 1.57,
+                child: AppCachedNetworkImage(
+                  height: 852.h,
+                  width:double.infinity,
+                  image: data.acf.cover.url!,
+                  fit: BoxFit.contain,
+                            radius: 0,
+                ),
               )
               : Container(
             color: Color(0xff243C43),
@@ -39,7 +42,7 @@ class ServiceDetailScreen extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 246.h, // adjust as needed
+              height:double.infinity, // adjust as needed
               width: double.infinity,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -55,7 +58,7 @@ class ServiceDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-        // Top bar + content
+
           SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
