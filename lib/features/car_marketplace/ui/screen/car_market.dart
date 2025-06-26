@@ -21,6 +21,7 @@ import '../../../../core/widgets/app_text_form_field.dart';
 import '../../../../core/widgets/image_network.dart';
 import '../../../../generated/l10n.dart';
 import '../../../home/logic/home_cubit.dart';
+import '../../../home/ui/widgets/custom_search.dart';
 
 class CarMarketScreen extends StatefulWidget {
   @override
@@ -413,40 +414,7 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
   }
 }
 
-class CustomSearch extends StatelessWidget {
-  const CustomSearch({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return AppTextFormField(
-      prefexIcon: Icon(
-        CupertinoIcons.search,
-        color: ColorsManager.borderGrey,
-        size: 34.sp,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0x5ffffff), width: 1.3),
-        borderRadius: BorderRadius.circular(54.r),
-      ),
-      hintText: 'Search for anything',
-      backgroundColor: Color(0x61435f72),
-      hintStyle: TextStyles.latoGrey16SemiBold,
-      borderRadius: 54.r,
-      suffixIcon: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: CircleAvatar(
-          radius: 22.5.r,
-          backgroundColor: Colors.transparent,
-          child: Icon(
-            size: 31.sp,
-            Icons.filter_alt_outlined,
-            color: ColorsManager.borderGrey,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});

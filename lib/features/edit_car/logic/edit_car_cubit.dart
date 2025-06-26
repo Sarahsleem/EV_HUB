@@ -85,6 +85,10 @@ class EditCarCubit extends Cubit<EditCarState> {
     conditionId=conditions[index]['id'];
     selectedConditionId = conditions[index]['id'];
     emit(ChooseCondtionState());
+  }void setCondition(int id) {
+    conditionId=id;
+    selectedConditionId = id;
+    emit(ChooseCondtionState());
   }
   void chooseCarModel(int index) {
     modelId=carModel[index].id;
@@ -101,7 +105,11 @@ class EditCarCubit extends Cubit<EditCarState> {
     usedSinceId=yearsSince[index].id;
     emit(ChooseUsedSinceState());
   }
-
+void setUsedSince(int id) {
+  usedSinceId=id;
+  selectedUsedSinceIndex = yearsSince.indexOf(yearsSince.firstWhere((element) => element.id==id));
+  emit(ChooseUsedSinceState());
+}
   int selectedBodyStyleId = 0;
   int selectedBodyStyleIndex = 0;
   void chooseBodyStyle(int index) {
@@ -109,12 +117,19 @@ class EditCarCubit extends Cubit<EditCarState> {
     styleId=carStyles[index].id;
     emit(ChooseBodyStyleState());
   }
-
+void setBodyStyle(int id) {
+  styleId=id;
+  selectedBodyStyleIndex = carStyles.indexOf(carStyles.firstWhere((element) => element.id==id));
+  emit(ChooseBodyStyleState());
+}
   void chooseChargeType(int index) {
     chargeType = chargeTypes[index];
     emit(ChooseChargeTypeState());
   }
-
+void setChargeType(String type) {
+  chargeType = type;
+  emit(ChooseChargeTypeState());
+}
   void chooseBrand(int index, int id) {
     brandId=id;
     print(brandId);
@@ -171,6 +186,7 @@ class EditCarCubit extends Cubit<EditCarState> {
   }
 
   Future<void> updateCar(String title, String describe,String price,String enpower,String battery,String km,int carId) async {
+
     CarRequestModel carModel = CarRequestModel(
         title: title,
         status: 'pending',
@@ -191,6 +207,7 @@ class EditCarCubit extends Cubit<EditCarState> {
         emit(EditCarFailare());
       },
           (r) {
+            image?.delete();
         emit(EditCarSuccess());
       },
     );

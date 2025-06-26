@@ -12,11 +12,19 @@ class HomeLoadingADS1State extends HomeState{}
 class HomeSuccessADS1State extends HomeState{
 }
 class HomeErrorAD1State extends HomeState{}
-class HomeLoadingBrandsState extends HomeState{}
+final class HomeLoadingBrandsState extends HomeState{
+  final bool isBrandLoading;
+  HomeLoadingBrandsState({required this.isBrandLoading});
+}
 class HomeSuccessBrandsState extends HomeState{
 }
-class HomeErrorBrandsState extends HomeState{}
-class HomeLoadingCarsState extends HomeState{}
+class HomeErrorBrandsState extends HomeState{
+
+}
+final class HomeLoadingCarsState extends HomeState{
+  final bool isCarLoading;
+  HomeLoadingCarsState({required this.isCarLoading});
+}
 class HomeSuccessCarsState extends HomeState{
 }
 class HomeErrorCarsState extends HomeState{}

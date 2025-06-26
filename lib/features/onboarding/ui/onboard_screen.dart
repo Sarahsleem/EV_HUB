@@ -23,7 +23,7 @@ shrinkWrap: true,
            physics: ScrollPhysics(),
            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              verticalSpace(15),
+
             Image.asset(ImagesManager.splash,width: 100.w,height: 100.h,),
               verticalSpace(20),
               Align(
@@ -53,35 +53,40 @@ shrinkWrap: true,
               ),
 
               Image.asset(ImagesManager.logo),
-              SwipeButton.expand(
-                height: 72.h,
-                activeTrackColor: Color(0xff101a21),
-                activeThumbColor: Colors.white,
-                thumbPadding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
-                thumb: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
-                  child: Image.asset(ImagesManager.swipe,width: 23.w,height: 23.h,fit: BoxFit.scaleDown,),
-                ),
-                // thumb: Icon(
-                //   Icons.car_repair,
-                //   color: Color(0xff71a750),
-                // ),
-                elevationThumb: 2,
-                elevationTrack: 1,
-                child: Text(
-                  "Swipe to Explore",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                onSwipe: () {
-                  //context.pushReplacementNamed(Routes.verifyCode);
-                  context.pushReplacementNamed(Routes.signInScreen);
+              Padding(
+                padding:  EdgeInsets.only(bottom: 9.h),
+                child: SwipeButton.expand(
+                  height: 72.h,
 
-                },
-              )
+                  activeTrackColor: Color(0xff101a21),
+                  activeThumbColor: Colors.white,
+                  thumbPadding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
+                  thumb: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
+                    child: Image.asset(ImagesManager.swipe,width: 23.w,height: 23.h,fit: BoxFit.scaleDown,),
+                  ),
+                  // thumb: Icon(
+                  //   Icons.car_repair,
+                  //   color: Color(0xff71a750),
+                  // ),
+                  elevationThumb: 2,
+                  elevationTrack: 1,
+                  child: Text(
+                    "Swipe to Explore",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onSwipe: () {
+                    //context.pushReplacementNamed(Routes.verifyCode);
+                    context.pushReplacementNamed(Routes.signInScreen);
+
+                  },
+                ),
+              ),
+
             ],),
         ),
       ),);

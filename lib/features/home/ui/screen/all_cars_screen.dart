@@ -1,12 +1,15 @@
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/theming/font_weight.dart';
 import 'package:evhub/core/theming/styles.dart';
+import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
+import 'package:evhub/features/wish_list/logic/wish_list_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/routing/routes.dart';
@@ -15,25 +18,14 @@ import '../../../../core/widgets/app_text_form_field.dart';
 import '../../../../core/widgets/brands_loader.dart';
 import '../../../../core/widgets/image_network.dart';
 import '../../../home/logic/home_cubit.dart';
+import '../../../used_cars/ui/screen/used_car.dart';
 import '../../../home/ui/widgets/custom_search.dart';
 
-class UsedCarScreen extends StatefulWidget {
+class AllCarsScreen extends StatelessWidget {
+  const AllCarsScreen({super.key, required this.cars});
+final List<Car> cars;
   @override
-  State<UsedCarScreen> createState() => _UsedCarScreenState();
-}
 
-class _UsedCarScreenState extends State<UsedCarScreen> {
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-
-    HomeCubit.get(context).getBrands().then((_) {
-      NewCarsCubit.get(context).getUsedCarsByBrand();
-    });
-
-    // HomeCubit.get(context).getBrands();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +33,7 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/png/background.png'),
+            image: const AssetImage('images/png/background.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -49,115 +41,24 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
           child: ListView(
             children: [
               CustomAppBar(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: GestureDetector(
+                onTap: () {
+                  context.pushNamed(Routes.searchFilter);
+                },
                 child: CustomSearch(),
               ),
+            ),
+
 
               verticalSpace(17),
 
-              Padding(
-                padding: EdgeInsetsDirectional.only(start: 15.w),
-                child: BlocBuilder<NewCarsCubit, NewCarsState>(
-                  builder: (context, state) {
-                    return BlocBuilder<HomeCubit, HomeState>(
-                      builder: (context, state) {
-                        if (state is HomeLoadingBrandsState) {
-                          return Center(child: BrandLoader());
-                        }
-                        return SizedBox(
-                          height: 74.h,
-                          child: ListView.separated(
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  NewCarsCubit.get(context).chooseBrand(
-                                    HomeCubit.get(context).carBrands[index].id,
-                                  );
-                                  NewCarsCubit.get(context).getNewCarsByBrand();
-                                },
-                                child: Opacity(
-                                  opacity:
-                                      NewCarsCubit.get(
-                                                context,
-                                              ).selectedBrandId ==
-                                              HomeCubit.get(
-                                                context,
-                                              ).carBrands[index].id
-                                          ? 1
-                                          : 0.31,
-                                  child: Container(
-                                    height: 64.h,
-                                    padding: EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(40.r),
-                                      // border: Border.all(
-                                      //   color:
-                                      //   NewCarsCubit.get(
-                                      //     context,
-                                      //   ).selectedBrandId==HomeCubit.get(
-                                      //                 context,
-                                      //               ).carBrands[index].id
-                                      //
-                                      //           ? ColorsManager.kPrimaryColor
-                                      //           : ColorsManager.borderGrey,
-                                      //   width: 1.3,
-                                      // ),
-                                    ),
-                                    child: AppCachedNetworkImage(
-                                      fit: BoxFit.contain,
-                                      radius: 30.r,
-                                      image:
-                                          HomeCubit.get(
-                                            context,
-                                          ).carBrands[index].acf.brandLogo.url,
-                                      height: 64.h,
-                                      width: 64.w,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return horizontalSpace(4);
-                            },
-                            itemCount: HomeCubit.get(context).carBrands.length,
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              verticalSpace(17),
-              BlocBuilder<NewCarsCubit, NewCarsState>(
+              BlocBuilder<HomeCubit, HomeState>(
                 builder: (context, state) {
-                  if (state is NewCarsLoadingState) {
-                    return SizedBox.shrink();
-                  }
-                  return Padding(
-                    padding: EdgeInsetsDirectional.only(end: 30.w),
-                    child: Text(
-                      textAlign: TextAlign.end,
-                      '${NewCarsCubit.get(context).newCars.length} Result',
-                      style: TextStyles.inter16greyMedium.copyWith(
-                        fontSize: 11.sp,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              verticalSpace(13),
-              BlocBuilder<NewCarsCubit, NewCarsState>(
-                builder: (context, state) {
-                  var cars = NewCarsCubit.get(context).newCars;
-                  if (state is NewCarsLoadingState) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (cars.isEmpty) {
-                    return Center(child: Text('No Cars Found'));
+
+                 if(cars.isEmpty){
+                    return Center(child: Text('No Cars Found'),);
                   }
                   return ListView.separated(
                     separatorBuilder: (context, index) {
@@ -166,7 +67,7 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 27.w),
                     shrinkWrap: true,
                     physics: ScrollPhysics(),
-                    itemCount: NewCarsCubit.get(context).newCars.length,
+                    itemCount: cars.length,
                     itemBuilder: (context, index) {
                       return GestureDetector( onTap: (){
                         context.pushNamed( Routes.carDetails, arguments:cars[index]);
@@ -190,7 +91,7 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
                                     width: 150.w,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           cars[index].title ?? '',
@@ -210,16 +111,16 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'price',
+                                        'starts From',
                                         style: TextStyles.inter13greyRegular,
                                       ),
                                       Text(
                                         '${NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')} LE',
                                         style: TextStyles.inter13greyRegular
                                             .copyWith(
-                                              fontSize: 15.3.sp,
-                                              fontWeight: FontWeightHelper.medium,
-                                            ),
+                                          fontSize: 15.3.sp,
+                                          fontWeight: FontWeightHelper.medium,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -236,7 +137,7 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
+                                  cars[index].acf!["km"]==null?SizedBox.shrink():Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(children: [Image.asset("images/png/carused.png",height: 22.h,width: 22.w),Text(formatKm(cars[index].acf!["km"]),style: TextStyles.inter18WhiteMedium,)],),
@@ -253,7 +154,7 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
                                     ],
                                   ),
                                   Container(
-                                    width: 142.w,
+                                    width:  cars[index].acf!["km"]==null?225.w:140.w,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(59.r),
                                       color: Color(0x2ed9d9d9),
@@ -262,20 +163,38 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
                                       padding: const EdgeInsets.all(12.0),
                                       child: Text(
                                         'Explore',
-                                        style: TextStyles.inter18WhiteMedium
-                                            .copyWith(fontSize: 9.7.sp),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
-                                  CircleAvatar(
-                                    backgroundColor: Color(0xff1B262C),
-                                    child: Icon(
-                                      CupertinoIcons.heart_fill,
-                                      color: Color(0xa8ffffff),
-                                      size: 20.sp,
-                                    ),
+                                  BlocBuilder<WishListCubit, WishListState>(
+                                    builder: (context, state) {
+                                      final cubit = WishListCubit.get(context);
+                                      final isFavorite = cubit.favCars.any((car) => car.id == cars[index].id);
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          if (isFavorite) {
+                                            cubit.removeFromFavorites(cars[index].id!);
+                                            cubit.favCars.removeWhere((car) => car.id == cars[index].id);
+                                          } else {
+                                            cubit.addToFavorites(cars[index].id!);
+                                            cubit.favCars.add(cars[index]);
+                                          }
+                                          //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
+                                        },
+                                        child: CircleAvatar(
+                                          backgroundColor: const Color(0xff1B262C),
+                                          child: Icon(
+                                            CupertinoIcons.heart_fill,
+                                            color: isFavorite ? Colors.red : const Color(0xa8ffffff),
+                                            size: 20.sp,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
+
                                 ],
                               ),
                             ],
@@ -328,16 +247,6 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
 //     );
 //   }
 // }
-String formatKm(dynamic kmValue) {
-  final km = double.tryParse(kmValue.toString());
-  if (km == null) return '0';
-
-  if (km >= 1000) {
-    return '${(km / 1000).toStringAsFixed(0)}k';
-  } else {
-    return km.toStringAsFixed(0);
-  }
-}
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
@@ -357,7 +266,7 @@ class CustomAppBar extends StatelessWidget {
         Center(
           child: Text(
             textAlign: TextAlign.center,
-            'Used cars',
+            'Electric Cars',
             style: TextStyles.inter18WhiteMedium,
           ),
         ),

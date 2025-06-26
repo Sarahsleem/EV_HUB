@@ -10,15 +10,15 @@ import '../../../../core/networking/error_handler.dart';
 import '../models/profile_model.dart';
 
 class ProfileRepo {
-  final Dio _dio;
+  final Dio dio;
 
-  ProfileRepo(this._dio);
+  ProfileRepo(this.dio);
 
   Future<Either<ApiErrorModel, ProfileModel>> fetchProfile() async {
     String token = await CashHelper.getStringSecured(key: Keys.token);
 
     try {
-      var response = await _dio.get(
+      var response = await dio.get(
         ApiConstants.profile,
         options: Options(
           headers: {
@@ -32,7 +32,7 @@ class ProfileRepo {
         ),
       );
 
-      return right(ProfileModel.fromMap(response.data));
+      return right(ProfileModel.fromMap(response.data['data']));
     } catch (e) {
       print(e);
       return left(ApiErrorHandler.handle(e));

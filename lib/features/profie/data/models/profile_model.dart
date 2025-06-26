@@ -1,4 +1,5 @@
 class ProfileModel {
+  int? id;
   String? name;
   String? email;
   String? phoneNumber;
@@ -9,6 +10,7 @@ class ProfileModel {
 
 
   ProfileModel({
+    this.id,
     this.name,
     this.email,
     this.phoneNumber,
@@ -47,6 +49,7 @@ class ProfileModel {
   }
 
   ProfileModel copyWith({
+    int?id,
     String? name,
     String? email,
     String? phoneNumber,
@@ -54,6 +57,7 @@ class ProfileModel {
     Null? image,
   }) {
     return ProfileModel(
+      id: id??this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -74,6 +78,7 @@ class ProfileModel {
 
   factory ProfileModel.fromMap(Map<String, dynamic> map) {
     return ProfileModel(
+      id: map['user_id'],
       name: map['name'] ,
       email: map['email'] ,
       phoneNumber: map['phone_number'] ,

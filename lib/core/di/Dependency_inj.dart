@@ -12,6 +12,8 @@ import 'package:evhub/features/new_cars/data/repo/car_repo.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/otp/data/repo/otp_repo.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
+import 'package:evhub/features/profie/data/repo/profile_repo.dart';
+import 'package:evhub/features/profie/logic/profile_cubit.dart';
 import 'package:evhub/features/search/data/repo/search_repo.dart';
 import 'package:evhub/features/search/logic/search_cubit.dart';
 import 'package:evhub/features/services/data/repo/services_repo.dart';
@@ -60,6 +62,8 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<EditCarRepo>(()=>EditCarRepo( dio));
   getIt.registerLazySingleton<SearchCubit>(() => SearchCubit(getIt()));
   getIt.registerFactory<SearchRepo>(()=>SearchRepo(  dio: dio));
+  getIt.registerLazySingleton<ProfileCubit>(() => ProfileCubit(getIt()));
+  getIt.registerFactory<ProfileRepo>(()=>ProfileRepo( dio));
 
 getIt.registerLazySingleton<CarMarketCubitCubit>(() => CarMarketCubitCubit(getIt()));
 }

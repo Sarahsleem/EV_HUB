@@ -11,11 +11,13 @@ import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../../../../core/helpers/spacing.dart';
+import '../../../../core/routing/routes.dart';
 import '../../../../core/theming/colors.dart';
 import '../../../../core/widgets/app_text_form_field.dart';
 import '../../../../core/widgets/brands_loader.dart';
 import '../../../../core/widgets/image_network.dart';
 import '../../../home/logic/home_cubit.dart';
+import '../../../home/ui/widgets/custom_search.dart';
 
 class NewCarScreen extends StatefulWidget {
   @override
@@ -177,117 +179,122 @@ class _NewCarScreenState extends State<NewCarScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 27.w),
                     shrinkWrap: true,
                     physics: ScrollPhysics(),
-                    itemCount: NewCarsCubit.get(context).newCars.length,
+                    itemCount: cars.length,
                     itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 23.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Color(0xff1C2F39),
-                          borderRadius: BorderRadius.circular(24.r),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  width: 150.w,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                      return GestureDetector(
+                        onTap: () {
+                          context.pushNamed( Routes.carDetails, arguments:cars[index]);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 23.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Color(0xff1C2F39),
+                            borderRadius: BorderRadius.circular(24.r),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 150.w,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          cars[index].title ?? '',
+                                          style: TextStyles.inter18WhiteMedium
+                                              .copyWith(fontSize: 15.3.sp),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          cars[index].carBrand?[0]["name"],
+                                          style: TextStyles.inter13greyRegular
+                                              .copyWith(fontSize: 15.3.sp),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        cars[index].title ?? '',
-                                        style: TextStyles.inter18WhiteMedium
-                                            .copyWith(fontSize: 15.3.sp),
-                                        overflow: TextOverflow.ellipsis,
+                                        'starts From',
+                                        style: TextStyles.inter13greyRegular,
                                       ),
                                       Text(
-                                        cars[index].carBrand?[0]["name"],
+                                        '${NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')} LE',
                                         style: TextStyles.inter13greyRegular
-                                            .copyWith(fontSize: 15.3.sp),
+                                            .copyWith(
+                                              fontSize: 15.3.sp,
+                                              fontWeight: FontWeightHelper.medium,
+                                            ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'starts From',
-                                      style: TextStyles.inter13greyRegular,
+                                ],
+                              ),
+                              verticalSpace(10),
+                              AppCachedNetworkImage(
+                                image: cars[index].featuredImage,
+                                height: 160.h,
+                                width: 304.w,
+                                radius: 20.r,
+                              ),
+                              verticalSpace(10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 225.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(59.r),
+                                      color: Color(0x2ed9d9d9),
                                     ),
-                                    Text(
-                                      '${NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')} LE',
-                                      style: TextStyles.inter13greyRegular
-                                          .copyWith(
-                                            fontSize: 15.3.sp,
-                                            fontWeight: FontWeightHelper.medium,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            verticalSpace(10),
-                            AppCachedNetworkImage(
-                              image: cars[index].featuredImage,
-                              height: 160.h,
-                              width: 304.w,
-                              radius: 20.r,
-                            ),
-                            verticalSpace(10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: 225.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(59.r),
-                                    color: Color(0x2ed9d9d9),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      'Explore',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                                BlocBuilder<WishListCubit, WishListState>(
-                                  builder: (context, state) {
-                                    final cubit = WishListCubit.get(context);
-                                    final isFavorite = cubit.favCars.any((car) => car.id == cars[index].id);
-
-                                    return GestureDetector(
-                                      onTap: () {
-                                        if (isFavorite) {
-                                          cubit.removeFromFavorites(cars[index].id!);
-                                          cubit.favCars.removeWhere((car) => car.id == cars[index].id);
-                                        } else {
-                                          cubit.addToFavorites(cars[index].id!);
-                                          cubit.favCars.add(cars[index]);
-                                        }
-                                        //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
-                                      },
-                                      child: CircleAvatar(
-                                        backgroundColor: const Color(0xff1B262C),
-                                        child: Icon(
-                                          CupertinoIcons.heart_fill,
-                                          color: isFavorite ? Colors.red : const Color(0xa8ffffff),
-                                          size: 20.sp,
-                                        ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Text(
+                                        'Explore',
+                                        textAlign: TextAlign.center,
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  ),
+                                  BlocBuilder<WishListCubit, WishListState>(
+                                    builder: (context, state) {
+                                      final cubit = WishListCubit.get(context);
+                                      final isFavorite = cubit.favCars.any((car) => car.id == cars[index].id);
 
-                              ],
-                            ),
-                          ],
+                                      return GestureDetector(
+                                        onTap: () {
+                                          if (isFavorite) {
+                                            cubit.removeFromFavorites(cars[index].id!);
+                                            cubit.favCars.removeWhere((car) => car.id == cars[index].id);
+                                          } else {
+                                            cubit.addToFavorites(cars[index].id!);
+                                            cubit.favCars.add(cars[index]);
+                                          }
+                                          //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
+                                        },
+                                        child: CircleAvatar(
+                                          backgroundColor: const Color(0xff1B262C),
+                                          child: Icon(
+                                            CupertinoIcons.heart_fill,
+                                            color: isFavorite ? Colors.red : const Color(0xa8ffffff),
+                                            size: 20.sp,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -302,40 +309,6 @@ class _NewCarScreenState extends State<NewCarScreen> {
   }
 }
 
-class CustomSearch extends StatelessWidget {
-  const CustomSearch({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppTextFormField(
-      prefexIcon: Icon(
-        CupertinoIcons.search,
-        color: ColorsManager.borderGrey,
-        size: 34.sp,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0x5ffffff), width: 1.3),
-        borderRadius: BorderRadius.circular(54.r),
-      ),
-      hintText: 'Search for anything',
-      backgroundColor: Color(0x61435f72),
-      hintStyle: TextStyles.latoGrey16SemiBold,
-      borderRadius: 54.r,
-      suffixIcon: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: CircleAvatar(
-          radius: 22.5.r,
-          backgroundColor: Colors.transparent,
-          child: Icon(
-            size: 31.sp,
-            Icons.filter_alt_outlined,
-            color: ColorsManager.borderGrey,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});

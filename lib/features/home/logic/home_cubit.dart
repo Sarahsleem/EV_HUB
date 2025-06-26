@@ -70,7 +70,7 @@ Future<void> getAds2()async{
   }
 void loadHomeData (){
   getAds2();
-  getCars();
+  getCars().then((_)=>getBrands());
   //getBrands();
   getAds();
 }
@@ -79,7 +79,7 @@ void loadHomeData (){
       carBrands=CachedApp.getCachedData(CachedDataType.brands.name);
       print('bbb $carBrands');
     }catch(e) {
-      emit(HomeLoadingBrandsState());
+      emit(HomeLoadingBrandsState(isBrandLoading: true));
       final response = await homeRepo.fetchBrands(
           25); // Fetch a reasonable initial amount
       response.fold(
@@ -88,6 +88,7 @@ void loadHomeData (){
           carBrands = r;
           CachedApp.saveData(carBrands,CachedDataType.brands.name);
 
+          emit(HomeLoadingBrandsState(isBrandLoading: false));
           emit(HomeSuccessBrandsState());
         },
       );
@@ -109,13 +110,14 @@ Future<void> getCars()async{
  try{
    cars=CachedApp.getCachedData(CachedDataType.cars.name);
  }catch(e) {
-    emit(HomeLoadingCarsState());
+    emit(HomeLoadingCarsState(isCarLoading: true));
     var response = await homeRepo.fetchCars();
     response.fold((l) {
       emit(HomeErrorCarsState());
     }, (r) {
       cars = r;
       CachedApp.saveData(cars,CachedDataType.cars.name);
+      emit(HomeLoadingCarsState(isCarLoading: false));
       emit(HomeSuccessCarsState());
     });
   }

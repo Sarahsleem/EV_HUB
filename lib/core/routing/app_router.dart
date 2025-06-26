@@ -10,6 +10,7 @@ import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/new_cars/ui/screens/new_cars_screen.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
+import 'package:evhub/features/profie/logic/profile_cubit.dart';
 import 'package:evhub/features/search/ui/search_result.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:evhub/features/services/ui/screen/service_list_details_screen.dart';
@@ -26,6 +27,7 @@ import '../../features/forget_password/logic/forget_password_cubit.dart';
 import '../../features/forget_password/ui/screen/forget_password_email.dart';
 import '../../features/forget_password/ui/screen/forget_password_otp.dart';
 import '../../features/home/logic/home_cubit.dart';
+import '../../features/home/ui/screen/all_cars_screen.dart';
 import '../../features/home/ui/screen/home_screen.dart';
 import '../../features/navbar/logic/nav_bar_cubit.dart';
 import '../../features/navbar/ui/screens/navbar_screen.dart';
@@ -41,6 +43,7 @@ import '../../features/signup/logic/sign_up_cubit.dart';
 import '../../features/signup/ui/screens/sign_up_screen.dart';
 import '../../features/otp/ui/screen/otp_screen.dart';
 
+import '../../features/splash/ui/screen/choose_country.dart';
 import '../../features/splash/ui/screen/splash_screen.dart';
 import '../../features/used_cars/ui/screen/used_car.dart';
 import '../di/Dependency_inj.dart';
@@ -55,6 +58,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case Routes.onboardingScreen:
         return MaterialPageRoute(builder: (_) => OnBoardScreen());
+        case Routes.chooseCountryScreen:
+        return MaterialPageRoute(builder: (_) => ChooseCountry());
       case Routes.verifyCode:
         return MaterialPageRoute(
           builder:
@@ -86,12 +91,23 @@ class AppRouter {
           builder:
               (_) => MultiBlocProvider(
                 providers: [
-                  BlocProvider<HomeCubit>.value(value: getIt<HomeCubit>()),
-                  BlocProvider<ServicesCubit>.value(
+                  BlocProvider.value(value: getIt<HomeCubit>())
+                  ,BlocProvider.value(value: getIt<ProfileCubit>()),
+                  BlocProvider.value(
                     value: getIt<ServicesCubit>(),
                   ),
                 ],
                 child: HomeScreen(),
+              ),
+        ); case Routes.carsScreen:
+        return MaterialPageRoute(
+          builder:
+              (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: getIt<HomeCubit>()),
+BlocProvider.value(value: getIt<WishListCubit>())
+                ],
+                child: AllCarsScreen(cars: settings.arguments as List<Car>),
               ),
         );
       case Routes.webPage:

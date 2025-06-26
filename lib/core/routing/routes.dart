@@ -50,4 +50,8 @@ class Routes {
   static const String addServices = '/addServices';
 
   static const String searchResult='/searchResult';
+
+  static const String chooseCountryScreen='/chooseCountryScreen';
+
+  static const String  carsScreen='/carsScreen';
 }

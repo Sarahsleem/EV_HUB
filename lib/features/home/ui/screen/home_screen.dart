@@ -12,6 +12,7 @@ import 'package:evhub/core/widgets/image_network.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:evhub/features/home/ui/widgets/ADS_widget.dart';
 import 'package:evhub/features/home/ui/widgets/Ads_loader.dart';
+import 'package:evhub/features/profie/logic/profile_cubit.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../../../../core/widgets/brands_loader.dart';
+import '../../../../ev_hub.dart';
+import '../../../home/ui/widgets/custom_search.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,13 +35,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      HomeCubit.get(context).getBrands(); // or call getBrands() separately here
-    });
-  }
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+ // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     HomeCubit.get(context).getBrands(); // or call getBrands() separately here
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +52,11 @@ class _HomeScreenState extends State<HomeScreen> {
       onRefresh: () async {
         HomeCubit.get(context).loadHomeData();
         ServicesCubit.get(context).getServices();
+        ProfileCubit.get(context).getProfile();
 
       },
       child: Scaffold(
+key: _scaffoldKey,
           drawer: CustomDrawer(
 
   ),
@@ -62,6 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
+                      GestureDetector(
+                        onTap: () {
+                          _scaffoldKey.currentState?.openDrawer();
+                      },child: Icon(Icons.drag_handle_outlined),),
+                      horizontalSpace(6),
                       Container(
                         width: 49.w,
                         height: 49.h,
@@ -173,7 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   verticalSpace(6),
-                  SizedBox(
+                  Container(
+                    margin: EdgeInsetsDirectional.only(start: 18.w),
                     height: 56.h,
                     child: ListView(
                       shrinkWrap: true,
@@ -244,9 +258,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         GestureDetector(
                           child: Row(
                             children: [
-                              Text(
-                                'See all',
-                                style: TextStyles.lato13RegularGrey,
+                              GestureDetector(
+                                onTap:(){
+                                  context.pushNamed(Routes.carsScreen,arguments: HomeCubit.get(context).cars);
+                                },
+                                child: Text(
+                                  'See all',
+                                  style: TextStyles.lato13RegularGrey,
+                                ),
                               ),
                               Icon(
                                 Icons.arrow_forward_ios_rounded,
@@ -262,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   verticalSpace(12),
                   BlocBuilder<HomeCubit, HomeState>(
                     builder: (context, state) {
-                      if (state is HomeLoadingCarsState) {
+                      if (state is HomeLoadingCarsState && state.isCarLoading) {
                         return Center(child: CircularProgressIndicator());
                       } else if (HomeCubit.get(context).cars.isNotEmpty) {
                         var cars = HomeCubit.get(context).cars;
@@ -429,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // In your widget tree:
                   BlocBuilder<HomeCubit, HomeState>(
                     builder: (context, state) {
-                      if (state is HomeLoadingBrandsState) {
+                      if (state is HomeLoadingBrandsState && state.isBrandLoading) {
                         return Center(child: BrandLoader());
                       } else if (HomeCubit.get(context).carBrands.isNotEmpty) {
                         return SizedBox(
@@ -652,49 +671,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class CustomSearch extends StatelessWidget {
-  const CustomSearch({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 16),
-      decoration: BoxDecoration(
-        color: Color(0x5ffffff),
-        borderRadius: BorderRadius.circular(54.r),
-      ),
-      child: Row(
-        children: [
-          Row(
-            children: [
-              Icon(
-                CupertinoIcons.search,
-                color: ColorsManager.borderGrey,
-                size: 34.sp,
-              ),
-              Text(
-                ' Search for anything ',
-                style: TextStyles.latoGrey16SemiBold,)
-            ],
-          ),
-          Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: CircleAvatar(
-              radius: 22.5.r,
-              backgroundColor: Color(0x5ffffff),
-              child: Icon(
-                size: 31.sp,
-                Icons.filter_alt_outlined,
-                color: ColorsManager.borderGrey,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 
 // لو عندك لوجو

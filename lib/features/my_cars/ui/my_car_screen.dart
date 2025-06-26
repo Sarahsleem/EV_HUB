@@ -119,7 +119,9 @@ class _MyCarsState extends State<MyCars> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        cars[index].carBrand?.isNotEmpty==true?(cars[index].carBrand?[0]["name"]):"",
+                                        cars[index].carBrand?.isNotEmpty == true
+                                            ? (cars[index].carBrand?[0]["name"])
+                                            : "",
                                         style: TextStyles.inter13greyRegular
                                             .copyWith(fontSize: 15.3.sp),
                                       ),
@@ -134,7 +136,7 @@ class _MyCarsState extends State<MyCars> {
                                       style: TextStyles.inter13greyRegular,
                                     ),
                                     Text(
-                                      '${NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')} LE',
+                                      '${cars[index].acf!["price"] == null ? 0 : NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()))} LE',
                                       style: TextStyles.inter13greyRegular
                                           .copyWith(
                                             fontSize: 15.3.sp,
@@ -180,10 +182,13 @@ class _MyCarsState extends State<MyCars> {
                                       textStyle: TextStyles.inter18WhiteMedium
                                           .copyWith(fontSize: 10.sp),
                                       onPressed: () {
-                                        context.pushNamed(Routes.editNewCarDtails,arguments: cars[index]);
+                                        context.pushNamed(
+                                          Routes.editNewCarDtails,
+                                          arguments: cars[index],
+                                        );
                                       },
                                       backgroundColor: Color(0x2eD9D9D9),
-                                      buttonHeight:40,
+                                      buttonHeight: 40,
                                       borderRadius: 39.r,
                                       horizontalPadding: 0,
                                       buttonWidth: 98,
@@ -193,13 +198,17 @@ class _MyCarsState extends State<MyCars> {
                                       buttonText: 'delete',
                                       textStyle: TextStyles.inter18WhiteMedium
                                           .copyWith(fontSize: 10.sp),
-                                      onPressed: () {MyCarsCubit.get(context).deleteCar(cars[index].id!);},
+                                      onPressed: () {
+                                        MyCarsCubit.get(
+                                          context,
+                                        ).deleteCar(cars[index].id!);
+                                      },
                                       backgroundColor: Color(0x2eff0000),
-                                      buttonHeight:40,
+                                      buttonHeight: 40,
                                       borderRadius: 39.r,
                                       horizontalPadding: 0,
                                       buttonWidth: 98,
-                                    )
+                                    ),
                                   ],
                                 ),
                               ],

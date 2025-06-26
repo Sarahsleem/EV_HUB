@@ -247,4 +247,6 @@ static final TextStyle latoWhite9SemiBold = GoogleFonts.lato(
   color: Colors.white,
 );
 
+  static TextStyle latoBold40Green=GoogleFonts.lato(fontSize: 40.sp,fontWeight: FontWeight.bold,color: Color(0xff68A850));
+
 }

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:evhub/core/db/cash_helper.dart';
 
 import 'package:evhub/features/profie/data/models/profile_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,6 +32,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         },
         (profileApi) {
           profileUser = profileApi;
+         CashHelper.putInt(key: Keys.userId, value: profileApi.id!,);
           emit(ProfileSuccess());
         },
       );

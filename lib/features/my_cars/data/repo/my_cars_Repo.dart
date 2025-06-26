@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:evhub/core/db/cash_helper.dart';
 import 'package:evhub/core/networking/api_error_model.dart';
 import 'package:evhub/core/networking/error_handler.dart';
 import 'package:evhub/features/home/data/model/car_model.dart';
@@ -8,10 +9,12 @@ class MyCars{
   Dio dio;
   MyCars(this.dio);
   Future<Either<ApiErrorModel, List<Car>>> getCars() async {
+    int? authorId=CashHelper.getInt(key: Keys.userId);
+
     try {
       final responses = await Future.wait([
-        dio.get('/wp/v2/cars?author=12526'),
-        dio.get('/wp/v2/cars?status=pending&author=12526'),
+        dio.get('/wp/v2/cars?author=$authorId'),
+        dio.get('/wp/v2/cars?status=pending&author=$authorId'),
       ]);
 
       final cars1 = (responses[0].data as List)
@@ -35,8 +38,9 @@ class MyCars{
     }
   }
   Future<Either<ApiErrorModel,List<Car>>> getPendingCars()async{
+    int? authorId=CashHelper.getInt(key: Keys.userId);
     try{
-      var response =await dio.get('/wp/v2/cars?status=published&author=12526');
+      var response =await dio.get('/wp/v2/cars?status=published&author=$authorId');
       List<Car> cars = (response.data as List)
           .map((car) => Car.fromMap(car))
           .toList();

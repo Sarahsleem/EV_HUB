@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:evhub/features/car_marketplace/logic/cubit/car_market_cubit_cubit.dart';
 import 'package:evhub/features/car_marketplace/ui/screen/car_market.dart';
+import 'package:evhub/features/profie/logic/profile_cubit.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,8 @@ class NavBarCubit extends Cubit<NavBarState> {
         ),
         BlocProvider.value(
           value: getIt<ServicesCubit>()..getServices(),
+        ), BlocProvider.value(
+          value: getIt<ProfileCubit>()..getProfile(),
         ),
       ],
       child: HomeScreen(),
