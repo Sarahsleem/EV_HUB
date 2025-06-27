@@ -8,7 +8,12 @@ import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:evhub/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+
+import 'owener.dart';
+
 
 class CarDetailCard extends StatelessWidget {
   final Car car;
@@ -48,13 +53,15 @@ class CarDetailCard extends StatelessWidget {
           /// Title Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      car.carBrand?.first.toString() ?? 'Brand',
+                      car.carBrand?[0]["name"],
+
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
@@ -63,12 +70,15 @@ class CarDetailCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Text(
-                          car.title ?? "Model",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey[700],
+
+                        Flexible(
+                          child: Text(
+                            car.title ?? "Model",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey[700],
+                            ),
                           ),
                         ),
                         const Spacer(),
@@ -85,6 +95,7 @@ class CarDetailCard extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 8.w),
               Text(
                 "${acf["price"]?.toStringAsFixed(0) ?? '0'},000 LE",
                 style: TextStyle(
@@ -142,6 +153,7 @@ class CarDetailCard extends StatelessWidget {
             color: Colors.green,
             backgroundColor: Colors.grey[300],
             minHeight: 6.h,
+
           ),
           SizedBox(height: 8.h),
           Row(
@@ -149,7 +161,7 @@ class CarDetailCard extends StatelessWidget {
             children: [
               Text("99%", style: TextStyle(color: Colors.black)),
               Text("10 Km Mileage", style: TextStyle(color: Colors.black)),
-              Text("⚡ 22kw", style: TextStyle(color: Colors.black)),
+              Text("⚡️ 22kw", style: TextStyle(color: Colors.black)),
             ],
           ),
 
@@ -157,33 +169,43 @@ class CarDetailCard extends StatelessWidget {
 
           /// Car Specs
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SpecItem(
-                title: S.of(context).Battery,
-                value: "300",
-                unit: "kwh",
-                assetIcon:
-                    "images/png/image 16 (3).png", // ضع مسار الأيقونة الصحيحة هنا
-              ),
 
-              _SpecItem(
-                title: S.of(context).ChargeInfo,
-                value: "${acf['range_per_charge_km'] ?? '--'} ",
-                unit: 'km',
-                assetIcon: 'images/png/image 16.png',
+              Flexible(
+                child: _SpecItem(
+                  title: S.of(context).Battery,
+                  value: "300",
+                  unit: "kwh",
+                  assetIcon:
+                      "images/png/image 16 (3).png", // ضع مسار الأيقونة الصحيحة هنا
+                ),
               ),
-              _SpecItem(
-                title: S.of(context).MotorPower,
-                value: "${acf['motor_power_hp'] ?? '--'} ",
-                unit: 'HP',
-                assetIcon: 'images/png/image 16 (1).png',
+              Flexible(
+                child: _SpecItem(
+                  title: S.of(context).ChargeInfo,
+                  value: "${acf['range_per_charge_km'] ?? '--'} ",
+                  unit: 'km',
+                  assetIcon: 'images/png/image 16.png',
+                ),
               ),
-              _SpecItem(
-                title: "Battery",
-                value: "${acf['battery_capacity'] ?? '--'} ",
-                unit: 'kWh',
-                assetIcon: 'images/png/image 16 (2).png',
+              Flexible(
+                child: _SpecItem(
+                  title: S.of(context).MotorPower,
+                  value: "${acf['motor_power_hp'] ?? '--'} ",
+                  unit: 'HP',
+                  assetIcon: 'images/png/image 16 (1).png',
+                ),
+              ),
+              Flexible(
+                child: _SpecItem(
+                  title: "Battery",
+                  value: "${acf['battery_capacity'] ?? '--'} ",
+                  unit: 'kWh',
+                  assetIcon: 'images/png/image 16 (2).png',
+                ),
+
               ),
               // _SpecItem(title: "Speed", value: "109 kWh", unit: '', assetIcon: '',), // ثابت من التصميم
               // _SpecItem(title: "Seats", value: "4"),
@@ -199,56 +221,10 @@ class CarDetailCard extends StatelessWidget {
           SizedBox(height: 20.h),
 
           /// Owner + Map
-          FutureBuilder<UserModel?>(
-            future: HomeCubit.get(context).fetchUserById(
-              car.author ?? 1,
-            ), // استدعاء API لجلب بيانات المستخدم1
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError || snapshot.data == null) {
-                return const Center(
-                  child: Text("Failed to load owner data"),
-                ); // "تعذر تحميل بيانات المالك"
-              } else {
-                final user = snapshot.data!;
-                return ContactInfoCard(
-                  name: user.name,
-                  role: "Car Owner", // "مالك السيارة"
-                  imageUrl:
-                      user.profileImage ?? "https://via.placeholder.com/150",
-                  // Action for the entire card tap
-                  onCardTap: () {
-                    print("Card Tapped! Navigating to profile...");
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => ProfilePage1(user: user), // تمرير بيانات المستخدم
-                    //   ),
-                    // );
-                  },
-                  // Action for the "Contact Info" button
-                  onContactTap: () {
-                    print("Contact Info button tapped!");
-                    print("User Phone: ${user.phoneNumber}");
-                    // You can show a dialog, a bottom sheet, or launch the dialer
-                    showDialog(
-                      context: context,
-                      builder:
-                          (_) => AlertDialog(
-                            title: Text(user.name),
-                            content: Text("Phone: ${user.phoneNumber}"),
-                            actions: [
-                              TextButton(
-                                child: const Text("Close"),
-                                onPressed: () => Navigator.of(context).pop(),
-                              ),
-                            ],
-                          ),
-                    );
-                  },
-                );
-              }
+
+          BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              return OwnerAndLocationSection(authorId: car.author ?? 4);
             },
           ),
 
@@ -297,12 +273,10 @@ class _SpecItem extends StatelessWidget {
     required this.unit,
     required this.assetIcon,
   });
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 90.w,
-      padding: EdgeInsets.all(12.r),
+      padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 4.r),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
@@ -310,7 +284,7 @@ class _SpecItem extends StatelessWidget {
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
             blurRadius: 6,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -327,9 +301,13 @@ class _SpecItem extends StatelessWidget {
           Text(
             title,
             style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+
+            textAlign: TextAlign.center,
+
           ),
           SizedBox(height: 8.h),
           RichText(
+            textAlign: TextAlign.center,
             text: TextSpan(
               children: [
                 TextSpan(

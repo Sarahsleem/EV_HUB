@@ -18,6 +18,8 @@ import '../../../home/logic/home_cubit.dart';
 import '../../../home/ui/widgets/custom_search.dart';
 
 class UsedCarScreen extends StatefulWidget {
+   UsedCarScreen({super.key, required this.brandId});
+  final int brandId;
   @override
   State<UsedCarScreen> createState() => _UsedCarScreenState();
 }
@@ -29,7 +31,9 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
     super.didChangeDependencies();
 
     HomeCubit.get(context).getBrands().then((_) {
-      NewCarsCubit.get(context).getUsedCarsByBrand();
+      NewCarsCubit.get(context).chooseBrand(widget.brandId);
+
+      NewCarsCubit.get(context).getUsedCarsByBrand(widget.brandId);
     });
 
     // HomeCubit.get(context).getBrands();
@@ -74,7 +78,7 @@ class _UsedCarScreenState extends State<UsedCarScreen> {
                                   NewCarsCubit.get(context).chooseBrand(
                                     HomeCubit.get(context).carBrands[index].id,
                                   );
-                                  NewCarsCubit.get(context).getNewCarsByBrand();
+                                  NewCarsCubit.get(context).getUsedCarsByBrand(HomeCubit.get(context).carBrands[index].id);
                                 },
                                 child: Opacity(
                                   opacity:

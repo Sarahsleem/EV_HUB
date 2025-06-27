@@ -54,4 +54,6 @@ class Routes {
   static const String chooseCountryScreen='/chooseCountryScreen';
 
   static const String  carsScreen='/carsScreen';
+
+  static const String profile='/profile';
 }

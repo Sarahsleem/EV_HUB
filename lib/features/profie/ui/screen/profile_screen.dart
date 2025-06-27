@@ -39,14 +39,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _launchDeleteAccountURL(BuildContext context) async {
-    final url = Uri.parse('https://evhubtl.com/delete-account');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("done")),
-      );
-    }
+    context.pushNamed(Routes.webPage,arguments: 'https://evhubtl.com/delete-account');
+
+    // final deleteappUrl = Uri.parse("https://evhubtl.com/delete-account");
+    //
+    // if (await canLaunchUrl(deleteappUrl)) {
+    //   await launchUrl(deleteappUrl, mode: LaunchMode.externalApplication);
+    // } else {
+    //   print('❌ Could not launch WhatsApp');
+    // }
+    // final url = Uri.parse('https://evhubtl.com/delete-account');
+    // if (await canLaunchUrl(url)) {
+    //   await launchUrl(url);
+    // } else {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text("done")),
+    //   );
+    // }
   }
   @override
   Widget build(BuildContext context) {
@@ -97,7 +106,7 @@ if (ProfileCubit.get(context).profileUser != null) {
                     SizedBox(height: 14),
                     ContactDetails(
                       title: S.of(context).phonenumber,
-                      content: ProfileCubit.get(context).profileUser!.phoneNumber!,
+                      content: ProfileCubit.get(context).profileUser!.phoneNumber??'',
                       img: 'images/png/call.svg',
                     ),
                     SizedBox(height: 14),

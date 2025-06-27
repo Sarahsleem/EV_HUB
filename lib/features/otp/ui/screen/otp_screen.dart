@@ -126,7 +126,7 @@ class _OTPScreenState extends State<OTPScreen> {
                               otp: otpValue,
                             ));
                           }
-                          context.pushNamed(Routes.navigationBar);
+                          context.pushNamedAndRemoveUntil(Routes.navigationBar, predicate: (Route<dynamic> route) => false);
                         },
                         backgroundColor: ColorsManager.kPrimaryColor,
                         borderRadius: 44.r,

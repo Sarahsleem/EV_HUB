@@ -203,7 +203,14 @@ key: _scaffoldKey,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: (){
-                                  context.pushNamed(Routes.serviceListDetails,arguments: HomeCubit.get(context).features[index].route);
+                                  if(index==2){
+
+                                      context.pushNamed(Routes.stationsScreen);
+
+                                  }
+                                  else {
+                                    context.pushNamed(Routes.serviceListDetails,arguments: HomeCubit.get(context).features[index].route);
+                                  }
                                 },
                                 child: Container(
                                   margin: EdgeInsetsDirectional.only(start: 6.w),
@@ -341,6 +348,7 @@ key: _scaffoldKey,
                                                   Text(
                                                     cars[index]
                                                         .carBrand?[0]["name"],
+                                                    overflow: TextOverflow.ellipsis,
                                                     style:
                                                         TextStyles.latogrey12Medium,
                                                   ),
@@ -365,6 +373,7 @@ key: _scaffoldKey,
                                       AppCachedNetworkImage(
                                         image: cars[index].featuredImage,
                                         height: 110.h,
+                                        fit: BoxFit.cover,
                                         radius: 0,
                                       ),
                                       //Image.asset('images/png/imageCar.png'),
@@ -526,59 +535,70 @@ key: _scaffoldKey,
                             end: 18.w,
                           ),
                           itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(vertical: 10.h),
-                              padding: EdgeInsetsDirectional.only(
-                                start: 8.4.w,
-                                top: 8.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: Offset(0, 1.17),
-                                    blurRadius: 8.98,
-                                    color: Color(0x17000000),
-                                    spreadRadius: 3.5,
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.circular(13.5.r),
-                              ),
-                              height: 114.h,
-                              width: 106.w,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppCachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    radius: 13.5.r,
-                                    image:
-                                        ServicesCubit.get(
-                                          context,
-                                        ).serviceCenters[index].featuredImage,
-                                    height: 38.h,
-                                    width: 40.w,
-                                  ),
-                                  Text(
-                                    ServicesCubit.get(
-                                      context,
-                                    ).serviceCenters[index].title,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyles.lato17BoldDarkBlue
-                                        .copyWith(fontSize: 13.sp),
-                                  ),
-                                  Text(
-                                    ServicesCubit.get(
-                                      context,
-                                    ).serviceCenters[index].acf.address,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyles.lato12MediumDarkBlue
-                                        .copyWith(
-                                          fontSize: 6.7.sp,
-                                          color: Color(0xba263f4d),
-                                        ),
-                                  ),
-                                ],
+                            return GestureDetector(
+                              onTap:()=> context.pushNamed(Routes.oneServiceDetails,arguments:ServicesCubit.get(
+                                context,
+                              ).serviceCenters[index] ),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 10.h),
+                                padding: EdgeInsetsDirectional.only(
+                                  start: 8.4.w,
+                                  end:8.4.w ,
+                                  top: 8.h,
+                                  bottom: 12.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset(0, 1.17),
+                                      blurRadius: 8.98,
+                                      color: Color(0x17000000),
+                                      spreadRadius: 3.5,
+                                    ),
+                                  ],
+                                  borderRadius: BorderRadius.circular(13.5.r),
+                                ),
+                                height: 114.h,
+                                width: 106.w,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    AppCachedNetworkImage(
+                                      fit: BoxFit.cover,
+                                      radius: 13.5.r,
+                                      image:
+                                          ServicesCubit.get(
+                                            context,
+                                          ).serviceCenters[index].featuredImage,
+                                      height: 38.h,
+                                      width: 40.w,
+                                    ),
+                                    Text(
+
+                                      ServicesCubit.get(
+                                        context,
+
+                                      ).serviceCenters[index].title,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyles.lato17BoldDarkBlue
+                                          .copyWith(fontSize: 13.sp),
+                                    ),
+                                    Text(
+                                      ServicesCubit.get(
+                                        context,
+                                      ).serviceCenters[index].type,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyles.lato12MediumDarkBlue
+                                          .copyWith(
+                                            fontSize: 6.7.sp,
+                                            color: Color(0xba263f4d),
+                                          ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           },
@@ -720,34 +740,37 @@ class CustomDrawer extends StatelessWidget {
                   children: [
                     const SizedBox(height: 30),
                     // Profile
-                    Row(
-                      children: [
-                        const CircleAvatar(
-                          radius: 28,
-                          backgroundImage: AssetImage('images/png/pirson.png'),
-                        ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Omar Ahmed",
-                              style: GoogleFonts.lato(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
+                    GestureDetector(
+                      onTap: () {context.pushNamed(Routes.profile);},
+                      child: Row(
+                        children: [
+                          const CircleAvatar(
+                            radius: 28,
+                            backgroundImage: AssetImage('images/png/pirson.png'),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ProfileCubit.get(context).profileUser!.name??"",
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "omar@gmail.com",
-                              style: GoogleFonts.lato(
-                                color: Colors.white70,
-                                fontSize: 12,
+                              Text(
+                               ProfileCubit.get(context).profileUser!.email??"",
+                                style: GoogleFonts.lato(
+                                  color: Colors.white70,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      ],
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 40),
 

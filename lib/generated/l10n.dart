@@ -624,6 +624,16 @@ class S {
   String get arabic {
     return Intl.message('العربية', name: 'arabic', desc: '', args: []);
   }
+
+  /// `car Market places`
+  String get carMarketplaces {
+    return Intl.message(
+      'car Market places',
+      name: 'carMarketplaces',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

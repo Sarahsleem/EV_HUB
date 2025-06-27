@@ -126,7 +126,7 @@ Future<void> getCars()async{
 List<Feature> features=[
   Feature(image:ImagesManager.insurance, title: 'insurance', route: 'Insurance',),
   Feature(image: ImagesManager.protection, title: 'protection', route:'Car Protection Film', ),
-  Feature(image: ImagesManager.stations, title: 'Charging stations', route: '', ),
+  Feature(image: ImagesManager.stations, title: 'Charging stations', route:'', ),
 
 ];
 

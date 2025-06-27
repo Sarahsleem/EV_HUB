@@ -15,3 +15,4 @@ class SearchFailure extends SearchState {
   final String error;
   SearchFailure(this.error);
 }
+class ResetSearch extends SearchState {}

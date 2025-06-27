@@ -133,7 +133,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                              ),
                              verticalSpace(10),
                              AppCachedNetworkImage(
-                               image: widget.carsResult[index].featuredImage,
+                               image: widget.carsResult[index].acf!["car_images"][0]['metadata']['medium']['file_url']??'',
                                height: 160.h,
                                width: 304.w,
                                radius: 20.r,
@@ -147,7 +147,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                    children: [
                                      Row(children: [Image.asset("images/png/carused.png",height: 22.h,width: 22.w),Text(formatKm(widget.carsResult[index].acf!["km"]),style: TextStyles.inter18WhiteMedium,)],),
                                      Text(
-                                       'Installments',
+                                       'Used',
                                        style: TextStyles.inter16greyMedium
                                            .copyWith(fontSize: 11.sp),
                                      ),

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/core/widgets/app_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
@@ -23,15 +26,12 @@ class ServiceDetailScreen extends StatelessWidget {
       //  mainAxisAlignment: MainAxisAlignment.end,
         children: [
           (data.acf.cover != null && data.acf.cover.url != null)
-              ? Transform.rotate(
-                angle: 1.57,
-                child: AppCachedNetworkImage(
-                  height: 852.h,
-                  width:double.infinity,
-                  image: data.acf.cover.url!,
-                  fit: BoxFit.contain,
-                            radius: 0,
-                ),
+              ? AppCachedNetworkImage(
+                height: 252.h,
+                width:double.infinity,
+                image: data.acf.cover.url!,
+                fit: BoxFit.contain,
+                          radius: 0,
               )
               : Container(
             color: Color(0xff243C43),
@@ -87,14 +87,7 @@ class ServiceDetailScreen extends StatelessWidget {
                           // WhatsApp
                           GestureDetector(
                             onTap: () async {
-                              final whatsappNumber = data.acf.whatsapp; // without '+'
-                              final whatsappUrl = Uri.parse("https://wa.me/$whatsappNumber");
-
-                              if (await canLaunchUrl(whatsappUrl)) {
-                                await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
-                              } else {
-                                print('❌ Could not launch WhatsApp');
-                              }
+                            whatsapp(data.acf.whatsapp);
                             },
                             child: Image.asset(
                               'images/png/chat.png',
@@ -304,7 +297,27 @@ class ServiceDetailScreen extends StatelessWidget {
     );
   }
 }
+whatsapp(String num) async {
+  num = num.replaceAll(RegExp(r'[^0-9]'), '');
 
+  if (num.startsWith('00')) {
+    num = num.substring(2);
+  } else if (num.startsWith('0') && num.length == 11) {
+    num = num.substring(1);
+  }
+
+  if (!num.startsWith('20')) {
+    num = '20$num';
+  }
+
+  final url = 'https://wa.me/$num';
+  final uri = Uri.parse(url);
+
+
+      launchUrl(uri, mode: LaunchMode.externalApplication);
+
+
+}
 String removeHtmlTags(String htmlText) {
   final tagRegExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
   final spanClassRegExp = RegExp(r'class="[^"]*"');

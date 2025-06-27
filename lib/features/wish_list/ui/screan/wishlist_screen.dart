@@ -30,7 +30,7 @@ class _WishListScreenState extends State<WishListScreen> {
     super.didChangeDependencies();
 
     HomeCubit.get(context).getBrands().then((_) {
-      NewCarsCubit.get(context).getNewCarsByBrand();
+      NewCarsCubit.get(context).getNewCarsByBrand(13);
     });
 
     // HomeCubit.get(context).getBrands();
@@ -79,7 +79,7 @@ class _WishListScreenState extends State<WishListScreen> {
                                     NewCarsCubit.get(context).chooseBrand(
                                       HomeCubit.get(context).carBrands[index].id,
                                     );
-                                    NewCarsCubit.get(context).getNewCarsByBrand();
+                                    NewCarsCubit.get(context).getNewCarsByBrand(13);
                                   },
                                   child: Opacity(
                                     opacity: NewCarsCubit.get(

@@ -48,6 +48,14 @@ class SearchCubit extends Cubit<SearchState> {
     {"id": 14, "name": "Used"},
   ];
   List<fieldsModel> carModel = [fieldsModel(id: 8, name: 'X1')];
+  void reset() {
+    selectedBrand = '';
+    selectedCondition = '';
+    selectedstyle = '';
+    selectedModel = '';
+     selectedSince = '';
+     emit(ResetSearch());
+  }
   String selectedBrand = '';
   String selectedCondition = '';
   String selectedstyle = '';

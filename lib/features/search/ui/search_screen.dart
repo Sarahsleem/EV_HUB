@@ -18,8 +18,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  TextEditingController minPrice=TextEditingController();
-  TextEditingController maxPrice=TextEditingController();
+  TextEditingController minPrice = TextEditingController();
+  TextEditingController maxPrice = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +31,9 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         child: SafeArea(
-          child: ListView(
+          child: BlocBuilder<SearchCubit, SearchState>(
+  builder: (context, state) {
+    return ListView(
             padding: EdgeInsets.symmetric(horizontal: 13.w),
             children: [
               Row(
@@ -43,18 +45,22 @@ class _SearchScreenState extends State<SearchScreen> {
                       fontSize: 19.4,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: (){
-                      maxPrice.clear();
-                      minPrice.clear();
-
+                  BlocBuilder<SearchCubit, SearchState>(
+                    builder: (context, state) {
+                      return GestureDetector(
+                        onTap: () {
+                          SearchCubit.get(context).reset();
+                          maxPrice.clear();
+                          minPrice.clear();
+                        },
+                        child: Text(
+                          "Reset all",
+                          style: TextStyles.inter18WhiteMedium.copyWith(
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                      );
                     },
-                    child: Text(
-                      "Reset all",
-                      style: TextStyles.inter18WhiteMedium.copyWith(
-                        fontSize: 14.sp,
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -66,7 +72,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   final brands = HomeCubit.get(context).carBrands;
 
                   return DropdownButtonFormField<String>(
-
                     dropdownColor: const Color(0xFF1C3A4A),
                     decoration: InputDecoration(
                       filled: true,
@@ -97,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             .toList(),
                     onChanged: (value) {
                       setState(() {
-                        SearchCubit.get(context).selectedBrand=value!;
+                        SearchCubit.get(context).selectedBrand = value!;
                       });
                       // Handle brand selection
                     },
@@ -133,7 +138,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         onChanged: (value) {
                           setState(() {
-                            SearchCubit.get(context).selectedstyle=value!;
+                            SearchCubit.get(context).selectedstyle = value!;
                           });
                           // handle selection
                         },
@@ -146,7 +151,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         onChanged: (value) {
                           setState(() {
-                            SearchCubit.get(context).selectedSince=value!;
+                            SearchCubit.get(context).selectedSince = value!;
                           });
                           // handle selection
                         },
@@ -167,12 +172,12 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         onChanged: (value) {
                           setState(() {
-                            SearchCubit.get(context).selectedModel=value!;
+                            SearchCubit.get(context).selectedModel = value!;
                           });
                           // handle selection
                         },
                       ),
-                      SearchStateUi()
+                      SearchStateUi(),
                     ],
                   );
                 },
@@ -185,9 +190,9 @@ class _SearchScreenState extends State<SearchScreen> {
               verticalSpace(20),
               Row(
                 children: [
-                  Expanded(child: _buildMinMaxField("Min",minPrice)),
+                  Expanded(child: _buildMinMaxField("Min", minPrice)),
                   const SizedBox(width: 10),
-                  Expanded(child: _buildMinMaxField("Max",maxPrice)),
+                  Expanded(child: _buildMinMaxField("Max", maxPrice)),
                 ],
               ),
               verticalSpace(40),
@@ -195,8 +200,35 @@ class _SearchScreenState extends State<SearchScreen> {
                 buttonText: 'Search',
                 textStyle: TextStyles.inter18WhiteMedium,
                 onPressed: () {
-                  SearchCubit.get(context).search(int.parse(minPrice.text),int.parse(maxPrice.text));
+                  try {
+                    final min =
+                        minPrice.text.trim().isEmpty
+                            ? 0
+                            : int.parse(minPrice.text.trim());
+                    final max =
+                        maxPrice.text.trim().isEmpty
+                            ? 999999999
+                            : int.parse(maxPrice.text.trim());
+
+                    if (min > max) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Min price cannot be greater than Max price",
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
+                    SearchCubit.get(context).search(min, max);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Please enter valid numbers")),
+                    );
+                  }
                 },
+
                 buttonWidth: 200,
                 backgroundColor: Color(0xff72A850),
               ),
@@ -230,7 +262,9 @@ class _SearchScreenState extends State<SearchScreen> {
               //       .toList(),
               // ),
             ],
-          ),
+          );
+  },
+),
         ),
       ),
     );
@@ -277,7 +311,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildMinMaxField(String hint,TextEditingController con) {
+  Widget _buildMinMaxField(String hint, TextEditingController con) {
     return TextField(
       controller: con,
       style: const TextStyle(color: Colors.white),

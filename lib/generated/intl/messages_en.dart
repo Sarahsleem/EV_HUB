@@ -61,6 +61,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "bikes": MessageLookupByLibrary.simpleMessage("Bikes"),
     "brands": MessageLookupByLibrary.simpleMessage("Brands"),
+    "carMarketplaces": MessageLookupByLibrary.simpleMessage(
+      "car Market places",
+    ),
     "cars": MessageLookupByLibrary.simpleMessage("Cars"),
     "color": MessageLookupByLibrary.simpleMessage("Color"),
     "connectionTimeoutWithTheServer": MessageLookupByLibrary.simpleMessage(

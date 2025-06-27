@@ -142,7 +142,7 @@ final List<Car> cars;
                                     children: [
                                       Row(children: [Image.asset("images/png/carused.png",height: 22.h,width: 22.w),Text(formatKm(cars[index].acf!["km"]),style: TextStyles.inter18WhiteMedium,)],),
                                       Text(
-                                        'Installments',
+                                        'Used',
                                         style: TextStyles.inter16greyMedium
                                             .copyWith(fontSize: 11.sp),
                                       ),

@@ -13,13 +13,14 @@ class NewCarsCubit extends Cubit<NewCarsState> {
   NewCarsCubit(this.carsRepo) : super(NewCarsInitial());
   CarsRepo carsRepo;
   static NewCarsCubit get(context) => BlocProvider.of(context);
-  int selectedBrandId=9;
+  int selectedBrandId=31;
    chooseBrand(int id){
      selectedBrandId=id;
+
      emit(ChooseBrandState());
    }
   List<Car> newCars=[];
-  Future<void> getNewCarsByBrand()async {
+  Future<void> getNewCarsByBrand(int brandId)async {
  emit(NewCarsLoadingState());
       var response= await carsRepo.fetchCarsByBrandIdFromApi(selectedBrandId,13);
   response.fold((l){
@@ -29,7 +30,7 @@ class NewCarsCubit extends Cubit<NewCarsState> {
     emit(NewCarsSuccessState());
   });
 
-  }Future<void> getUsedCarsByBrand()async {
+  }Future<void> getUsedCarsByBrand(int brandId)async {
  emit(NewCarsLoadingState());
       var response= await carsRepo.fetchCarsByBrandIdFromApi(selectedBrandId,14);
   response.fold((l){

@@ -48,6 +48,7 @@ class AddRequestScreen extends StatelessWidget {
                   ),
                   verticalSpace(6),
                   AddContainer(
+                    onTap: () => context.pushNamed(Routes.addServices),
                     image: 'images/png/cellservice.png',
                     title: 'Add Your Service ',
                   ),

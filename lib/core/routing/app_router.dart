@@ -35,6 +35,7 @@ import '../../features/login/logic/sign_in_cubit.dart';
 import '../../features/login/ui/sign_in_screen.dart';
 import '../../features/onboarding/ui/onboard_screen.dart';
 
+import '../../features/profie/ui/screen/profile_screen.dart';
 import '../../features/search/logic/search_cubit.dart';
 import '../../features/search/ui/search_screen.dart';
 import '../../features/services/ui/screen/all_service.dart';
@@ -247,7 +248,7 @@ BlocProvider.value(value: getIt<WishListCubit>())
                   BlocProvider.value(value: getIt<HomeCubit>()),
                   BlocProvider.value(value: getIt<WishListCubit>()),
                 ],
-                child: NewCarScreen(),
+                child: NewCarScreen(brandId: settings.arguments as int,),
               ),
         );
       case Routes.usedCars:
@@ -258,7 +259,7 @@ BlocProvider.value(value: getIt<WishListCubit>())
                   BlocProvider.value(value: getIt<NewCarsCubit>()),
                   BlocProvider.value(value: getIt<HomeCubit>()),
                 ],
-                child: UsedCarScreen(),
+                child: UsedCarScreen(brandId: settings.arguments as int,),
               ),
         );
       case Routes.MyCarsScreen:
@@ -268,6 +269,22 @@ BlocProvider.value(value: getIt<WishListCubit>())
                 value: getIt<MyCarsCubit>(),
                 child: MyCars(),
               ),
+        );
+      case Routes.addServices:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+            create: (context) => getIt<ServicesCubit>(),
+            child:AddNewServiceScreen(),
+          ),
+        );
+      case Routes.profile:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+            create: (context) => getIt<ProfileCubit>(),
+            child:ProfileScreen(),
+          ),
         );
       case Routes.signInScreen:
         return MaterialPageRoute(
