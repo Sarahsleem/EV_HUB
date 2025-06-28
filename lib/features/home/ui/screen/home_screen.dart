@@ -19,7 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
@@ -36,8 +39,52 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  LatLng? _currentLocation;
+  bool _isLocationLoading = false;
+  String? errorMessage;
 
- // @override
+  // New string representation for the UI
+  String _locationLabel = "";
+Future<void> _getCurrentLocation() async {
+  setState(() => _isLocationLoading = true);
+  try {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) throw Exception("Location services are disabled.");
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception("Location permissions are denied.");
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+    _currentLocation = LatLng(position.latitude, position.longitude);
+
+    // Get the placemark (city, country, etc.)
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    Placemark placemark = placemarks.first;
+    String placeName = placemark.locality ?? placemark.subAdministrativeArea ?? placemark.administrativeArea ?? 'Unknown';
+
+    setState(() {
+      _locationLabel = placeName;
+      _isLocationLoading = false;
+    });
+  } catch (e) {
+    setState(() {
+      _isLocationLoading = false;
+      errorMessage = "Failed to get current location: $e";
+      _locationLabel = "Location not available";
+    });
+  }
+}
+
+  // @override
   // void initState() {
   //   super.initState();
   //
@@ -53,13 +100,11 @@ class _HomeScreenState extends State<HomeScreen> {
         HomeCubit.get(context).loadHomeData();
         ServicesCubit.get(context).getServices();
         ProfileCubit.get(context).getProfile();
-
+        _getCurrentLocation();
       },
       child: Scaffold(
-key: _scaffoldKey,
-          drawer: CustomDrawer(
-
-  ),
+        key: _scaffoldKey,
+        drawer: CustomDrawer(),
         backgroundColor: ColorsManager.darkBlue,
         body: ListView(
           children: [
@@ -73,7 +118,9 @@ key: _scaffoldKey,
                       GestureDetector(
                         onTap: () {
                           _scaffoldKey.currentState?.openDrawer();
-                      },child: Icon(Icons.drag_handle_outlined),),
+                        },
+                        child: Icon(Icons.drag_handle_outlined),
+                      ),
                       horizontalSpace(6),
                       Container(
                         width: 49.w,
@@ -96,7 +143,11 @@ key: _scaffoldKey,
                             style: TextStyles.latoWhite12Bold,
                           ),
                           Text(
-                            'Sheikh Zayed City',
+                            _isLocationLoading
+                                ? 'Loading...'
+                                : (_locationLabel.isNotEmpty
+                                    ? _locationLabel
+                                    : 'Location not available'),
                             style: TextStyles.latoWhite16Bold,
                           ),
                         ],
@@ -104,7 +155,7 @@ key: _scaffoldKey,
                     ],
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       context.pushNamed(Routes.MyCarsScreen);
                     },
                     child: CircleAvatar(
@@ -121,13 +172,14 @@ key: _scaffoldKey,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: 
-                    (){
-                        context.pushNamed(Routes.stationsScreen);
+                    onTap: () {
+                      context.pushNamed(Routes.stationsScreen);
                     },
                     child: Text(
                       'Battery Low?\nFind a Charger',
-                      style: TextStyles.latoWhite12Bold.copyWith(fontSize: 34.sp),
+                      style: TextStyles.latoWhite12Bold.copyWith(
+                        fontSize: 34.sp,
+                      ),
                     ),
                   ),
                   horizontalSpace(11),
@@ -193,7 +245,19 @@ key: _scaffoldKey,
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       children: [
-                        GestureDetector(onTap: (){context.pushNamed(Routes.allService);},child: CircleAvatar(backgroundColor: ColorsManager.lightDarkBlue,radius: 27.r,child: Text('see\n All',style: TextStyles.font12WhiteRegular,),)),
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed(Routes.allService);
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: ColorsManager.lightDarkBlue,
+                            radius: 27.r,
+                            child: Text(
+                              'see\n All',
+                              style: TextStyles.font12WhiteRegular,
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           height: 56.h,
                           child: ListView.separated(
@@ -202,18 +266,23 @@ key: _scaffoldKey,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
                               return GestureDetector(
-                                onTap: (){
-                                  if(index==2){
-
-                                      context.pushNamed(Routes.stationsScreen);
-
-                                  }
-                                  else {
-                                    context.pushNamed(Routes.serviceListDetails,arguments: HomeCubit.get(context).features[index].route);
+                                onTap: () {
+                                  if (index == 2) {
+                                    context.pushNamed(Routes.stationsScreen);
+                                  } else {
+                                    context.pushNamed(
+                                      Routes.serviceListDetails,
+                                      arguments:
+                                          HomeCubit.get(
+                                            context,
+                                          ).features[index].route,
+                                    );
                                   }
                                 },
                                 child: Container(
-                                  margin: EdgeInsetsDirectional.only(start: 6.w),
+                                  margin: EdgeInsetsDirectional.only(
+                                    start: 6.w,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: ColorsManager.lightDarkBlue,
                                     borderRadius: BorderRadius.circular(48.3.r),
@@ -225,7 +294,9 @@ key: _scaffoldKey,
                                         radius: 27.r,
                                         backgroundColor: Color(0x3dd9d9d9),
                                         child: Image.asset(
-                                          HomeCubit.get(context).features[index].image,
+                                          HomeCubit.get(
+                                            context,
+                                          ).features[index].image,
                                           height: 25.h,
                                           width: 25.w,
                                           fit: BoxFit.scaleDown,
@@ -233,7 +304,9 @@ key: _scaffoldKey,
                                       ),
                                       horizontalSpace(6),
                                       Text(
-                                        HomeCubit.get(context).features[index].title,
+                                        HomeCubit.get(
+                                          context,
+                                        ).features[index].title,
                                         style: TextStyles.inter12WhiteRegular,
                                       ),
                                       horizontalSpace(11),
@@ -266,8 +339,11 @@ key: _scaffoldKey,
                           child: Row(
                             children: [
                               GestureDetector(
-                                onTap:(){
-                                  context.pushNamed(Routes.carsScreen,arguments: HomeCubit.get(context).cars);
+                                onTap: () {
+                                  context.pushNamed(
+                                    Routes.carsScreen,
+                                    arguments: HomeCubit.get(context).cars,
+                                  );
                                 },
                                 child: Text(
                                   'See all',
@@ -301,14 +377,17 @@ key: _scaffoldKey,
                             scrollDirection: Axis.horizontal,
                             itemCount: cars.length,
                             itemBuilder: (context, index) {
-                              return
-                               GestureDetector(
-                                onTap: (){
-                                   context.pushNamed( Routes.carDetails, arguments:cars[index]);
-
+                              return GestureDetector(
+                                onTap: () {
+                                  context.pushNamed(
+                                    Routes.carDetails,
+                                    arguments: cars[index],
+                                  );
                                 },
-                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 10.w),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                  ),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(19.r),
                                     color: Color(0xffEFEFEF),
@@ -342,15 +421,20 @@ key: _scaffoldKey,
                                                     cars[index].title!,
                                                     style: TextStyles
                                                         .lato17BoldDarkBlue
-                                                        .copyWith(fontSize: 14.sp),
-                                                    overflow: TextOverflow.ellipsis,
+                                                        .copyWith(
+                                                          fontSize: 14.sp,
+                                                        ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                   Text(
                                                     cars[index]
                                                         .carBrand?[0]["name"],
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     style:
-                                                        TextStyles.latogrey12Medium,
+                                                        TextStyles
+                                                            .latogrey12Medium,
                                                   ),
                                                 ],
                                               ),
@@ -364,7 +448,8 @@ key: _scaffoldKey,
                                                     'N/A',
                                               ),
                                               style:
-                                                  TextStyles.lato12MediumDarkBlue,
+                                                  TextStyles
+                                                      .lato12MediumDarkBlue,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
@@ -383,7 +468,8 @@ key: _scaffoldKey,
                                         children: [
                                           Text(
                                             '      Explore',
-                                            style: TextStyles.lato12MediumDarkBlue,
+                                            style:
+                                                TextStyles.lato12MediumDarkBlue,
                                           ),
                                           Container(
                                             padding: EdgeInsets.symmetric(
@@ -394,7 +480,9 @@ key: _scaffoldKey,
                                               color: Color(0xff22323B),
                                               borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(12.r),
-                                                bottomRight: Radius.circular(19.r),
+                                                bottomRight: Radius.circular(
+                                                  19.r,
+                                                ),
                                               ),
                                             ),
                                             child: Row(
@@ -406,7 +494,9 @@ key: _scaffoldKey,
                                                 ),
                                                 Text(
                                                   'add to Fav',
-                                                  style: TextStyles.latoWhite12Bold,
+                                                  style:
+                                                      TextStyles
+                                                          .latoWhite12Bold,
                                                 ),
                                               ],
                                             ),
@@ -415,8 +505,8 @@ key: _scaffoldKey,
                                       ),
                                     ],
                                   ),
-                                                               ),
-                               );
+                                ),
+                              );
                             },
                           ),
                         );
@@ -457,7 +547,8 @@ key: _scaffoldKey,
                   // In your widget tree:
                   BlocBuilder<HomeCubit, HomeState>(
                     builder: (context, state) {
-                      if (state is HomeLoadingBrandsState && state.isBrandLoading) {
+                      if (state is HomeLoadingBrandsState &&
+                          state.isBrandLoading) {
                         return Center(child: BrandLoader());
                       } else if (HomeCubit.get(context).carBrands.isNotEmpty) {
                         return SizedBox(
@@ -536,14 +627,19 @@ key: _scaffoldKey,
                           ),
                           itemBuilder: (context, index) {
                             return GestureDetector(
-                              onTap:()=> context.pushNamed(Routes.oneServiceDetails,arguments:ServicesCubit.get(
-                                context,
-                              ).serviceCenters[index] ),
+                              onTap:
+                                  () => context.pushNamed(
+                                    Routes.oneServiceDetails,
+                                    arguments:
+                                        ServicesCubit.get(
+                                          context,
+                                        ).serviceCenters[index],
+                                  ),
                               child: Container(
                                 margin: EdgeInsets.symmetric(vertical: 10.h),
                                 padding: EdgeInsetsDirectional.only(
                                   start: 8.4.w,
-                                  end:8.4.w ,
+                                  end: 8.4.w,
                                   top: 8.h,
                                   bottom: 12.h,
                                 ),
@@ -562,7 +658,8 @@ key: _scaffoldKey,
                                 height: 114.h,
                                 width: 106.w,
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     AppCachedNetworkImage(
@@ -576,10 +673,8 @@ key: _scaffoldKey,
                                       width: 40.w,
                                     ),
                                     Text(
-
                                       ServicesCubit.get(
                                         context,
-
                                       ).serviceCenters[index].title,
                                       textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
@@ -691,13 +786,9 @@ key: _scaffoldKey,
   }
 }
 
-
-
-
 // لو عندك لوجو
 
 class CustomDrawer extends StatelessWidget {
-
   const CustomDrawer({super.key});
 
   @override
@@ -741,19 +832,24 @@ class CustomDrawer extends StatelessWidget {
                     const SizedBox(height: 30),
                     // Profile
                     GestureDetector(
-                      onTap: () {context.pushNamed(Routes.profile);},
+                      onTap: () {
+                        context.pushNamed(Routes.profile);
+                      },
                       child: Row(
                         children: [
                           const CircleAvatar(
                             radius: 28,
-                            backgroundImage: AssetImage('images/png/pirson.png'),
+                            backgroundImage: AssetImage(
+                              'images/png/pirson.png',
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                ProfileCubit.get(context).profileUser!.name??"",
+                                ProfileCubit.get(context).profileUser!.name ??
+                                    "",
                                 style: GoogleFonts.lato(
                                   color: Colors.white,
                                   fontSize: 17,
@@ -761,40 +857,84 @@ class CustomDrawer extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                               ProfileCubit.get(context).profileUser!.email??"",
+                                ProfileCubit.get(context).profileUser!.email ??
+                                    "",
                                 style: GoogleFonts.lato(
                                   color: Colors.white70,
                                   fontSize: 12,
                                 ),
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 40),
 
                     // Menu
-                    ..._buildMenuItem(context, "Home", Icons.home_outlined,(){context.pop();}),
-                    ..._buildMenuItem(context, "My Cars", Icons.directions_car,(){context.pushNamed(Routes.MyCarsScreen);}),
-                    ..._buildMenuItem(context, "Favourite", Icons.favorite_border,(){}),
-                    ..._buildMenuItem(context, "Help & FAQ", Icons.help_outline,(){}),
-                    ..._buildMenuItem(context, "Contact Us", Icons.call_outlined,(){}),
-                    ..._buildMenuItem(context, "Settings", Icons.settings_outlined,(){}),
+                    ..._buildMenuItem(context, "Home", Icons.home_outlined, () {
+                      context.pop();
+                    }),
+                    ..._buildMenuItem(
+                      context,
+                      "My Cars",
+                      Icons.directions_car,
+                      () {
+                        context.pushNamed(Routes.MyCarsScreen);
+                      },
+                    ),
+                    ..._buildMenuItem(
+                      context,
+                      "Favourite",
+                      Icons.favorite_border,
+                      () {},
+                    ),
+                    ..._buildMenuItem(
+                      context,
+                      "Help & FAQ",
+                      Icons.help_outline,
+                      () {},
+                    ),
+                    ..._buildMenuItem(
+                      context,
+                      "Contact Us",
+                      Icons.call_outlined,
+                      () {},
+                    ),
+                    ..._buildMenuItem(
+                      context,
+                      "Settings",
+                      Icons.settings_outlined,
+                      () {},
+                    ),
 
                     const Spacer(),
 
-                    const Divider(color: Color(0xFF1A7EFE), thickness: 0.5, height: 1),
+                    const Divider(
+                      color: Color(0xFF1A7EFE),
+                      thickness: 0.5,
+                      height: 1,
+                    ),
                     const SizedBox(height: 18),
 
                     // Language switch
                     Row(
                       children: [
-                        const Icon(Icons.language, color: Colors.white70, size: 18),
+                        const Icon(
+                          Icons.language,
+                          color: Colors.white70,
+                          size: 18,
+                        ),
                         const SizedBox(width: 10),
-                        Text("English", style: GoogleFonts.lato(color: Colors.white)),
+                        Text(
+                          "English",
+                          style: GoogleFonts.lato(color: Colors.white),
+                        ),
                         const Spacer(),
-                        Text("العربية", style: GoogleFonts.lato(color: Colors.white)),
+                        Text(
+                          "العربية",
+                          style: GoogleFonts.lato(color: Colors.white),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -808,7 +948,12 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildMenuItem(BuildContext context, String title, IconData icon,Function()on) {
+  List<Widget> _buildMenuItem(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Function() on,
+  ) {
     return [
       GestureDetector(
         onTap: on,
