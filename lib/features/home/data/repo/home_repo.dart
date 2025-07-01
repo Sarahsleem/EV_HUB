@@ -13,6 +13,41 @@ import '../model/company_model.dart';
 class HomeRepo{
   Dio dio;
   HomeRepo(this.dio);
+
+
+
+
+   Future<List<Car>> fetchCarsByAuthor(int authorId) async {
+    try {
+      final response = await dio.get(
+       ApiConstants.cars,
+        queryParameters: {'author': authorId},
+        options: Options(
+          validateStatus: (status) => status! < 500, // السماح بأكواد أقل من 500
+        ),
+      );
+
+      log('Response Status Code: ${response.statusCode}');
+      log('Response Data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        if (response.data is List) {
+          return response.data.map<Car>((car) => Car.fromMap(car)).toList();
+        } else {
+          throw Exception('Unexpected data format: Expected List but got ${response.data.runtimeType}');
+        }
+      } else {
+        throw Exception('Failed to load cars, status code: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      log('DioException: ${e.message}');
+      throw Exception('Failed to load cars: ${e.message}');
+    } catch (e) {
+      log('Error fetching cars: $e');
+      throw Exception('Failed to load cars');
+    }
+  }
+ 
   Future<Either<String,List<AdsModel>>> getADS2()async{
 try{
   var response =await dio.get(ApiConstants.ads2);

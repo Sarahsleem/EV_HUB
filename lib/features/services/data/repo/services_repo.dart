@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:evhub/core/networking/api_constants.dart';
 import 'package:evhub/core/networking/api_error_model.dart';
 import 'package:evhub/core/networking/error_handler.dart';
+import 'package:evhub/features/add_services/data/models/service_model.dart';
 
 import '../model/car_acc_model.dart';
 import '../model/car_part_model.dart';
@@ -15,6 +16,25 @@ import '../model/solar_model.dart';
 class Services{
   Dio dio;
   Services(this.dio);
+   Future<Either<ApiErrorModel, Insurance>> createInsuranceService(
+      CompanyInfo insuranceData) async {
+    try {
+      // Note: Creating posts in WordPress typically requires authentication (e.g., a JWT token).
+      // Ensure your Dio instance is configured with the necessary auth headers.
+      final response = await dio.post(
+        'wp/v2/insurance', // Endpoint for creating a new insurance entry
+        data: insuranceData.toJson(), // The data to be sent, converted to JSON
+      );
+
+      // On successful creation (HTTP 201), the API returns the newly created object.
+      // We parse it using the existing Insurance.fromJson model.
+      return right(Insurance.fromJson(response.data));
+    } catch (e) {
+      // Handle any errors that occur during the request
+      return left(ApiErrorHandler.handle(e));
+    }
+  }
+
   Future<Either<ApiErrorModel,List<ServiceCenter>>> fetchServiceCenters() async {
     try {
       final response = await dio.get(

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/routing/routes.dart';
 import 'package:evhub/ev_hub.dart';
+import 'package:evhub/features/add_services/data/models/service_model.dart';
 import 'package:evhub/features/services/data/model/car_acc_model.dart';
 import 'package:evhub/features/services/data/model/car_services_model.dart';
 import 'package:evhub/features/services/data/model/service_model.dart';
@@ -29,6 +30,24 @@ class ServicesCubit extends Cubit<ServicesState> {
   List<CarProtectionFilm> serviceCarProtectionFilm = [];
   List<CarParts> serviceCarParts= [];
   List<CarAccessories> carAccessories=[];
+
+
+   Future<void> createInsurance(CompanyInfo insuranceData) async {
+    emit(CreateInsuranceLoading()); // 1. Emit loading state
+
+    final result = await servicesRepo.createInsuranceService(insuranceData); // 2. Call repository
+
+    result.fold(
+      (error) {
+        // 3a. On failure, emit error state with the message
+        emit(CreateInsuranceError(error.message.toString())); 
+      },
+      (newInsurance) {
+        // 3b. On success, emit success state with the new data
+        emit(CreateInsuranceSuccess(newInsurance));
+      },
+    );
+  }
   Future<void> getServices() async {
     emit(ServicesLoading());
 
@@ -228,6 +247,7 @@ class ServicesCubit extends Cubit<ServicesState> {
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Establishing Charging' );
         }
     ),
+
     CarServicesModel(
       image: 'images/png/carParts.png',
       title: 'Car Parts',
@@ -286,4 +306,111 @@ class ServicesCubit extends Cubit<ServicesState> {
       }
     ),
   ];
+
+
+  List<CarServicesModel> listChoosenServices = [
+    CarServicesModel(
+      image: 'images/png/insurance.png',
+      title: 'Insurance',
+      description:
+          'Car insurance covers your vehicle and damages in case of accidents or theft.',
+      onTap: (){
+        NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,  arguments: AddServiceArguments(icon: 'images/png/insurance.png', title: 'Insurance'),
+ );
+      }
+    ),
+    CarServicesModel(
+      image: 'images/png/carservice.png',
+      title: 'Car Service',
+      description:
+          'Car service keeps your vehicle running smoothly with regular maintenance and checks.',
+        onTap: (){
+          NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon: 'images/png/carservice.png', title:  'Car Service'),);
+        }
+    ),
+    CarServicesModel(
+      image: 'images/png/carprotection.png',
+      title: 'Car Protection Film',
+      description:
+          'Car protection film shields your car’s paint from scratches, chips, and UV damage.',
+        onTap: (){
+          NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon: 'images/png/carprotection.png', title:   'Car Protection Film'), );
+        }
+    ),
+    CarServicesModel(
+      image: 'images/png/establishcharge.png',
+      title: 'Establishing Charging',
+      description:
+          'Establishing charging ensures safe and convenient power access for electric vehicles.',
+        onTap: (){
+          NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:  'images/png/establishcharge.png', title:  'Establishing Charging'), );
+        }
+    ),
+
+    CarServicesModel(
+      image: 'images/png/carParts.png',
+      title: 'Car Parts',
+      description:
+          'Car parts are essential components that keep your vehicle functioning properly.',
+        onTap: (){
+          NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:  'images/png/carParts.png', title:  'Car Parts'), );
+        }
+    ),
+    CarServicesModel(
+      image: 'images/png/solarEnergy.png',
+      title: 'Solar Energy',
+      description:
+          'Solar energy powers devices and systems using clean, renewable sunlight.',
+        onTap: (){
+          NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:   'images/png/solarEnergy.png', title:'Solar Energy'),  );
+        }
+    ),
+    CarServicesModel(
+      image: 'images/png/carAcces.png',
+      title: 'Car Accessories',
+      description:
+          'Car accessories enhance your vehicle’s comfort, style, and functionality',
+        onTap: (){
+          NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:   'images/png/carAcces.png', title:'Car Accessories'),  );
+        }
+    ),
+    // CarServicesModel(
+    //   image: 'images/png/carapp.png',
+    //   title: 'Car Insurance Application',
+    //   description:
+    //       'Car insurance application lets you easily apply for coverage and manage your policy.',
+    //   onTap: (){
+    //    // "https://evhubtl.com/تقديم-طلب-تامين-علي-سياراة/"
+    //     NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:   'images/png/carapp.png', title:'Car Insurance Application'), );
+
+    //   }
+    // ),
+    // CarServicesModel(
+    //   image: 'images/png/carinstall.png',
+    //   title: 'Car Installment Request',
+    //   description:
+    //       'Car installment request allows you to buy a vehicle through monthly payments.',
+    //   onTap: (){
+    //     NavigationService.navigatorKey.currentContext?.pushNamed(Routes.webPage,arguments: AddServiceArguments(icon: 'images/png/carinstall.png', title:'Car Installment Request'),);
+
+    //   }
+    // ),
+    // CarServicesModel(
+    //   image: 'images/png/carwash.png',
+    //   title: 'Car Wash',
+    //   description:
+    //       'Car wash cleans and refreshes your vehicle’s exterior and interior.',
+    //   onTap: (){
+    //     NavigationService.navigatorKey.currentContext?.pushNamed(Routes.webPage,arguments: AddServiceArguments(icon: 'images/png/carwash.png', title:'Car Wash'),);
+    //   }
+    // ),
+  ];
+
+
+}
+class AddServiceArguments {
+  final String icon;
+  final String title;
+
+  AddServiceArguments({required this.icon, required this.title});
 }

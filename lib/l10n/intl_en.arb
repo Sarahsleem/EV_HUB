@@ -85,5 +85,8 @@
   "settings": "Settings",
   "english": "English",
   "arabic": "العربية",
-  "carMarketplaces": "car Market places"
+  "carMarketplaces": "car Market places",
+  "caragrncy": "Car Agency",
+  "price": "Price"
+
 }

@@ -4,11 +4,9 @@ import '../../../../core/theming/styles.dart';
 
 class InsuranceHeaderCard extends StatelessWidget {
   final String iconPath;
+  final String title;
 
-  const InsuranceHeaderCard({
-    super.key,
-    required this.iconPath,
-  });
+  const InsuranceHeaderCard({super.key, required this.iconPath, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +17,7 @@ class InsuranceHeaderCard extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [
-            Color(0xFF1C434A),
-            Color(0xFF365A5F),
-          ],
+          colors: [Color(0xFF1C434A), Color(0xFF365A5F)],
         ),
       ),
       child: Row(
@@ -45,16 +40,12 @@ class InsuranceHeaderCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Text(
-  "Insurance",
-  style:TextStyles.latoWhite21SemiBold,
-),
+                Text(title, style: TextStyles.latoWhite21SemiBold),
 
- Text(
-  "Fill Car Insurance Service Request",
-  style: TextStyles.latoWhite9SemiBold,
-),
-
+                Text(
+                  "Fill Car Insurance Service Request",
+                  style: TextStyles.latoWhite9SemiBold,
+                ),
               ],
             ),
           ),

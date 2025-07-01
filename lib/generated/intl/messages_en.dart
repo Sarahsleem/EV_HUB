@@ -64,6 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "carMarketplaces": MessageLookupByLibrary.simpleMessage(
       "car Market places",
     ),
+    "caragrncy": MessageLookupByLibrary.simpleMessage("Car Agency"),
     "cars": MessageLookupByLibrary.simpleMessage("Cars"),
     "color": MessageLookupByLibrary.simpleMessage("Color"),
     "connectionTimeoutWithTheServer": MessageLookupByLibrary.simpleMessage(

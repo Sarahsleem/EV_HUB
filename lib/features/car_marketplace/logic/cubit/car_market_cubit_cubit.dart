@@ -6,12 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'car_market_cubit_state.dart';
 
 class CarMarketCubitCubit extends Cubit<CarMarketCubitState> {
-
-   CarMarketCubitCubit(this.homeRepo) : super( CarMarketCubitInitial());
-   HomeRepo homeRepo;
+  CarMarketCubitCubit(this.homeRepo) : super(CarMarketCubitInitial());
+  HomeRepo homeRepo;
   static CarMarketCubitCubit get(context) => BlocProvider.of(context);
 
- List<CompanyModel> companyUsers = [];
+  List<CompanyModel> companyUsers = [];
+  List<CompanyModel> caragency = [];
   int visibleUsersCount = 0;
 
   Future<void> getUsersByRole(String role) async {
@@ -28,6 +28,18 @@ class CarMarketCubitCubit extends Cubit<CarMarketCubitState> {
       },
     );
   }
+    Future<void> getCarAgency(String role) async {
+    emit(CarMarketLoadingCarAgencyState());
 
+    final response = await homeRepo.fetchUsersByRole(role);
 
+    response.fold(
+      (errorMessage) => emit(CarMarketErrorCarAgencyState(errorMessage)),
+      (users) {
+        caragency = users;
+        visibleUsersCount = users.length < 7 ? users.length : 7;
+        emit(CarMarketSuccessCarAgencyState());
+      },
+    );
+  }
 }

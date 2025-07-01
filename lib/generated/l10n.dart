@@ -634,6 +634,11 @@ class S {
       args: [],
     );
   }
+
+  /// `Car Agency`
+  String get caragrncy {
+    return Intl.message('Car Agency', name: 'caragrncy', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

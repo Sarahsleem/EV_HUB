@@ -202,47 +202,93 @@ String _buildCustomAddress(Station station) {
           ),
           // App Bar, Station Card, etc...
           if (selectedStation != null)
-            Positioned(
-              bottom: 90,
-              left: 16,
-              right: 16,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF004D43),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      selectedStation!.title.rendered,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _buildCustomAddress(selectedStation!),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey.shade300,
-                      ),
-                    ),
-                  ],
-                ),
+          Positioned(
+  bottom: 90,
+  left: 16,
+  right: 16,
+  child: Container(
+    height: 130,
+    width: double.infinity,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: const Color(0xDD063A34), // نفس اللون بنسبة 87%
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // العنوان + الوقت والمسافة
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              selectedStation!.title.rendered,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-        ],
+            RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
+                    text: '10 min ',
+                    style: TextStyle(
+                      color: Color(0xFF00FFD1),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '(3 km)',
+                    style: TextStyle(
+                      color: Colors.grey.shade300,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          _buildCustomAddress(selectedStation!),
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey.shade300,
+          ),
+        ),
+        const Spacer(),
+        // نوع الشاحن
+        Row(
+          children: const [
+            Icon(Icons.bolt, color: Colors.white, size: 16),
+            SizedBox(width: 4),
+            Text(
+              'Type 2',
+              style: TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            SizedBox(width: 8),
+            Text(
+              '22kW AC',
+              style: TextStyle(color: Colors.white, fontSize: 14),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ),
+)
+    ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _getCurrentLocation,

@@ -45,6 +45,7 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
       HomeCubit.get(context).getAds(), // This was missing
       HomeCubit.get(context).getBrands(),
       CarMarketCubitCubit.get(context).getUsersByRole("showroom"),
+       CarMarketCubitCubit.get(context). getCarAgency("caragency"),
     ]);
   }
 
@@ -138,6 +139,14 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
                   verticalSpace(13),
                   _buildShowroomsList(),
                   verticalSpace(20),
+                  _buildSectionHeader(
+                    title: S.of(context).caragrncy,
+                    // No icon for this one in the original code
+                  ),
+                  verticalSpace(13),
+                  
+
+                       _buildcarAgencyList(),
                 ],
               ),
             ),
@@ -251,21 +260,80 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
             child: Center(child: Text("No showrooms found", style: TextStyles.latoGrey16SemiBold)),
           );
         }
-        return SizedBox(
-          height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: cubit.visibleUsersCount,
-            itemBuilder: (context, index) {
-              final company = cubit.companyUsers[index];
-              return _buildShowroomCard(company.profileImage, Colors.white);
-            },
-          ),
-        );
+       return SizedBox(
+  height: 100,
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: cubit.visibleUsersCount,
+    itemBuilder: (context, index) {
+      final company = cubit.companyUsers[index];
+      return GestureDetector(
+        onTap: () {
+          context.pushNamed(
+            Routes.showroom,
+            arguments: company,
+          );
+        },
+        child: _buildShowroomCard(company.profileImage, Colors.white),
+      );
+    },
+  ),
+);
+
       },
     );
   }
 
+
+ Widget _buildcarAgencyList() {
+    return BlocBuilder<CarMarketCubitCubit, CarMarketCubitState>(
+      builder: (context, state) {
+        final cubit = context.read<CarMarketCubitCubit>();
+        // EDITED: Added comprehensive state handling
+        if (state is CarMarketLoadingCarAgencyState) {
+          return const SizedBox(
+            height: 100,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (state
+        is CarMarketErrorCarAgencyState) {
+          return SizedBox(
+            height: 100,
+            child: Center(child: Text("Error: ${state.message}", style: const TextStyle(color: Colors.red))),
+          );
+        }
+        if (cubit.caragency.isEmpty) {
+          return SizedBox(
+            height: 100,
+            child: Center(child: Text("No showrooms found", style: TextStyles.latoGrey16SemiBold)),
+          );
+        }
+       return SizedBox(
+  height: 100,
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: cubit.visibleUsersCount,
+    itemBuilder: (context, index) {
+      final company = cubit.caragency[index];
+      return GestureDetector(
+        onTap: () {
+          context.pushNamed(
+            Routes.showroom,
+            arguments: company,
+          );
+        },
+        child: _buildShowroomCard(company.profileImage, Colors.white),
+      );
+    },
+  ),
+);
+
+      },
+    );
+  }
+
+ 
   // --- WIDGET: See All Button ---
   Widget _buildSeeAllButton({required VoidCallback onTap}) {
     return GestureDetector(
@@ -290,7 +358,8 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
 
   // --- WIDGET: Individual Showroom Card ---
   Widget _buildShowroomCard(String imageUrl, Color bgColor) {
-    return Container(
+    return 
+    Container(
       width: 100.w,
       height: 100.h,
       margin: const EdgeInsets.only(right: 12),
@@ -312,6 +381,8 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
       ),
     );
   }
+
+
 }
 
 

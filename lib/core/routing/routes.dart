@@ -33,27 +33,32 @@ class Routes {
 
   static const String allService = '/allService';
 
-  static const String serviceListDetails='/serviceListDetails';
+  static const String serviceListDetails = '/serviceListDetails';
 
-  static const String oneServiceDetails='/oneServiceDetails';
+  static const String oneServiceDetails = '/oneServiceDetails';
 
-  static const String searchFilter='/searchFilter';
+  static const String searchFilter = '/searchFilter';
 
-  static const String MyCarsScreen='/myCarsScreen';
+  static const String MyCarsScreen = '/myCarsScreen';
 
-  static  const String editNewCarDtails='/editNewCarDtails';
+  static const String editNewCarDtails = '/editNewCarDtails';
 
- // static const String serviceListDetails = '/serviceListDetails';
+  // static const String serviceListDetails = '/serviceListDetails';
   static const String carmarket = '/carMarket';
   static const String carDetails = '/cardetails';
   static const String stationsScreen = '/stationsScreen';
   static const String addServices = '/addServices';
 
-  static const String searchResult='/searchResult';
+  static const String searchResult = '/searchResult';
 
-  static const String chooseCountryScreen='/chooseCountryScreen';
+  static const String chooseCountryScreen = '/chooseCountryScreen';
 
-  static const String  carsScreen='/carsScreen';
+  static const String carsScreen = '/carsScreen';
 
-  static const String profile='/profile';
+  static const String profile = '/profile';
+  static const String chooseservice = '/choose';
+  static const String showroom = '/showroom';
+  static const String carAgency = '/carAgency';
+  static const String userScreen = '/userScreen';
+  
 }

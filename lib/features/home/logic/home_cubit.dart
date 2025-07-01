@@ -32,6 +32,15 @@ List<Car> cars=[];
       emit(LoadMoreCarsState()); // Create a dummy state
     }
   }
+   Future<void> getCarsByAuthor(int authorId) async {
+    emit(HomeLoadingCarsByAuthorState());
+    try {
+      final carsList = await homeRepo.fetchCarsByAuthor(authorId);
+      emit(HomeSuccessCarsByAuthorState(carsList));
+    } catch (e) {
+      emit(HomeErrorCarsByAuthorState(e.toString()));
+    }
+  }
 Future<void> getAds2()async{
   emit(HomeLoadingADSState());
   var response =await homeRepo.getADS2();

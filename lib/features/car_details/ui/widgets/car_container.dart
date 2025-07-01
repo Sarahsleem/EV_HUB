@@ -22,8 +22,13 @@ class CarDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final acf = car.acf ?? {};
     List<String> imagePaths = [];
+      final batteryPercentage = 0.99; // أو استخرجيها من acf لو موجودة
+  final batteryText = "${(batteryPercentage * 100).toInt()}%";
+  final mileage = acf['range_per_charge:_km'] ?? 'N/A';
+  final batteryCapacity = acf['battery_capacity'] ?? 'N/A';
 
     final images = acf['car_images'];
     if (images != null && images is List) {
@@ -82,27 +87,37 @@ class CarDetailCard extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        Text(
-                          '2025',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        // Text(
+                        //   '2025',
+                        //   style: TextStyle(
+                        //     fontSize: 14.sp,
+                        //     color: Colors.blue,
+                        //     fontWeight: FontWeight.w500,
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: 8.w),
-              Text(
-                "${acf["price"]?.toStringAsFixed(0) ?? '0'},000 LE",
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    S.of(context).price,
+                    style: TextStyles.inter12WhiteRegular.copyWith(color:  Colors.grey[700]),
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    "${acf["price"]?.toStringAsFixed(0) ?? '0'},000 LE",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -139,33 +154,46 @@ class CarDetailCard extends StatelessWidget {
           SizedBox(height: 16.h),
 
           /// Battery Info
-          Text('Battery Health', style: TextStyle(color: Colors.black)),
-          Text(
-            "${S.of(context).status}${car.status}",
-            style: TextStyles.inter12WhiteRegular.copyWith(
-              color: ColorsManager.lightGrey,
-            ),
-          ),
+    Text('Battery Health', style: TextStyle(color: Colors.black)),
+Text(
+  "${S.of(context).status} : ${car.condition?[0]["name"]}",
+  style: TextStyles.inter12WhiteRegular.copyWith(
+    color: ColorsManager.lightGrey,
+  ),
+),
 
-          SizedBox(height: 4.h),
-          LinearProgressIndicator(
-            value: 0.99,
-            color: Colors.green,
-            backgroundColor: Colors.grey[300],
-            minHeight: 6.h,
-
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("99%", style: TextStyle(color: Colors.black)),
-              Text("10 Km Mileage", style: TextStyle(color: Colors.black)),
-              Text("⚡️ 22kw", style: TextStyle(color: Colors.black)),
-            ],
-          ),
-
-          SizedBox(height: 16.h),
+/// 🔋 Battery Indicator
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+   Container(
+  width: 170, // العرض اللي يناسب التصميم
+  height: 17,  // ارتفاع البار
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(12),
+    color: Colors.grey[300],
+  ),
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(12), // يخلي الزوايا دائرية
+    child: LinearProgressIndicator(
+      value: batteryPercentage, // بين 0 و 1
+      color: Color(0xff00FF0D), // نفس درجة الأخضر اللي في الصورة
+      backgroundColor: Colors.transparent,
+      minHeight: 20,
+    ),
+  ),
+),
+ SizedBox(height: 8.h),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(batteryText, style: TextStyle(color: Colors.black)),
+        Text("$mileage Km Mileage", style: TextStyle(color: Colors.black)),
+        Text("⚡️ $batteryCapacity kWh", style: TextStyle(color: Colors.black)),
+      ],
+    ),
+  ],
+),  SizedBox(height: 16.h),
 
           /// Car Specs
           Row(

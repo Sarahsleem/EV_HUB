@@ -514,6 +514,7 @@ Future<void> _getCurrentLocation() async {
                       return Container();
                     },
                   ),
+                
                   verticalSpace(17),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 21.w),

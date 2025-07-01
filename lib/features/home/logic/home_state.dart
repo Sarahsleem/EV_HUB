@@ -30,3 +30,12 @@ class HomeSuccessCarsState extends HomeState{
 class HomeErrorCarsState extends HomeState{}
 class LoadMoreCarsState extends HomeState{}
 class LoadMoreBrandsState extends HomeState{}
+class HomeLoadingCarsByAuthorState extends HomeState {}
+class HomeSuccessCarsByAuthorState extends HomeState {
+  final List<Car> authorCars;
+  HomeSuccessCarsByAuthorState(this.authorCars);
+}
+class HomeErrorCarsByAuthorState extends HomeState {
+  final String message;
+  HomeErrorCarsByAuthorState(this.message);
+}
