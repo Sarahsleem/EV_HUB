@@ -1,4 +1,5 @@
 import 'package:evhub/core/helpers/extensions.dart';
+import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/search/logic/search_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ import '../../../core/routing/routes.dart';
 import '../../../core/theming/font_weight.dart';
 import '../../../core/theming/styles.dart';
 import '../../../core/widgets/image_network.dart';
+import '../../../generated/l10n.dart';
 import '../../used_cars/ui/screen/used_car.dart';
 import '../../wish_list/logic/wish_list_cubit.dart';
 
@@ -26,6 +28,7 @@ final List<Car> carsResult;
 class _SearchResultScreenState extends State<SearchResultScreen> {
   @override
   void didChangeDependencies() {
+
     // TODO: implement didChangeDependencies
     //WishListCubit.get(context).getFavorites();
   }
@@ -47,12 +50,37 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
              verticalSpace(17),
 
-
+             BlocBuilder<SearchCubit,SearchState>(
+  builder: (context, state) {
+    return Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: DropdownButton<String>(
+                 dropdownColor: ColorsManager.darkBlue,
+                 underline: SizedBox(),
+                 icon: Icon(CupertinoIcons.sort_down_circle),
+                 value: SearchCubit.get(context).selectedSort,
+                 // isExpanded: true,
+                 items:  SearchCubit.get(context).sortOptions
+                     .map((sort) => DropdownMenuItem(
+                   value: sort,
+                   child: Text(sort),
+                 ))
+                     .toList(),
+                 onChanged: (value) {
+                   if (value != null) {
+                     SearchCubit.get(context).selectedSort = value;
+                     SearchCubit.get(context).sortBy(value);
+                   }
+                 },
+               ),
+             );
+  },
+),
              Padding(
                    padding: EdgeInsetsDirectional.only(end: 30.w),
                    child: Text(
                      textAlign: TextAlign.end,
-                     '${widget.carsResult.length} Result',
+                     '${widget.carsResult.length} ${S.of(context).Results}',
                      style: TextStyles.inter16greyMedium.copyWith(
                        fontSize: 11.sp,
                      ),
@@ -62,7 +90,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
              BlocBuilder<SearchCubit,SearchState>(
                builder: (context, state) {
                  if(widget.carsResult.isEmpty){
-                   return Center(child: Text('No Cars Found'),);
+                   return Center(child: Text(S.of(context).NoCarsFound),);
                  }
                  return ListView.separated(
                    separatorBuilder: (context, index) {
@@ -105,7 +133,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                          overflow: TextOverflow.ellipsis,
                                        ),
                                        Text(
-                                         widget.carsResult[index].carBrand?[0],
+                                         widget.carsResult[index].carBrand?[0]["name"],
                                          style: TextStyles.inter13greyRegular
                                              .copyWith(fontSize: 15.3.sp),
                                        ),
@@ -116,11 +144,11 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                    crossAxisAlignment: CrossAxisAlignment.start,
                                    children: [
                                      Text(
-                                       'starts From',
+                                      S.of(context).StartFrom,
                                        style: TextStyles.inter13greyRegular,
                                      ),
                                      Text(
-                                       '${NumberFormat("#,###").format(double.tryParse(widget.carsResult[index].acf!["price"].toString()) ?? 'N/A')} LE',
+                                       '${NumberFormat("#,###").format(double.tryParse(widget.carsResult[index].acf!["price"].toString()) ?? 'N/A')} ${S.of(context).LE}',
                                        style: TextStyles.inter13greyRegular
                                            .copyWith(
                                          fontSize: 15.3.sp,
@@ -133,7 +161,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                              ),
                              verticalSpace(10),
                              AppCachedNetworkImage(
-                               image: widget.carsResult[index].acf!["car_images"][0]['metadata']['medium']['file_url']??'',
+                               image: widget.carsResult[index].featuredImage,
                                height: 160.h,
                                width: 304.w,
                                radius: 20.r,
@@ -147,12 +175,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                    children: [
                                      Row(children: [Image.asset("images/png/carused.png",height: 22.h,width: 22.w),Text(formatKm(widget.carsResult[index].acf!["km"]),style: TextStyles.inter18WhiteMedium,)],),
                                      Text(
-                                       'Used',
+                                       S.of(context).New,
                                        style: TextStyles.inter16greyMedium
                                            .copyWith(fontSize: 11.sp),
                                      ),
                                      Text(
-                                       'Good Condition',
+                                       S.of(context).GoodCondition,
                                        style: TextStyles.inter16greyMedium
                                            .copyWith(fontSize: 11.sp),
                                      ),
@@ -167,7 +195,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                    child: Padding(
                                      padding: const EdgeInsets.all(12.0),
                                      child: Text(
-                                       'Explore',
+                                       S.of(context).Explore,
                                        textAlign: TextAlign.center,
                                      ),
                                    ),
@@ -233,8 +261,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
         ),
         Center(
           child: Text(
-            textAlign: TextAlign.center,
-            'Search Result',
+            textAlign: TextAlign.center, S.of(context).SearchResults,
             style: TextStyles.inter18WhiteMedium,
           ),
         ),

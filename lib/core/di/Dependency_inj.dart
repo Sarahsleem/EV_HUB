@@ -12,11 +12,14 @@ import 'package:evhub/features/new_cars/data/repo/car_repo.dart';
 import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/otp/data/repo/otp_repo.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
+import 'package:evhub/features/posts/data/repo/post_repo.dart';
+import 'package:evhub/features/posts/logic/posts_cubit.dart';
 import 'package:evhub/features/profie/data/repo/profile_repo.dart';
 import 'package:evhub/features/profie/logic/profile_cubit.dart';
 import 'package:evhub/features/search/data/repo/search_repo.dart';
 import 'package:evhub/features/search/logic/search_cubit.dart';
 import 'package:evhub/features/services/data/repo/services_repo.dart';
+import 'package:evhub/features/setting/data/repo/setting_repo.dart';
 import 'package:evhub/features/wish_list/data/repo/wishlist_repo.dart';
 import 'package:evhub/features/wish_list/logic/wish_list_cubit.dart';
 import 'package:get_it/get_it.dart';
@@ -26,6 +29,7 @@ import '../../features/forget_password/logic/forget_password_cubit.dart';
 import '../../features/login/data/repo/sign_in_repo.dart';
 import '../../features/login/logic/sign_in_cubit.dart';
 import '../../features/services/logic/services_cubit.dart';
+import '../../features/setting/logic/setting_cubit.dart';
 import '../../features/signup/data/repo/sign_up_repo.dart';
 import '../../features/signup/logic/sign_up_cubit.dart';
 import '../networking/dio_factory.dart';
@@ -64,6 +68,10 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<SearchRepo>(()=>SearchRepo(  dio: dio));
   getIt.registerLazySingleton<ProfileCubit>(() => ProfileCubit(getIt()));
   getIt.registerFactory<ProfileRepo>(()=>ProfileRepo( dio));
+  getIt.registerLazySingleton<PostsCubit>(() => PostsCubit(getIt()));
+  getIt.registerFactory<PostRepo>(()=>PostRepo( dio: dio));
+  getIt.registerLazySingleton<SettingCubit>(() => SettingCubit(getIt()));
+  getIt.registerFactory<SettingRepo>(()=>SettingRepo( dio: dio));
 
 getIt.registerLazySingleton<CarMarketCubitCubit>(() => CarMarketCubitCubit(getIt()));
 }

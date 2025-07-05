@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:evhub/core/assets/images.dart';
 import 'package:evhub/core/db/cash_helper.dart';
+import 'package:evhub/ev_hub.dart';
 import 'package:evhub/features/car_details/data/user_model.dart';
 import 'package:evhub/features/home/data/model/Ads_model.dart';
 import 'package:evhub/features/home/data/model/car_brand.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../../core/db/cached_app.dart';
+import '../../../generated/l10n.dart';
 
 part 'home_state.dart';
 
@@ -78,10 +80,16 @@ Future<void> getAds2()async{
     }
   }
 void loadHomeData (){
-  getAds2();
-  getCars().then((_)=>getBrands());
-  //getBrands();
-  getAds();
+    emit(LoadingHomeDataState());
+   try {
+      getAds2();
+      getCars().then((_) => getBrands());
+      //getBrands();
+      getAds();
+      emit(SuccessHomeDataState());
+    }catch(e){
+     emit(FailHomeDataState());
+   }
 }
   Future<void> getBrands() async {
     try{
@@ -133,9 +141,9 @@ Future<void> getCars()async{
 
 }
 List<Feature> features=[
-  Feature(image:ImagesManager.insurance, title: 'insurance', route: 'Insurance',),
-  Feature(image: ImagesManager.protection, title: 'protection', route:'Car Protection Film', ),
-  Feature(image: ImagesManager.stations, title: 'Charging stations', route:'', ),
+  Feature(image:ImagesManager.insurance, title: S.of(NavigationService.navigatorKey.currentContext!).insurance, route: 'Insurance',),
+  Feature(image: ImagesManager.protection, title:  S.of(NavigationService.navigatorKey.currentContext!).protection, route:'Car Protection Film', ),
+  Feature(image: ImagesManager.stations, title:  S.of(NavigationService.navigatorKey.currentContext!).Chargingstations, route:'', ),
 
 ];
 

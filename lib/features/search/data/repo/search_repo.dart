@@ -1,11 +1,14 @@
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:evhub/core/networking/api_error_model.dart';
+import 'package:evhub/core/networking/error_handler.dart';
 
 import '../../../home/data/model/car_model.dart';
 
 class SearchRepo{
   SearchRepo({required this.dio});
   Dio dio;
-  Future<List<Car>> searchCars({
+  Future<Either<ApiErrorModel,List<Car>>> searchCars({
     String? brandName,
     String? modelName,
     String? conditionName,
@@ -37,16 +40,20 @@ class SearchRepo{
       );
 
       if (response.data is List) {
-        return (response.data as List).map((car) => Car.fromMap(car)).toList();
+        return right( (response.data as List).map((car) => Car.fromMap(car)).toList());
       } else {
         throw Exception('Unexpected data format: Expected List but got ${response.data.runtimeType}');
       }
     } on DioException catch (e) {
+      print(e.response!.data);
+      return left(ApiErrorHandler.handle(e.response!.data));
      // log('DioException during search: ${e.message}');
       throw Exception('Search failed: ${e.message}');
     } catch (e) {
-     // log('General error during search: $e');
-      throw Exception('Search failed');
+      print(e);
+      return left(ApiErrorHandler.handle(e));
+
     }
   }
+
 }

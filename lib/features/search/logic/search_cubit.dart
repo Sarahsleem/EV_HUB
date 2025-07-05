@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:evhub/ev_hub.dart';
 import 'package:evhub/features/search/data/repo/search_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
+import '../../../generated/l10n.dart';
 import '../../add_new_car/data/model/field_model.dart';
 import '../../home/data/model/car_model.dart';
 
@@ -48,6 +50,7 @@ class SearchCubit extends Cubit<SearchState> {
     {"id": 14, "name": "Used"},
   ];
   List<fieldsModel> carModel = [fieldsModel(id: 8, name: 'X1')];
+  List<Car> result=[];
   void reset() {
     selectedBrand = '';
     selectedCondition = '';
@@ -57,25 +60,62 @@ class SearchCubit extends Cubit<SearchState> {
      emit(ResetSearch());
   }
   String selectedBrand = '';
-  String selectedCondition = '';
+  String selectedCondition = '';String selectedConditionSend = '';
+  void selectCondition(String condition) {
+    if(condition=='new'||condition=='جديدة'){
+      selectedConditionSend='new';
+      selectedCondition=condition;
+    }
+    else{
+      selectedConditionSend='used';
+      selectedCondition=condition;
+
+    }
+
+    emit(SelectCondition());
+  }
   String selectedstyle = '';
   String selectedModel = '';String selectedSince = '';
   int maxPrice = 0;int minPrice = 0;
   Future<void> search(int?minPrice,int?maxPrice) async {
     emit(SearchLoading());
-    try {
+
       final cars = await searchRepo.searchCars(
         brandName: selectedBrand.isNotEmpty ? selectedBrand : null,
         modelName: selectedModel.isNotEmpty ? selectedModel : null,
-        conditionName: selectedCondition.isNotEmpty ? selectedCondition : null,
+        conditionName: selectedConditionSend.isNotEmpty ? selectedConditionSend : null,
         bodyStyleName: selectedstyle.isNotEmpty ? selectedstyle : null,
         usedSinceName: null, // add if needed
         priceMin: minPrice! > 0 ? minPrice : null,
         priceMax: maxPrice! > 0 ? maxPrice : null,
       );
-      emit(SearchSuccess(cars));
-    } catch (e) {
-      emit(SearchFailure(e.toString()));
+      cars.fold((l){ emit(SearchFailure(l.toString()));}, (cars) {
+        result=cars;
+        emit(SearchSuccess(cars));
+      });
+
+
+  }
+  final List<String> sortOptions = [S.of(NavigationService.navigatorKey.currentContext!).MaxPrice,S.of(NavigationService.navigatorKey.currentContext!).MinPrice, S.of(NavigationService.navigatorKey.currentContext!).LastArrived];
+  String selectedSort = S.of(NavigationService.navigatorKey.currentContext!).MaxPrice;
+  void sortBy(String sort) {
+    if (result.isEmpty) return;
+
+    switch (sort) {
+      case 'Max Price'||'أعلى سعر':
+        result.sort((a, b) => (b.acf?['price'] ?? 0).compareTo(a.acf?['price'] ?? 0));
+        emit(SortByMaxPrice());
+        break;
+
+      case 'Min Price'||'أقل سعر':
+        result.sort((a, b) => (a.acf?['price'] ?? 0).compareTo(b.acf?['price'] ?? 0));
+        emit(SortByMinPrice());
+        break;
+
+      case 'Last Arrived'||'آخر الإضافات':
+        result.sort((a, b) => (b.date ?? '').compareTo(a.date ?? ''));
+        emit(SortByLastArrived());
+        break;
     }
   }
 

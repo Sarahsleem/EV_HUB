@@ -11,7 +11,8 @@ class CarsRepo{
     try {
       final response = await dio.get(
         ApiConstants.cars,
-        queryParameters: {
+        queryParameters: brandId==0?{'per_page': 7,
+          'condition': condition}:{
           'car-brand': brandId,  // استخدام الـ brandId بدلاً من القيمة الثابتة
           'per_page': 7,
           'condition': condition

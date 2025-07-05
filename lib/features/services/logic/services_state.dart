@@ -10,6 +10,10 @@ class ServicesSuccess extends ServicesState{}
 class ServicesListLoading extends ServicesState{}
 class ServicesListError extends ServicesState{}
 class ServicesListSuccess extends ServicesState{}
+class AddCommentSuccess extends ServicesState{}
+class AddCommentError extends ServicesState{}
+class AddCommentLoading extends ServicesState{}
+class ChangeRatingState extends ServicesState{}
 class CreateInsuranceLoading extends ServicesState {}
 
  class CreateInsuranceSuccess extends ServicesState {

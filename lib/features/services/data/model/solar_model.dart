@@ -1,5 +1,6 @@
 import '../../../services/data/model/service_model.dart';
 import '../../../services/data/model/service_model.dart';
+import 'car_acc_model.dart';
 
 class SolarEnergy {
   final int id;
@@ -17,6 +18,7 @@ class SolarEnergy {
   final int? featuredMedia;
   final String? template;
   final Meta? meta;
+  final Ratings? ratings;
   final List<String> classList;
   final Acf acf;
   final String? featuredImage; // ✅ Added
@@ -38,6 +40,7 @@ class SolarEnergy {
     this.featuredMedia,
     this.template,
     this.meta,
+    this.ratings,
     required this.classList,
     required this.acf,
     this.featuredImage, // ✅ Added
@@ -56,6 +59,7 @@ class SolarEnergy {
       status: json['status'],
       type: json['type'],
       link: json['link'],
+      ratings: Ratings.fromJson(json['ratings']),
       title: json['title']['rendered']??'',
       content: json['content']["rendered"] ?? '',
       featuredMedia: json['featured_media'],

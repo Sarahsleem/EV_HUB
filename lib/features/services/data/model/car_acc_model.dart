@@ -19,7 +19,8 @@ class CarAccessories {
   final Meta? meta;
   final List<String> classList;
   final Acf acf;
-  final String? featuredImage; // ✅ Added
+  final String? featuredImage;
+  final Ratings? ratings;
   final Links? links;
 
   CarAccessories({
@@ -38,6 +39,7 @@ class CarAccessories {
     this.featuredMedia,
     this.template,
     this.meta,
+    this.ratings,
     required this.classList,
     required this.acf,
     this.featuredImage, // ✅ Added
@@ -56,6 +58,7 @@ class CarAccessories {
       status: json['status'],
       type: json['type'],
       link: json['link'],
+      ratings: Ratings.fromJson(json['ratings']),
       title: json['title']['rendered']??'',
       content: json['content']["rendered"] ?? '',
       featuredMedia: json['featured_media'],
@@ -239,6 +242,33 @@ class LinkHref {
 
   Map<String, dynamic> toJson() {
     return {'href': href};
+  }
+}
+class Ratings {
+  final num average;
+  final int total;
+  final List<dynamic> details;
+
+  Ratings({
+    required this.average,
+    required this.total,
+    required this.details,
+  });
+
+  factory Ratings.fromJson(Map<String, dynamic> json) {
+    return Ratings(
+      average: json['average'] ?? 0,
+      total: json['total'] ?? 0,
+      details: json['details'] ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'average': average,
+      'total': total,
+      'details': details,
+    };
   }
 }
 

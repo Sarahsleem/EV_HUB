@@ -6,6 +6,7 @@ abstract class EditCarState {}
 class EditCarInitial extends EditCarState {}
 class ChooseBrandState extends EditCarState{}
 class ChooseCondtionState extends EditCarState{}
+class ChooseImageState extends EditCarState{}
 class ChooseModelState extends EditCarState{}
 class ChooseUsedSinceState extends EditCarState{}
 class ChooseBodyStyleState extends EditCarState{}

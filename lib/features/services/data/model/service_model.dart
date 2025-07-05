@@ -1,3 +1,5 @@
+import 'car_acc_model.dart';
+
 class ServiceCenter {
   final int id;
   final String date;
@@ -14,6 +16,8 @@ class ServiceCenter {
   final int featuredMedia;
   final String template;
   final Acf acf;
+  final Ratings? ratings;
+
   final String featuredImage;
   final Meta meta;
 
@@ -33,6 +37,7 @@ class ServiceCenter {
     required this.featuredMedia,
     required this.template,
     required this.acf,
+    this.ratings,
     required this.featuredImage,
     required this.meta,
   });
@@ -54,6 +59,7 @@ class ServiceCenter {
       featuredMedia: json['featured_media'] ?? 0,
       template: json['template'] ?? '',
       acf: Acf.fromJson(json['acf'] ?? {}),
+      ratings: Ratings.fromJson(json['ratings']),
       featuredImage: json['featured_image'] ?? '',
       meta: Meta.fromJson(json['meta'] ?? {}),
     );

@@ -30,6 +30,9 @@ class HomeSuccessCarsState extends HomeState{
 class HomeErrorCarsState extends HomeState{}
 class LoadMoreCarsState extends HomeState{}
 class LoadMoreBrandsState extends HomeState{}
+class LoadingHomeDataState extends HomeState{}
+class FailHomeDataState extends HomeState{}
+class SuccessHomeDataState extends HomeState{}
 class HomeLoadingCarsByAuthorState extends HomeState {}
 class HomeSuccessCarsByAuthorState extends HomeState {
   final List<Car> authorCars;

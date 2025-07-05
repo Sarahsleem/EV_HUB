@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:evhub/core/theming/styles.dart';
 import 'package:evhub/features/add_services/data/models/service_model.dart';
 import 'package:evhub/features/add_services/ui/widget/service_widget.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
@@ -172,9 +173,10 @@ class _AddNewServiceScreenState extends State<AddNewServiceScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.lato(fontWeight: FontWeight.w600, fontSize: 14.sp)),
+        Text(label, style: TextStyles.inter16greyMedium.copyWith(color: Color(0xff3C3C3C),fontSize: 22.sp)),
         const SizedBox(height: 6),
         TextField(
+          style: TextStyles.inter16greyMedium.copyWith(color: Color(0x993c3c3c)),
           controller: controller,
           maxLines: maxLines,
           maxLength: maxLength,

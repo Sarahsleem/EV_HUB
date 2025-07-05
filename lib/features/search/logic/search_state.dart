@@ -16,3 +16,7 @@ class SearchFailure extends SearchState {
   SearchFailure(this.error);
 }
 class ResetSearch extends SearchState {}
+class SortByMaxPrice extends SearchState {}
+class SortByMinPrice extends SearchState {}
+class SortByLastArrived extends SearchState {}
+class SelectCondition extends SearchState {}

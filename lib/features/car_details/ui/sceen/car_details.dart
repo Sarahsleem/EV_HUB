@@ -69,7 +69,7 @@ class CustomAppBar extends StatelessWidget {
         Center(
           child: Text(
             textAlign: TextAlign.center,
-            'Car Details',
+            S.of(context).carDetails,
             style: TextStyles.inter18WhiteMedium,
           ),
         ),

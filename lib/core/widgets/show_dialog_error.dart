@@ -6,7 +6,7 @@ class ShowDialogError {
   static void showErrorDialog(
     BuildContext context,
     String title,
-    String message,
+    String message,String ?button,
   ) {
     showDialog(
       context: context,
@@ -48,9 +48,9 @@ class ShowDialogError {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text(
-                'Try again',
-                style: TextStyle(
+              child: Text(
+                button ?? 'OK',
+                style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: Colors.black, // Ensure button text is visible

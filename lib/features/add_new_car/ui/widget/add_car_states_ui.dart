@@ -34,25 +34,32 @@ class AddCarStatesUi extends StatelessWidget {
         // Handle LoginSuccess state
         else if (state is PostCarSuccess) {
           if (Navigator.canPop(context)) {
-            Navigator.pop(context);
+            context.pop();
           }
           context.pop();
           context.pop();
-
+          context.pushNamed(Routes.myCarsScreen);
+          ShowDialogError.showErrorDialog(
+              context,
+              "", // Pass the "attention" title here
+              S.of(context).yourCarAddedInReviewSuccessfully,
+             S.of(context).Done
+          );
           //context.pushReplacementNamed(Routes.navigationBar);
           //context.pushNamed(Routes.forgetPasswordOTP,arguments: state.email);
-          showSnackBar(context: context, text: 'your car added  inReview successfully');
+         // showSnackBar(context: context, text: 'your car added  inReview successfully');
 
         }
 
         // Handle LoginError and show the dialog here
         if (state is PostCarFailare) {
-          Navigator.pop(context);
-          // ShowDialogError.showErrorDialog(
-          //     context,
-          //     "attention", // Pass the "attention" title here
-          //     'some thing went wrong '
-          // );
+         context.pop();
+          ShowDialogError.showErrorDialog(
+              context,
+              "attention", // Pass the "attention" title here
+              S.of(context).somethingWentWrong,
+            S.of(context).tryagain
+          );
           showSnackBar(context: context, text: S.of(context).somethingWentWrong);
         }
       },

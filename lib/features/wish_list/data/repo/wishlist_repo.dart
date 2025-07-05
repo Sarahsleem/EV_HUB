@@ -21,17 +21,20 @@ class WishListRepo{
       final responseData = response.data;
 
       // Expecting a JSON map with a "data" list
-      if (responseData is Map<String, dynamic> && responseData['data'] is List) {
-        final carsJson = responseData['data'] as List;
-        final cars = carsJson.map((e) => Car.fromMap(e)).toList();
-        return right(cars);
+      if (response.data is List) {
+        return right( (response.data as List).map((car) => Car.fromMap(car)).toList());
       } else {
-        print('❌ Invalid response format: $responseData');
-        return left(ApiErrorModel(message: 'Invalid data structure from API'));
+        throw Exception('Unexpected data format: Expected List but got ${response.data.runtimeType}');
       }
+    } on DioException catch (e) {
+      print(e.response!.data);
+      return left(ApiErrorHandler.handle(e.response!.data));
+      // log('DioException during search: ${e.message}');
+      throw Exception('Search failed: ${e.message}');
     } catch (e) {
-      print('❌ Dio error: $e');
+      print(e);
       return left(ApiErrorHandler.handle(e));
+
     }
   }
 

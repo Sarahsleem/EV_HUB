@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theming/colors.dart';
+import '../../../../generated/l10n.dart';
 import '../../logic/nav_bar_cubit.dart';
 import '../screens/add_Request_screen.dart';
 
@@ -81,9 +82,7 @@ class NavBarContainer extends StatelessWidget {
                                               horizontal: 8.0.w,
                                             ),
                                             child: Text(
-                                              NavBarCubit.get(
-                                                context,
-                                              ).navTitle[0],
+                                              S.of(context).Home,
                                               style:
                                                   TextStyles
                                                       .inter14WhiteSemiBold,
@@ -190,9 +189,7 @@ class NavBarContainer extends StatelessWidget {
                                               horizontal: 8.0.w,
                                             ),
                                             child: Text(
-                                              NavBarCubit.get(
-                                                context,
-                                              ).navTitle[2],
+                                             S.of(context).Car,
                                               style:
                                                   TextStyles
                                                       .inter14WhiteSemiBold,

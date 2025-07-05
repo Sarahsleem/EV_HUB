@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theming/colors.dart';
 import '../../../../core/theming/styles.dart';
+import '../../../../generated/l10n.dart';
 
 class CustomSearch extends StatelessWidget {
   const CustomSearch({super.key});
@@ -11,7 +12,7 @@ class CustomSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 16),
+      padding: EdgeInsetsDirectional.only(start: 16),
       decoration: BoxDecoration(
         color: Color(0x5ffffff),
         borderRadius: BorderRadius.circular(54.r),
@@ -26,13 +27,13 @@ class CustomSearch extends StatelessWidget {
                 size: 34.sp,
               ),
               Text(
-                ' Search for anything ',
+                 S.of(context).Searchforanything,
                 style: TextStyles.latoGrey16SemiBold,)
             ],
           ),
           Spacer(),
           Padding(
-            padding: const EdgeInsets.all(6.0),
+            padding:  EdgeInsets.all(6.0.w),
             child: CircleAvatar(
               radius: 22.5.r,
               backgroundColor: Color(0x5ffffff),

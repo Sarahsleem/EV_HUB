@@ -41,11 +41,13 @@ class SearchStateUi extends StatelessWidget {
 
         // Handle LoginError and show the dialog here
         if (state is SearchFailure) {
+          print(state.error);
           Navigator.pop(context);
           ShowDialogError.showErrorDialog(
               context,
               "attention", // Pass the "attention" title here
-              'some thing went wrong '
+              'some thing went wrong ',
+                  'Try again'
           );
         }
       },

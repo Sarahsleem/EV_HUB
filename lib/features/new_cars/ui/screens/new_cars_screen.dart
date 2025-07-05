@@ -16,8 +16,10 @@ import '../../../../core/theming/colors.dart';
 import '../../../../core/widgets/app_text_form_field.dart';
 import '../../../../core/widgets/brands_loader.dart';
 import '../../../../core/widgets/image_network.dart';
+import '../../../../generated/l10n.dart';
 import '../../../home/logic/home_cubit.dart';
 import '../../../home/ui/widgets/custom_search.dart';
+import '../../../used_cars/ui/screen/used_car.dart';
 
 class NewCarScreen extends StatefulWidget {
    NewCarScreen({super.key, required this.brandId});
@@ -33,7 +35,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
     super.didChangeDependencies();
 
     HomeCubit.get(context).getBrands().then((_) {
-     // WishListCubit.get(context).getFavorites();
+      WishListCubit.get(context).getFavorites();
       NewCarsCubit.get(context).chooseBrand(widget.brandId);
       NewCarsCubit.get(context).getNewCarsByBrand(widget.brandId);
     });
@@ -57,7 +59,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
               CustomAppBar(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
-                child: CustomSearch(),
+                child: GestureDetector(onTap:(){ context.pushNamed(Routes.searchFilter);},child: CustomSearch()),
               ),
 
               verticalSpace(17),
@@ -73,7 +75,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
                     }  if (HomeCubit.get(
                       context,
                     ).carBrands.isEmpty) {
-                      return const Center(child: Text('No brands available.'));
+                      return  SizedBox.shrink();
                     }
                     else {
                       return SizedBox(
@@ -157,7 +159,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
                     padding: EdgeInsetsDirectional.only(end: 30.w),
                     child: Text(
                       textAlign: TextAlign.end,
-                      '${NewCarsCubit.get(context).newCars.length} Result',
+                      '${NewCarsCubit.get(context).newCars.length} ${S.of(context).Results}',
                       style: TextStyles.inter16greyMedium.copyWith(
                         fontSize: 11.sp,
                       ),
@@ -173,7 +175,7 @@ class _NewCarScreenState extends State<NewCarScreen> {
                     return Center(child: CircularProgressIndicator());
                   }
                   else if(cars.isEmpty){
-                    return Center(child: Text('No Cars Found'),);
+                    return Center(child: Text(S.of(context).NoCarsFound),);
                   }
                   return ListView.separated(
                     separatorBuilder: (context, index) {
@@ -226,11 +228,11 @@ class _NewCarScreenState extends State<NewCarScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'starts From',
+                                        S.of(context).StartFrom,
                                         style: TextStyles.inter13greyRegular,
                                       ),
                                       Text(
-                                        '${NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')} LE',
+                                        formatLocalizedPrice(cars[index].acf?["price"], S.of(context).LE),
                                         style: TextStyles.inter13greyRegular
                                             .copyWith(
                                               fontSize: 15.3.sp,
@@ -261,38 +263,49 @@ class _NewCarScreenState extends State<NewCarScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(12.0),
                                       child: Text(
-                                        'Explore',
+                                        S.of(context).Explore,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
                                   BlocBuilder<WishListCubit, WishListState>(
-                                    builder: (context, state) {
-                                      final cubit = WishListCubit.get(context);
-                                      final isFavorite = cubit.favCars.any((car) => car.id == cars[index].id);
+  builder: (context, state) {
+    final cubit = WishListCubit.get(context);
+    final carId = cars[index].id!;
+    final isFavorite = cubit.favCars.any((car) => car.id == carId);
 
-                                      return GestureDetector(
-                                        onTap: () {
-                                          if (isFavorite) {
-                                            cubit.removeFromFavorites(cars[index].id!);
-                                            cubit.favCars.removeWhere((car) => car.id == cars[index].id);
-                                          } else {
-                                            cubit.addToFavorites(cars[index].id!);
-                                            cubit.favCars.add(cars[index]);
-                                          }
-                                          //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
-                                        },
-                                        child: CircleAvatar(
-                                          backgroundColor: const Color(0xff1B262C),
-                                          child: Icon(
-                                            CupertinoIcons.heart_fill,
-                                            color: isFavorite ? Colors.red : const Color(0xa8ffffff),
-                                            size: 20.sp,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+    final isUpdatingThisCar =
+        (state is AddToFavoritesLoadingState || state is RemoveFromFavoritesLoadingState) &&
+        cubit.updatingCarId == carId;
+
+    return GestureDetector(
+      onTap: () {
+        if (isFavorite) {
+          cubit.removeFromFavorites(carId);
+          cubit.favCars.removeWhere((car) => car.id == carId);
+        } else {
+          cubit.addToFavorites(carId);
+          cubit.favCars.add(cars[index]);
+        }
+      },
+      child: CircleAvatar(
+        backgroundColor: const Color(0xff1B262C),
+        child: isUpdatingThisCar
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Icon(
+                CupertinoIcons.heart_fill,
+                color: isFavorite ? Colors.red : const Color(0xa8ffffff),
+                size: 20.sp,
+              ),
+      ),
+    );
+  },
+)
+,
 
                                 ],
                               ),
@@ -331,7 +344,7 @@ class CustomAppBar extends StatelessWidget {
         Center(
           child: Text(
             textAlign: TextAlign.center,
-            'new cars',
+            S.of(context).newcars,
             style: TextStyles.inter18WhiteMedium,
           ),
         ),

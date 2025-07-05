@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/routing/routes.dart';
+import '../../../../generated/l10n.dart';
 
 class AddRequestScreen extends StatelessWidget {
   @override
@@ -43,14 +44,17 @@ class AddRequestScreen extends StatelessWidget {
                   verticalSpace(16),
                   AddContainer(
                     image: 'images/png/cellcar.png',
-                    title: 'Sell your Car',
+                    title: S.of(context).sellYourCarTitle,
+                    describe: S.of(context).sellYourCarDesc,
                     onTap: () => context.pushNamed(Routes.addNewChooseBrand),
                   ),
                   verticalSpace(6),
                   AddContainer(
+                    describe: S.of(context).addYourServiceDesc,
+                   // onTap: () => context.pushNamed(Routes.addServices),
                     onTap: () => context.pushNamed(Routes.chooseservice),
                     image: 'images/png/cellservice.png',
-                    title: 'Add Your Service ',
+                    title:S.of(context).addYourServiceTitle,
                   ),
                 ],
               ),
@@ -63,10 +67,11 @@ class AddRequestScreen extends StatelessWidget {
 }
 
 class AddContainer extends StatelessWidget {
-  const AddContainer({super.key, required this.image, required this.title, this.onTap});
+  const AddContainer({super.key, required this.image, required this.title, this.onTap, required this.describe});
   final String image;
   final String title;
   final Function()? onTap;
+  final String describe;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -105,7 +110,7 @@ class AddContainer extends StatelessWidget {
                 SizedBox(
                   width: 227.w,
                   child: Text(
-                    'Car insurance covers your vehicle and damages in case of accidents or theft.',
+                    describe,
                     overflow: TextOverflow.clip,
                     style: TextStyles.lato9SemiBoldWhite,
                   ),

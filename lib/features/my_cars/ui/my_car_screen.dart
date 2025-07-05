@@ -17,6 +17,7 @@ import '../../../../core/theming/colors.dart';
 import '../../../../core/widgets/app_text_form_field.dart';
 import '../../../../core/widgets/brands_loader.dart';
 import '../../../../core/widgets/image_network.dart';
+import '../../home/ui/widgets/custom_search.dart';
 import '../logic/my_cars_cubit.dart';
 
 class MyCars extends StatefulWidget {
@@ -51,7 +52,12 @@ class _MyCarsState extends State<MyCars> {
               CustomAppBar(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
-                child: CustomSearch(),
+                child: GestureDetector(
+                  onTap: () {
+                    context.pushNamed(Routes.searchFilter);
+                  },
+                  child: CustomSearch(),
+                ),
               ),
 
               verticalSpace(17),
@@ -228,40 +234,6 @@ class _MyCarsState extends State<MyCars> {
   }
 }
 
-class CustomSearch extends StatelessWidget {
-  const CustomSearch({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppTextFormField(
-      prefexIcon: Icon(
-        CupertinoIcons.search,
-        color: ColorsManager.borderGrey,
-        size: 34.sp,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0x5ffffff), width: 1.3),
-        borderRadius: BorderRadius.circular(54.r),
-      ),
-      hintText: 'Search for anything',
-      backgroundColor: Color(0x61435f72),
-      hintStyle: TextStyles.latoGrey16SemiBold,
-      borderRadius: 54.r,
-      suffixIcon: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: CircleAvatar(
-          radius: 22.5.r,
-          backgroundColor: Colors.transparent,
-          child: Icon(
-            size: 31.sp,
-            Icons.filter_alt_outlined,
-            color: ColorsManager.borderGrey,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});

@@ -13,6 +13,7 @@ import '../../../core/di/Dependency_inj.dart';
 import '../../car_market_place/ui/car_market_place_screen.dart';
 import '../../home/logic/home_cubit.dart';
 import '../../home/ui/screen/home_screen.dart';
+import '../../wish_list/logic/wish_list_cubit.dart';
 
 part 'nav_bar_state.dart';
 
@@ -33,7 +34,9 @@ class NavBarCubit extends Cubit<NavBarState> {
           value: getIt<ServicesCubit>()..getServices(),
         ), BlocProvider.value(
           value: getIt<ProfileCubit>()..getProfile(),
+
         ),
+        BlocProvider.value(value: getIt<WishListCubit>()),
       ],
       child: HomeScreen(),
     ),

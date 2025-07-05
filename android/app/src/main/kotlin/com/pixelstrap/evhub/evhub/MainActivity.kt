@@ -1,4 +1,4 @@
-package com.pixelstrap.evhub.evhub
+package com.pixelstrap.evhub
 
 import io.flutter.embedding.android.FlutterActivity
 

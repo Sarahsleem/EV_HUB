@@ -37,7 +37,7 @@ class EditCarStatesUi extends StatelessWidget {
             context.pop();
           }
 
-          context.pushReplacementNamed(Routes.MyCarsScreen);
+          context.pushReplacementNamed(Routes.myCarsScreen);
 
           //context.pushReplacementNamed(Routes.navigationBar);
           //context.pushNamed(Routes.forgetPasswordOTP,arguments: state.email);

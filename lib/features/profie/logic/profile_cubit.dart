@@ -5,6 +5,7 @@ import 'package:evhub/features/profie/data/models/profile_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
+import '../../../core/db/cached_app.dart';
 import '../data/repo/profile_repo.dart';
 
 part 'profile_state.dart';
@@ -15,27 +16,27 @@ class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepo profileRepo;
   ProfileModel? profileUser;
   Future<void> getProfile() async {
-    // profileUser = ProfileModel(
-    //     name: 'test',
-    //     email: 'test@gmail.com',
-    //     phoneNumber: '0102020200',
-    //     image:
-    //         'https://wallpapers.com/images/featured/blank-white-7sn5o1woonmklx1h.jpg',
-    //     role: 'test');
-    emit(ProfileLoading());
-    final result = await profileRepo.fetchProfile();
-    {
-      result.fold(
-        (failure) {
-          profileUser = null;
-          emit(ProfileFailure(failure.message.toString()));
-        },
-        (profileApi) {
-          profileUser = profileApi;
-         CashHelper.putInt(key: Keys.userId, value: profileApi.id!,);
-          emit(ProfileSuccess());
-        },
-      );
+    try{
+profileUser=CachedApp.getCachedData(CachedDataType.profile.name);
+    }catch (e){
+      emit(ProfileLoading());
+      final result = await profileRepo.fetchProfile();
+      {
+        result.fold(
+              (failure) {
+            profileUser = null;
+            emit(ProfileFailure(failure.message.toString()));
+          },
+              (profileApi) {
+            profileUser = profileApi;
+            CachedApp.saveData(profileUser,CachedDataType.profile.name);
+            CashHelper.putInt(key: Keys.userId, value: profileApi.id!,);
+            CashHelper.putString(key: Keys.name, value: profileApi.name!);
+            CashHelper.putString(key: Keys.email, value: profileApi.email!);
+            emit(ProfileSuccess());
+          },
+        );
+      }
     }
   }
 }

@@ -1,19 +1,19 @@
 class  Car {
   final int? id;
-  final String? date;
-  final String? dateGmt;
-  final String? modified;
-  final String? modifiedGmt;
-  final String? slug;
-  final String? status;
-  final String? type;
-  final String? link;
-  final String? title;
-  final int? author;
-  final String? content;
+  final dynamic date;
+  final dynamic dateGmt;
+  final dynamic modified;
+  final dynamic modifiedGmt;
+  final dynamic slug;
+  final dynamic status;
+  final dynamic type;
+  final dynamic link;
+  final dynamic title;
+  final dynamic author;
+  final dynamic content;
   final int? featuredMedia;
   final String? template;
-  final Map<String, dynamic>? meta;
+  final Map<dynamic, dynamic>? meta;
   final List<dynamic>? bodyStyle;
   final List<dynamic>? carBrand;
   final List<dynamic>? carClass;
@@ -220,7 +220,7 @@ class  Car {
       'link': this.link,
       'title': this.title,
       'author': this.author,
-      'content': this.content,
+      'content': content,
       'featured_media': this.featuredMedia,
       'template': this.template,
       'meta': this.meta,
@@ -261,15 +261,15 @@ class  Car {
       content:_removeHtmlTags( map['content']?['rendered']),
       featuredMedia: map['featured_media'],
       template: map['template'],
-      meta: map['meta'],
-      bodyStyle: List<dynamic>.from(map['body-style'] ?? [9]),
-      carBrand: List<dynamic>.from(map['car-brand'] ?? []),
-      carClass: List<dynamic>.from(map['class'] ?? []),
-      color: List<dynamic>.from(map['color'] ?? []),
+      //meta: map['meta'],
+       bodyStyle: List<dynamic>.from(map['body-style'] ?? [9]),
+       carBrand: List<dynamic>.from(map['car-brand'] ?? []),
+       //carClass: List<dynamic>.from(map['class'] ?? []),
+      //color: List<dynamic>.from(map['color'] ?? []),
       model: List<dynamic>.from(map['model'] ?? []),
       usedSince: List<dynamic>.from(map['used-since'] ?? []),
       condition: List<dynamic>.from(map['condition'] ?? []),
-      classList: List<dynamic>.from(map['class_list'] ?? []),
+      //classList: List<dynamic>.from(map['class_list'] ?? []),
       featuredImage: map['featured_image'],
       acf: {
         "km": parseDouble(acfData?['km']),
@@ -280,7 +280,7 @@ class  Car {
         "motor_power_hp": parseDouble(acfData?['motor_power:_electric_horsepower_hp']),
         "car_images": acfData?['car_images'] ?? [],
       },
-      links: map['_links'],
+      //links: map['_links'],
     );
   }
   static String _removeHtmlTags(String? text) {

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:evhub/core/networking/api_constants.dart';
 import 'package:evhub/core/networking/api_error_model.dart';
 import 'package:evhub/core/networking/error_handler.dart';
+import 'package:evhub/features/services/data/model/add_review_model.dart';
 import 'package:evhub/features/add_services/data/models/service_model.dart';
 
 import '../model/car_acc_model.dart';
@@ -60,6 +61,15 @@ class Services{
       return right(serviceCenters);
     }  catch (e) {
      // throw Exception('Failed to load service centers');
+      return left(ApiErrorHandler.handle(e));
+    }
+  }
+  Future<Either<ApiErrorModel,String>> postComment(AddReviewModel addReview) async {
+    var formData = FormData.fromMap(addReview.toMap());
+    try {
+      final response = await dio.post('wp/v2/comments', data: formData);
+      return right(response.data);
+    }  catch (e) {
       return left(ApiErrorHandler.handle(e));
     }
   }

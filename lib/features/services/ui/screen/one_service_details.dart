@@ -3,7 +3,11 @@ import 'dart:io';
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/core/widgets/app_text_button.dart';
+import 'package:evhub/core/widgets/app_text_form_field.dart';
+import 'package:evhub/features/services/data/model/add_review_model.dart';
+import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -11,53 +15,63 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/image_network.dart';
+import '../../../../generated/l10n.dart';
 
-class ServiceDetailScreen extends StatelessWidget {
+class ServiceDetailScreen extends StatefulWidget {
   const ServiceDetailScreen({super.key, required this.data});
   final dynamic data;
+
+  @override
+  State<ServiceDetailScreen> createState() => _ServiceDetailScreenState();
+}
+
+class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
+
+  TextEditingController contetController = TextEditingController();
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    print(widget.data.ratings?.average);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Color(0xff243C43) ,
+      backgroundColor: Color(0xff243C43),
       body: Stack(
         children: [
           // Background Image
-      Stack(
-      //  mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          (data.acf.cover != null && data.acf.cover.url != null)
-              ? AppCachedNetworkImage(
-                height: 252.h,
-                width:double.infinity,
-                image: data.acf.cover.url!,
-                fit: BoxFit.contain,
-                          radius: 0,
-              )
-              : Container(
-            color: Color(0xff243C43),
-            child: SizedBox(
-
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height:double.infinity, // adjust as needed
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color.fromRGBO(0, 0, 0, 0.0),    // Transparent black (0%)
-                    Color(0xFF243C43),              // Dark green (100%)
-                  ],
+          Stack(
+            //  mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              (widget.data.acf.cover != null &&
+                      widget.data.acf.cover.url != null)
+                  ? AppCachedNetworkImage(
+                    height: 252.h,
+                    width: double.infinity,
+                    image: widget.data.acf.cover.url!,
+                    fit: BoxFit.contain,
+                    radius: 0,
+                  )
+                  : Container(color: Color(0xff243C43), child: SizedBox()),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: double.infinity, // adjust as needed
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0.0), // Transparent black (0%)
+                        Color(0xFF243C43), // Dark green (100%)
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
 
           SafeArea(
             child: Padding(
@@ -79,7 +93,7 @@ class ServiceDetailScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        data.type.replaceAll('-', ' '),
+                        widget.data.type.replaceAll('-', ' '),
                         style: TextStyle(fontSize: 18.sp, color: Colors.white),
                       ),
                       Row(
@@ -87,7 +101,7 @@ class ServiceDetailScreen extends StatelessWidget {
                           // WhatsApp
                           GestureDetector(
                             onTap: () async {
-                            whatsapp(data.acf.whatsapp);
+                              whatsapp(widget.data.acf.whatsapp);
                             },
                             child: Image.asset(
                               'images/png/chat.png',
@@ -99,11 +113,14 @@ class ServiceDetailScreen extends StatelessWidget {
                           // Phone Call
                           GestureDetector(
                             onTap: () async {
-                              final phoneNumber =data.acf.phoneNumber;
+                              final phoneNumber = widget.data.acf.phoneNumber;
                               final phoneUrl = Uri.parse("tel:$phoneNumber");
 
                               if (await canLaunchUrl(phoneUrl)) {
-                                await launchUrl(phoneUrl, mode: LaunchMode.externalApplication);
+                                await launchUrl(
+                                  phoneUrl,
+                                  mode: LaunchMode.externalApplication,
+                                );
                               } else {
                                 print('❌ Could not launch phone call');
                               }
@@ -116,14 +133,13 @@ class ServiceDetailScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-
                     ],
                   ),
                   SizedBox(height: 140.h),
                   CircleAvatar(
                     radius: 35.r,
                     child: AppCachedNetworkImage(
-                      image: data.featuredImage,
+                      image: widget.data.featuredImage,
                       height: 70.h,
                       width: 75.w,
                       radius: 35.r,
@@ -140,7 +156,7 @@ class ServiceDetailScreen extends StatelessWidget {
                   // Title
                   Center(
                     child: Text(
-                      data.title,
+                      widget.data.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 28.sp,
@@ -153,7 +169,7 @@ class ServiceDetailScreen extends StatelessWidget {
                   // Subtitle
                   Center(
                     child: Text(
-                      data.type.replaceAll('-', ' '),
+                      widget.data.type.replaceAll('-', ' '),
                       style: TextStyle(fontSize: 16.sp, color: Colors.white70),
                     ),
                   ),
@@ -164,12 +180,16 @@ class ServiceDetailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.location_on, size: 16, color: Colors.white),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Colors.white,
+                      ),
                       const SizedBox(width: 4),
                       SizedBox(
                         width: 182.w,
                         child: Text(
-                          data.acf.address,
+                          widget.data.acf.address,
                           overflow: TextOverflow.clip,
                           style: const TextStyle(color: Colors.white),
                         ),
@@ -182,17 +202,19 @@ class ServiceDetailScreen extends StatelessWidget {
                   // ),
                   SizedBox(height: 20.h),
 
+                  Center(
+                    child: buildStarDisplay(widget.data.ratings?.average ?? 0),
+                  ),SizedBox(height: 48.h),
                   // Description
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 14.w),
                     child: Text(
-                      removeHtmlTags(data.content),
+                      removeHtmlTags(widget.data.content),
                       style: TextStyles.inter12WhiteRegular.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  SizedBox(height: 20.h),
 
                   // Rating
                   // Row(
@@ -207,7 +229,25 @@ class ServiceDetailScreen extends StatelessWidget {
                   //   ),
                   // ),
                   SizedBox(height: 16.h),
-
+                  BlocBuilder<ServicesCubit, ServicesState>(
+                    builder: (context, state) {
+                      return StarRating(
+                        initialRating: 0,
+                        comment: contetController,
+                        onRatingChanged: (rating) {
+                          ServicesCubit.get(context).changeRating(rating);
+                        },
+                        onSend: () {
+                          ServicesCubit.get(context).postComment(
+                            contetController.text,
+                            widget.data.id,
+                            ServicesCubit.get(context).rating as int,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  verticalSpace(15),
                   // Map Card
                   Container(
                     padding: EdgeInsets.only(bottom: 9.h),
@@ -229,9 +269,14 @@ class ServiceDetailScreen extends StatelessWidget {
                         borderRadius: 16.8.r,
                         textStyle: TextStyles.lato9SemiBoldWhite,
                         onPressed: () async {
-                          final Uri url = Uri.parse(data.acf.addressLocation);
+                          final Uri url = Uri.parse(
+                            widget.data.acf.addressLocation,
+                          );
                           if (await canLaunchUrl(url)) {
-                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                            await launchUrl(
+                              url,
+                              mode: LaunchMode.externalApplication,
+                            );
                           } else {
                             // You can show a snackbar or alert here
                             print('Could not launch $url');
@@ -246,10 +291,11 @@ class ServiceDetailScreen extends StatelessWidget {
 
                     // Website
                   ),
+
                   SizedBox(height: 20.h),
                   GestureDetector(
                     onTap: () async {
-                      final rawUrl = data.acf.website?.trim();
+                      final rawUrl = widget.data.acf.website?.trim();
                       if (rawUrl == null || rawUrl.isEmpty) {
                         print("No URL found");
                         return;
@@ -259,7 +305,10 @@ class ServiceDetailScreen extends StatelessWidget {
                       print("Attempting to launch $url");
 
                       if (await canLaunchUrl(url)) {
-                        final success = await launchUrl(url, mode: LaunchMode.externalApplication);
+                        final success = await launchUrl(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        );
                         if (!success) {
                           print("Fallback to in-app webview");
                           await launchUrl(url, mode: LaunchMode.inAppWebView);
@@ -275,10 +324,14 @@ class ServiceDetailScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset('images/png/world.png', width: 16.w, height: 16.h),
+                        Image.asset(
+                          'images/png/world.png',
+                          width: 16.w,
+                          height: 16.h,
+                        ),
                         horizontalSpace(4.w),
                         Text(
-                          "www.${data.title}.com",
+                          "www.${widget.data.title}.com",
                           style: TextStyle(
                             color: Colors.white70,
                             decoration: TextDecoration.underline,
@@ -288,6 +341,7 @@ class ServiceDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),
@@ -297,6 +351,20 @@ class ServiceDetailScreen extends StatelessWidget {
     );
   }
 }
+
+Widget buildStarDisplay(num rating) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: List.generate(5, (index) {
+      return Icon(
+        index < rating ? Icons.star : Icons.star_border,
+        color: Colors.amber,
+        size: 24,
+      );
+    }),
+  );
+}
+
 whatsapp(String num) async {
   num = num.replaceAll(RegExp(r'[^0-9]'), '');
 
@@ -313,11 +381,90 @@ whatsapp(String num) async {
   final url = 'https://wa.me/$num';
   final uri = Uri.parse(url);
 
-
-      launchUrl(uri, mode: LaunchMode.externalApplication);
-
-
+  launchUrl(uri, mode: LaunchMode.externalApplication);
 }
+
+class StarRating extends StatefulWidget {
+  final num initialRating;
+  final Function(num) onRatingChanged;
+  final Function() onSend;
+  final TextEditingController comment;
+  const StarRating({
+    super.key,
+    this.initialRating = 0,
+    required this.onSend,
+    required this.onRatingChanged,
+    required this.comment,
+  });
+
+  @override
+  State<StarRating> createState() => _StarRatingState();
+}
+
+class _StarRatingState extends State<StarRating> {
+  num _currentRating = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentRating = widget.initialRating;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ServicesCubit, ServicesState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 237.w,
+              child: AppTextFormField(
+backgroundColor: Color(0x17d9d9d9),
+                controller: widget.comment,
+
+                hintText: S.of(context).Writeareview,
+                suffixIcon: IconButton(
+                  onPressed: widget.onSend,
+                  icon:
+                  state is AddCommentLoading
+                      ? SizedBox(height:20.h,width:20.w,child: CircularProgressIndicator(color: Colors.white))
+                      : Icon(Icons.send),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: List.generate(5, (index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _currentRating = index + 1;
+                    });
+                    widget.onRatingChanged(_currentRating);
+                  },
+                  child:
+
+                     Icon(
+                      index < _currentRating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                    ),
+
+
+                );
+              }),
+            ),
+
+
+
+          ],
+        );
+      },
+    );
+  }
+}
+
 String removeHtmlTags(String htmlText) {
   final tagRegExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
   final spanClassRegExp = RegExp(r'class="[^"]*"');
@@ -329,5 +476,6 @@ String removeHtmlTags(String htmlText) {
       .replaceAll(dirAttrRegExp, '')
       .replaceAll(tagRegExp, '')
       .replaceAll('&nbsp;', ' ')
+      .replaceAll('&#8211;', ' ')
       .trim();
 }

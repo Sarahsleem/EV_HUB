@@ -15,7 +15,7 @@ class AddNewCarCubit extends Cubit<AddNewCarState> {
   AddNewCarCubit(this.addCarRepo) : super(AddNewCarInitial());
   AddCarRepo addCarRepo;
   static AddNewCarCubit get(context) => BlocProvider.of(context);
-  int selectedBrandIndex = 42;
+  int selectedBrandIndex = 0;
   int brandId = 31;
   int usedSinceId = 0;
   int styleId = 39;

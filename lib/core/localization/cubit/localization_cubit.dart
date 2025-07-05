@@ -17,10 +17,10 @@ class LocalizationCubit extends Cubit<LocalizationState> {
       BlocProvider.of(context);
 
   // Current locale (default is set to system's locale or a default locale)
-  Locale _locale = const Locale('en');
-  // Locale _locale = CashHelper.getString(key: Keys.language) != null
-  //     ? Locale(CashHelper.getString(key: Keys.language)!)
-  //     : ui.window.locale; // Default to English
+ // Locale _locale = const Locale('en');
+  Locale _locale = CashHelper.getString(key: Keys.language) != null
+      ? Locale(CashHelper.getString(key: Keys.language)!)
+      : ui.window.locale; // Default to English
 
   // Getter for the current locale
   Locale get locale => _locale;

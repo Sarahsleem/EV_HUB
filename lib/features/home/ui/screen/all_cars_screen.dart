@@ -17,16 +17,15 @@ import '../../../../core/theming/colors.dart';
 import '../../../../core/widgets/app_text_form_field.dart';
 import '../../../../core/widgets/brands_loader.dart';
 import '../../../../core/widgets/image_network.dart';
+import '../../../../generated/l10n.dart';
 import '../../../home/logic/home_cubit.dart';
 import '../../../used_cars/ui/screen/used_car.dart';
 import '../../../home/ui/widgets/custom_search.dart';
 
 class AllCarsScreen extends StatelessWidget {
   const AllCarsScreen({super.key, required this.cars});
-final List<Car> cars;
+  final List<Car> cars;
   @override
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,24 +40,22 @@ final List<Car> cars;
           child: ListView(
             children: [
               CustomAppBar(),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
-              child: GestureDetector(
-                onTap: () {
-                  context.pushNamed(Routes.searchFilter);
-                },
-                child: CustomSearch(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: GestureDetector(
+                  onTap: () {
+                    context.pushNamed(Routes.searchFilter);
+                  },
+                  child: CustomSearch(),
+                ),
               ),
-            ),
-
 
               verticalSpace(17),
 
               BlocBuilder<HomeCubit, HomeState>(
                 builder: (context, state) {
-
-                 if(cars.isEmpty){
-                    return Center(child: Text('No Cars Found'),);
+                  if (cars.isEmpty) {
+                    return Center(child: Text('No Cars Found'));
                   }
                   return ListView.separated(
                     separatorBuilder: (context, index) {
@@ -69,10 +66,13 @@ final List<Car> cars;
                     physics: ScrollPhysics(),
                     itemCount: cars.length,
                     itemBuilder: (context, index) {
-                      return GestureDetector( onTap: (){
-                        context.pushNamed( Routes.carDetails, arguments:cars[index]);
-
-                      },
+                      return GestureDetector(
+                        onTap: () {
+                          context.pushNamed(
+                            Routes.carDetails,
+                            arguments: cars[index],
+                          );
+                        },
                         child: Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 12.w,
@@ -85,13 +85,14 @@ final List<Car> cars;
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
                                     width: 150.w,
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           cars[index].title ?? '',
@@ -108,7 +109,8 @@ final List<Car> cars;
                                     ),
                                   ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'starts From',
@@ -118,9 +120,10 @@ final List<Car> cars;
                                         '${NumberFormat("#,###").format(double.tryParse(cars[index].acf!["price"].toString()) ?? 'N/A')} LE',
                                         style: TextStyles.inter13greyRegular
                                             .copyWith(
-                                          fontSize: 15.3.sp,
-                                          fontWeight: FontWeightHelper.medium,
-                                        ),
+                                              fontSize: 15.3.sp,
+                                              fontWeight:
+                                                  FontWeightHelper.medium,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -135,26 +138,49 @@ final List<Car> cars;
                               ),
                               verticalSpace(10),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  cars[index].acf!["km"]==null?SizedBox.shrink():Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(children: [Image.asset("images/png/carused.png",height: 22.h,width: 22.w),Text(formatKm(cars[index].acf!["km"]),style: TextStyles.inter18WhiteMedium,)],),
-                                      Text(
-                                        'Used',
-                                        style: TextStyles.inter16greyMedium
-                                            .copyWith(fontSize: 11.sp),
+                                  cars[index].acf!["km"] == null
+                                      ? SizedBox.shrink()
+                                      : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Image.asset(
+                                                "images/png/carused.png",
+                                                height: 22.h,
+                                                width: 22.w,
+                                              ),
+                                              Text(
+                                                formatKm(
+                                                  cars[index].acf!["km"],
+                                                ),
+                                                style:
+                                                    TextStyles
+                                                        .inter18WhiteMedium,
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            'Used',
+                                            style: TextStyles.inter16greyMedium
+                                                .copyWith(fontSize: 11.sp),
+                                          ),
+                                          Text(
+                                            'Good Condition',
+                                            style: TextStyles.inter16greyMedium
+                                                .copyWith(fontSize: 11.sp),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        'Good Condition',
-                                        style: TextStyles.inter16greyMedium
-                                            .copyWith(fontSize: 11.sp),
-                                      ),
-                                    ],
-                                  ),
                                   Container(
-                                    width:  cars[index].acf!["km"]==null?225.w:140.w,
+                                    width:
+                                        cars[index].acf!["km"] == null
+                                            ? 225.w
+                                            : 140.w,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(59.r),
                                       color: Color(0x2ed9d9d9),
@@ -170,22 +196,32 @@ final List<Car> cars;
                                   BlocBuilder<WishListCubit, WishListState>(
                                     builder: (context, state) {
                                       final cubit = WishListCubit.get(context);
-                                      final isFavorite = cubit.favCars.any((car) => car.id == cars[index].id);
+                                      final carId = cars[index].id!;
+                                      final isFavorite = cubit.favCars.any((car) => car.id == carId);
+
+                                      final isUpdatingThisCar =
+                                          (state is AddToFavoritesLoadingState || state is RemoveFromFavoritesLoadingState) &&
+                                              cubit.updatingCarId == carId;
 
                                       return GestureDetector(
                                         onTap: () {
                                           if (isFavorite) {
-                                            cubit.removeFromFavorites(cars[index].id!);
-                                            cubit.favCars.removeWhere((car) => car.id == cars[index].id);
+                                            cubit.removeFromFavorites(carId);
+                                            cubit.favCars.removeWhere((car) => car.id == carId);
                                           } else {
-                                            cubit.addToFavorites(cars[index].id!);
+                                            cubit.addToFavorites(carId);
                                             cubit.favCars.add(cars[index]);
                                           }
-                                          //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
                                         },
                                         child: CircleAvatar(
                                           backgroundColor: const Color(0xff1B262C),
-                                          child: Icon(
+                                          child: isUpdatingThisCar
+                                              ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(strokeWidth: 2),
+                                          )
+                                              : Icon(
                                             CupertinoIcons.heart_fill,
                                             color: isFavorite ? Colors.red : const Color(0xa8ffffff),
                                             size: 20.sp,
@@ -193,8 +229,8 @@ final List<Car> cars;
                                         ),
                                       );
                                     },
-                                  ),
-
+                                  )
+                                  ,
                                 ],
                               ),
                             ],
@@ -266,7 +302,7 @@ class CustomAppBar extends StatelessWidget {
         Center(
           child: Text(
             textAlign: TextAlign.center,
-            'Electric Cars',
+            S.of(context).ElectricCars,
             style: TextStyles.inter18WhiteMedium,
           ),
         ),

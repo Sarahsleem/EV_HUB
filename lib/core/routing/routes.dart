@@ -39,7 +39,7 @@ class Routes {
 
   static const String searchFilter = '/searchFilter';
 
-  static const String MyCarsScreen = '/myCarsScreen';
+  static const String myCarsScreen = '/myCarsScreen';
 
   static const String editNewCarDtails = '/editNewCarDtails';
 
@@ -55,10 +55,21 @@ class Routes {
 
   static const String carsScreen = '/carsScreen';
 
-  static const String profile = '/profile';
+  static const String profile='/profile';
+
+  static const String favouriteResult='/favouriteResult';
+
+  static const String postsScreen='/postsScreen';
+
+  static const String postsDetailsScreen='/postsDetailsScreen';
   static const String chooseservice = '/choose';
   static const String showroom = '/showroom';
   static const String carAgency = '/carAgency';
   static const String userScreen = '/userScreen';
-  
+  static const String qfaScreen = '/qfaScreen';
+
+  static const String settingsScreen='/settingsScreen';
+
+  static  const String resetPassword='/resetPassword';
+
 }

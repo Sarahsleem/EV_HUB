@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import '../../../services/data/model/service_model.dart';
 import '../../../services/data/model/service_model.dart';
+import 'car_acc_model.dart';
 
 class CarProtectionFilm {
   final int id;
@@ -21,6 +22,7 @@ class CarProtectionFilm {
   final Meta? meta;
   final List<String> classList;
   final Acf acf;
+  final Ratings? ratings;
   final String? featuredImage; // ✅ Added
   final Links? links;
 
@@ -40,7 +42,9 @@ class CarProtectionFilm {
     this.featuredMedia,
     this.template,
     this.meta,
+    this.ratings,
     required this.classList,
+
     required this.acf,
     this.featuredImage, // ✅ Added
     this.links,
@@ -63,6 +67,7 @@ class CarProtectionFilm {
       featuredMedia: json['featured_media'],
       template: json['template'],
       meta: json['meta'] != null ? Meta.fromJson(json['meta']) : null,
+      ratings: Ratings.fromJson(json['ratings']),
       classList: List<String>.from(json['class_list'] ?? []),
       acf: Acf.fromJson(json['acf'] ?? {}),
       featuredImage: json['featured_image'], // ✅ Added

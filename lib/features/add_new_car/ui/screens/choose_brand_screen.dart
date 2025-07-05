@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/image_network.dart';
+import '../../../../generated/l10n.dart';
 
 class ChooseBrand extends StatelessWidget {
   const ChooseBrand({super.key});
@@ -52,14 +53,14 @@ class ChooseBrand extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Add Your ',
+                          text: S.of(context).AddYour,
                           style: TextStyles.inter18WhiteMedium.copyWith(
                             fontSize: 28.4.sp,
                             color: Colors.white.withOpacity(0.42),
                           ),
                         ),
                         TextSpan(
-                          text: 'New Car Details',
+                          text: S.of(context).NewCarDetails,
                           style: TextStyles.inter18WhiteMedium.copyWith(
                             fontSize: 28.4.sp,
                           ),
@@ -69,7 +70,7 @@ class ChooseBrand extends StatelessWidget {
                   ),
                   verticalSpace(33),
                   Text(
-                    'Choose Your Car Brand',
+                    S.of(context).Choosecarmodel,
                     style: TextStyles.inter18WhiteMedium.copyWith(
                       fontSize: 16.4.sp,
                     ),
@@ -153,7 +154,7 @@ class ChooseBrand extends StatelessWidget {
                     SizedBox(height: 20.h),
                     Center(
                       child: AppTextButton(
-                        buttonText: 'next',
+                        buttonText: S.of(context).next,
                         backgroundColor: ColorsManager.darkBlue.withOpacity(0.27),
                         buttonWidth: 310,
                         buttonHeight: 55.h,

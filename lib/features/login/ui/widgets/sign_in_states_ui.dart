@@ -44,7 +44,8 @@ class SignInStateUi extends StatelessWidget {
           ShowDialogError.showErrorDialog(
               context,
               "attention", // Pass the "attention" title here
-              'Invalid phone or password'
+              'Invalid phone or password',
+              'Try again'
           );
         }
       },

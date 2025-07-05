@@ -42,21 +42,32 @@ class _EditCarPageState extends State<EditCarPage> {
     description.text = car.content ?? '';
 
     final rawPrice = car.acf?['price'];
-    price.text = rawPrice != null
-        ? NumberFormat("#,###").format(rawPrice)
-        : '0';
+    price.text =
+        rawPrice != null ? NumberFormat("#,###").format(rawPrice) : '0';
 
-    enginePower.text = car.acf?['motor_power_electric_horsepower_hp']?.toString() ?? '';
+    enginePower.text =
+        car.acf?['motor_power_electric_horsepower_hp']?.toString() ?? '';
     batteryCapacity.text = car.acf?['battery_capacity']?.toString() ?? '';
     km.text = car.acf?['km']?.toString() ?? '';
 
     final editCubit = EditCarCubit.get(context);
-    editCubit.setCondition(car.condition?.isEmpty ?? true ? 13 : car.condition?.first['id']);
+    editCubit.setCondition(
+      car.condition?.isEmpty ?? true ? 13 : car.condition?.first['id'],
+    );
+    final brand = HomeCubit.get(context).carBrands.firstWhere(
+          (b) => b.id == widget.car.carBrand?.first['id'],
+      orElse: () => HomeCubit.get(context).carBrands.first,
+    );
+    editCubit.setImage(car.featuredMedia ?? 0);
     editCubit.setChargeType(car.acf?['compatible_charger_type'] ?? 'GPT');
-    editCubit.setUsedSince(car.usedSince?.isEmpty ?? true ? 43 : car.usedSince?.first['id']);
-    editCubit.setBodyStyle(car.bodyStyle?.isEmpty ?? true ? 39 : car.bodyStyle?.first['id']);
+    editCubit.setUsedSince(
+      car.usedSince?.isEmpty ?? true ? 43 : car.usedSince?.first['id'],
+    );
+    editCubit.setBodyStyle(
+      car.bodyStyle?.isEmpty ?? true ? 39 : car.bodyStyle?.first['id'],
+    );
+    editCubit.chooseBrand(0, brand.id, brand.name);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -122,61 +133,24 @@ class _EditCarPageState extends State<EditCarPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Brand Logo Selector
-                        GestureDetector(
-                          onTap: () {
-                            // Show brand selector
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-                              ),
-                              builder: (_) {
-                                final brands = HomeCubit.get(context).carBrands;
-                                return ListView.separated(
-                                  padding: EdgeInsets.all(16.w),
-                                  itemCount: brands.length,
-                                  separatorBuilder: (_, __) => Divider(),
-                                  itemBuilder: (context, index) {
-                                    final brand = brands[index];
-                                    return ListTile(
-                                      onTap: () {
-                                        // Update in Cubit
-                                        EditCarCubit.get(context).chooseBrand(index, brand.id);
-                                        Navigator.pop(context); // Close sheet
-                                      },
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage(brand.acf.brandLogo.url),
-                                        radius: 25.r,
-                                      ),
-                                      title: Text(
-                                        brand.name,
-                                        style: TextStyles.inter16greyMedium,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                          child: AppCachedNetworkImage(
-                            fit: BoxFit.scaleDown,
-                            radius: 39.5.r,
-                            image: widget.car.carBrand!.isNotEmpty
-                                ? HomeCubit.get(context)
-                                .carBrands
-                                .firstWhere(
-                                  (brand) => brand.id == widget.car.carBrand?.first['id'],
-                              orElse: () => HomeCubit.get(context).carBrands.first,
-                            )
-                                .acf
-                                .brandLogo
-                                .url
-                                : '',
-                            height: 75.h,
-                            width: 75.w,
-                          ),
-                        ),
+                        BlocBuilder<EditCarCubit, EditCarState>(
+                    builder: (context, state) {
+                      final editCubit = EditCarCubit.get(context);
+                      final selectedBrand = HomeCubit.get(context).carBrands.firstWhere(
+                            (brand) => brand.id == editCubit.brandId,
+                        orElse: () => HomeCubit.get(context).carBrands.first,
+                      );
+
+                      return AppCachedNetworkImage(
+                        fit: BoxFit.scaleDown,
+                        radius: 39.5.r,
+                        image: selectedBrand.acf.brandLogo.url,
+                        height: 75.h,
+                        width: 75.w,
+                      );
+                    },
+                    ),
+
 
                         horizontalSpace(15.9.sp),
 
@@ -184,48 +158,38 @@ class _EditCarPageState extends State<EditCarPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CarModelSelector(
-                              selectedModel: widget.car.model!.isNotEmpty
-                                  ? widget.car.model?.first['name']
-                                  : 'X1',
-                              selectedBrand: widget.car.carBrand!.isNotEmpty
-                                  ? HomeCubit.get(context)
-                                  .carBrands
-                                  .firstWhere(
-                                    (brand) => brand.id == widget.car.carBrand?.first['id'],
-                                orElse: () => HomeCubit.get(context).carBrands.first,
-                              )
-                                  .name
-                                  : HomeCubit.get(context).carBrands.first.name,
-                              brands: HomeCubit.get(context).carBrands.map((e) => e.name).toList(),
-                              models: EditCarCubit.get(context)
-                                  .carModel
-                                  .map((e) => e.name)
-                                  .toList(),
-                              onModelChanged: (value) {
-                                final cubit = EditCarCubit.get(context);
-                                final selectedIndex = cubit.carModel.indexWhere((e) => e.name == value);
-                                if (selectedIndex != -1) {
-                                  cubit.chooseCarModel(selectedIndex);
-                                }
-                              },
-                              onBrandChanged: (value) {
-                                final selected = HomeCubit.get(context)
-                                    .carBrands
-                                    .firstWhere((brand) => brand.name == value);
+                          BlocBuilder<EditCarCubit, EditCarState>(
+                        builder: (context, state) {
+                          final cubit = EditCarCubit.get(context);
 
-                                EditCarCubit.get(context).chooseBrand(
-                                  HomeCubit.get(context).carBrands.indexOf(selected),
-                                  selected.id,
-                                );
-                              },
-                            ),
+                          return CarModelSelector(
+                            selectedModel: widget.car.model?.first['name'] ?? 'X1',
+                            selectedBrand: cubit.selectedBrandName, // ✅ use value from Cubit here
+                            brands: HomeCubit.get(context).carBrands.map((e) => e.name).toList(),
+                            models: cubit.carModel.map((e) => e.name).toList(),
+                            onModelChanged: (value) {
+                              final selectedIndex = cubit.carModel.indexWhere((e) => e.name == value);
+                              if (selectedIndex != -1) cubit.chooseCarModel(selectedIndex);
+                            },
+                            onBrandChanged: (value) {
+                              final selected = HomeCubit.get(context)
+                                  .carBrands
+                                  .firstWhere((b) => b.name == value);
+                              cubit.chooseBrand(
+                                HomeCubit.get(context).carBrands.indexOf(selected),
+                                selected.id,
+                                selected.name,
+                              );
+                            },
+                          );
+                        },
+                        ),
+
                           ],
                         ),
                       ],
                     ),
-                  )
-,
+                  ),
                   verticalSpace(20),
                   Center(
                     child: Container(
@@ -402,14 +366,13 @@ class _EditCarPageState extends State<EditCarPage> {
                                             ),
                                   ),
                                 ),
-                                if (widget.car.featuredImage != null )
+                                if (widget.car.featuredImage != null)
                                   AppCachedNetworkImage(
                                     radius: 10,
                                     image: widget.car.featuredImage!,
-                                      width: 100.w,
-                                      height: 100.h,
-                                      fit: BoxFit.cover,
-
+                                    width: 100.w,
+                                    height: 100.h,
+                                    fit: BoxFit.cover,
                                   ),
                                 SizedBox(height: 12.h),
 
@@ -740,6 +703,7 @@ class _EditCarPageState extends State<EditCarPage> {
     );
   }
 }
+
 class CarModelSelector extends StatelessWidget {
   final String selectedModel;
   final String selectedBrand;
@@ -761,6 +725,7 @@ class CarModelSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -785,11 +750,11 @@ class CarModelSelector extends StatelessWidget {
                     onChanged: onBrandChanged,
                   ),
                 ),
-
               ],
             ),
           ],
-        ), Column(
+        ),
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -804,7 +769,7 @@ class CarModelSelector extends StatelessWidget {
             Row(
               children: [
                 SizedBox(
-                  width: 100.w,
+                  width: 90.w,
                   height: 40.h,
                   child: CustomDropdown(
                     value: selectedModel,
@@ -812,7 +777,6 @@ class CarModelSelector extends StatelessWidget {
                     onChanged: onModelChanged,
                   ),
                 ),
-
               ],
             ),
           ],

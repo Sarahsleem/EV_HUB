@@ -6,6 +6,7 @@ import 'package:evhub/features/car_details/data/user_model.dart';
 import 'package:evhub/features/car_details/ui/widgets/owener.dart';
 import 'package:evhub/features/home/data/model/car_model.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
+import 'package:evhub/features/services/ui/screen/one_service_details.dart';
 import 'package:evhub/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -242,9 +243,9 @@ Column(
 
           SizedBox(height: 16.h),
 
-          Text("Description", style: TextStyle(fontWeight: FontWeight.w600)),
+          Text(S.of(context).description, style: TextStyle(fontWeight: FontWeight.w600)),
           SizedBox(height: 8.h),
-          Text(car.content ?? '', style: TextStyle(color: Colors.grey[700])),
+          Text(removeHtmlTags(car.content) ?? '', style: TextStyle(color: Colors.grey[700])),
 
           SizedBox(height: 20.h),
 
@@ -259,30 +260,30 @@ Column(
           SizedBox(height: 20.h),
 
           /// Rating
-          Row(
-            children: List.generate(5, (index) {
-              return const Icon(Icons.star, color: Colors.amber, size: 20);
-            }),
-          ),
-
-          SizedBox(height: 16.h),
-
-          /// Comment Field
-          TextField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.grey[100],
-              hintText: "Add Comment",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 12.w,
-                vertical: 10.h,
-              ),
-            ),
-          ),
+          // Row(
+          //   children: List.generate(5, (index) {
+          //     return const Icon(Icons.star, color: Colors.amber, size: 20);
+          //   }),
+          // ),
+          //
+          // SizedBox(height: 16.h),
+          //
+          // /// Comment Field
+          // TextField(
+          //   decoration: InputDecoration(
+          //     filled: true,
+          //     fillColor: Colors.grey[100],
+          //     hintText: "Add Comment",
+          //     border: OutlineInputBorder(
+          //       borderRadius: BorderRadius.circular(12),
+          //       borderSide: BorderSide.none,
+          //     ),
+          //     contentPadding: EdgeInsets.symmetric(
+          //       horizontal: 12.w,
+          //       vertical: 10.h,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

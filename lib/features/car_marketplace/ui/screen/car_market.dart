@@ -147,6 +147,7 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
                   
 
                        _buildcarAgencyList(),
+                  verticalSpace(63),
                 ],
               ),
             ),
@@ -183,7 +184,7 @@ class _CarMarketScreenState extends State<CarMarketScreen> {
             // "See All" Button
             _buildSeeAllButton(onTap:
                 () {
-              context.pushNamed( seeAllRoute,arguments: 31);
+              context.pushNamed( seeAllRoute,arguments: 0);
             }),
             horizontalSpace(8),
             // Brands List
@@ -394,10 +395,7 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        IconButton(
-          onPressed: () => context.pop(),
-          icon: Icon(Icons.arrow_back_ios_rounded, size: 20.sp, color: Colors.white),
-        ),
+
         Expanded(
           child: Text(
             S.of(context).carMarketplaces,
@@ -405,7 +403,7 @@ class CustomAppBar extends StatelessWidget {
             style: TextStyles.inter18WhiteMedium,
           ),
         ),
-        SizedBox(width: 40.w), // To balance the back button space
+        // To balance the back button space
       ],
     );
   }

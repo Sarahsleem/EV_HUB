@@ -64,7 +64,7 @@ class EditCarCubit extends Cubit<EditCarState> {
     {"id": 13, "name": "New"},
     {"id": 14, "name": "Used"},
   ];  List<fieldsModel> carModel = [
-    fieldsModel(id: 8, name: 'X1')
+    fieldsModel(id: 8, name: 'X1') ,fieldsModel(id: 9, name: 'X2')
 
 
   ];
@@ -89,6 +89,11 @@ class EditCarCubit extends Cubit<EditCarState> {
     conditionId=id;
     selectedConditionId = id;
     emit(ChooseCondtionState());
+  }
+  void setImage(int id) {
+    base64Image=id;
+
+    emit(ChooseImageState());
   }
   void chooseCarModel(int index) {
     modelId=carModel[index].id;
@@ -130,8 +135,10 @@ void setChargeType(String type) {
   chargeType = type;
   emit(ChooseChargeTypeState());
 }
-  void chooseBrand(int index, int id) {
+  String selectedBrandName = '';
+  void chooseBrand(int index, int id, String name) {
     brandId=id;
+    selectedBrandName = name;
     print(brandId);
     selectedBrandIndex = index;
     emit(ChooseBrandState());

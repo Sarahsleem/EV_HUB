@@ -7,6 +7,8 @@ import '../../../../core/theming/styles.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../generated/l10n.dart';
+
 
 class CircleAvatr extends StatefulWidget{
   final String user;
@@ -49,7 +51,7 @@ class _CircleAvatrState extends State<CircleAvatr> {
                 child: _image == null
                     ? CircleAvatar(
                   radius: 60,
-                  backgroundImage: AssetImage('assets/img/740712ae-9eae-4b47-b8cf-bee8736f3b46.jpg'), // Profile image URL
+                  backgroundImage: AssetImage('images/png/no_image_found.jpg'), // Profile image URL
                 )
                     : null,
               ),
@@ -61,7 +63,7 @@ class _CircleAvatrState extends State<CircleAvatr> {
             ),
             SizedBox(height: 6),
             Text(
-              'User',
+              S.of(context).User,
               style: TextStyles.poppinsRegular12lighterGray,
             ),
           ],

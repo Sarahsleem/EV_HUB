@@ -13,7 +13,7 @@ class NewCarsCubit extends Cubit<NewCarsState> {
   NewCarsCubit(this.carsRepo) : super(NewCarsInitial());
   CarsRepo carsRepo;
   static NewCarsCubit get(context) => BlocProvider.of(context);
-  int selectedBrandId=31;
+  int selectedBrandId=0;
    chooseBrand(int id){
      selectedBrandId=id;
 

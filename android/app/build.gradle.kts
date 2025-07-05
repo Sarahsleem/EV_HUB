@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.pixelstrap.evhub.evhub"
+    namespace = "com.pixelstrap.evhub"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,20 +21,32 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.pixelstrap.evhub.evhub"
+        applicationId = "com.pixelstrap.evhub"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdk = 21
+        targetSdk = 34
+        versionCode = 20
+        versionName = "10.0.0"
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
-
+    signingConfigs {
+        create("release") {
+            keyAlias = "keyAlias"
+            keyPassword = "sarah12345"
+            storeFile = file("release-key.jks")
+            storePassword = "sarah12345"
+        }
+    }
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+            )
         }
     }
 }

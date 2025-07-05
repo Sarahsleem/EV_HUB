@@ -28,4 +28,6 @@ class ImagesManager {
   static const String checkEmail='images/png/checkEmail.png';
 
   static const String forgetpasReset='images/png/resetpass.png';
+
+  static const String favFilled='images/png/Favorites_file.png';
 }

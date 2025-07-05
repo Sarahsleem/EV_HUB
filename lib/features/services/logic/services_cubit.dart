@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/routing/routes.dart';
 import 'package:evhub/ev_hub.dart';
+import 'package:evhub/features/services/data/model/add_review_model.dart';
 import 'package:evhub/features/add_services/data/models/service_model.dart';
 import 'package:evhub/features/services/data/model/car_acc_model.dart';
 import 'package:evhub/features/services/data/model/car_services_model.dart';
@@ -9,6 +10,8 @@ import 'package:evhub/features/services/data/model/service_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
+import '../../../core/db/cash_helper.dart';
+import '../../../generated/l10n.dart';
 import '../data/model/car_part_model.dart';
 import '../data/model/car_protetion_file.dart';
 import '../data/model/establishingCharging.dart';
@@ -40,7 +43,7 @@ class ServicesCubit extends Cubit<ServicesState> {
     result.fold(
       (error) {
         // 3a. On failure, emit error state with the message
-        emit(CreateInsuranceError(error.message.toString())); 
+        emit(CreateInsuranceError(error.message.toString()));
       },
       (newInsurance) {
         // 3b. On success, emit success state with the new data
@@ -209,40 +212,58 @@ class ServicesCubit extends Cubit<ServicesState> {
         break;
     }
   }
-
+  num rating = 0;
+  void changeRating(num index) {
+    rating = index;
+    emit(ChangeRatingState());
+  }
+Future<void> postComment(String content, int postId,int rating) async {
+    emit(AddCommentLoading());
+    String? name = CashHelper.getString(key: Keys.name);
+    String ?email = CashHelper.getString(key: Keys.email);
+  var respo = await servicesRepo.postComment(AddReviewModel(post: postId, rating: rating, content: content, authorName: name, authorEmail: email));
+  respo.fold(
+    (l) {
+      emit(AddCommentError());
+    },
+    (r) {
+      emit(AddCommentSuccess());
+    },
+  );
+}
   List<CarServicesModel> listServices = [
     CarServicesModel(
       image: 'images/png/insurance.png',
-      title: 'Insurance',
-      description:
-          'Car insurance covers your vehicle and damages in case of accidents or theft.',
+        title:  S.of(NavigationService.navigatorKey.currentContext!).insurance,
+        description:
+        S.of(NavigationService.navigatorKey.currentContext!).insuranceAppDesc,
       onTap: (){
         NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Insurance' );
       }
     ),
     CarServicesModel(
       image: 'images/png/carservice.png',
-      title: 'Car Service',
-      description:
-          'Car service keeps your vehicle running smoothly with regular maintenance and checks.',
+        title:  S.of(NavigationService.navigatorKey.currentContext!).carServiceTitle,
+        description:
+        S.of(NavigationService.navigatorKey.currentContext!).carServiceDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Car Service' );
         }
     ),
     CarServicesModel(
       image: 'images/png/carprotection.png',
-      title: 'Car Protection Film',
-      description:
-          'Car protection film shields your car’s paint from scratches, chips, and UV damage.',
+        title: S.of(NavigationService.navigatorKey.currentContext!).Carprotectionfilm,
+        description:
+        S.of(NavigationService.navigatorKey.currentContext!).CarprotectionfilmDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Car Protection Film' );
         }
     ),
     CarServicesModel(
       image: 'images/png/establishcharge.png',
-      title: 'Establishing Charging',
-      description:
-          'Establishing charging ensures safe and convenient power access for electric vehicles.',
+        title: S.of(NavigationService.navigatorKey.currentContext!).establishingChargingTitle,
+        description:
+        S.of(NavigationService.navigatorKey.currentContext!).establishingChargingDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Establishing Charging' );
         }
@@ -250,36 +271,35 @@ class ServicesCubit extends Cubit<ServicesState> {
 
     CarServicesModel(
       image: 'images/png/carParts.png',
-      title: 'Car Parts',
-      description:
-          'Car parts are essential components that keep your vehicle functioning properly.',
+        title: S.of(NavigationService.navigatorKey.currentContext!).carPartsTitle,
+        description: S.of(NavigationService.navigatorKey.currentContext!).carPartsDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Car Parts' );
         }
     ),
     CarServicesModel(
       image: 'images/png/solarEnergy.png',
-      title: 'Solar Energy',
-      description:
-          'Solar energy powers devices and systems using clean, renewable sunlight.',
+        title: S.of(NavigationService.navigatorKey.currentContext!).solarEnergyTitle,
+        description:
+        S.of(NavigationService.navigatorKey.currentContext!).solarEnergyDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Solar Energy' );
         }
     ),
     CarServicesModel(
       image: 'images/png/carAcces.png',
-      title: 'Car Accessories',
-      description:
-          'Car accessories enhance your vehicle’s comfort, style, and functionality',
+        title: S.of(NavigationService.navigatorKey.currentContext!).carAccessoriesTitle,
+        description:
+        S.of(NavigationService.navigatorKey.currentContext!).carAccessoriesDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.serviceListDetails,arguments:'Car Accessories' );
         }
     ),
     CarServicesModel(
       image: 'images/png/carapp.png',
-      title: 'Car Insurance Application',
+      title: S.of(NavigationService.navigatorKey.currentContext!).carInsuranceAppTitle,
       description:
-          'Car insurance application lets you easily apply for coverage and manage your policy.',
+          S.of(NavigationService.navigatorKey.currentContext!).carInsuranceAppDesc,
       onTap: (){
        // "https://evhubtl.com/تقديم-طلب-تامين-علي-سياراة/"
         NavigationService.navigatorKey.currentContext?.pushNamed(Routes.webPage,arguments: "https://evhubtl.com/تقديم-طلب-تامين-علي-سياراة/");
@@ -288,9 +308,9 @@ class ServicesCubit extends Cubit<ServicesState> {
     ),
     CarServicesModel(
       image: 'images/png/carinstall.png',
-      title: 'Car Installment Request',
+      title: S.of(NavigationService.navigatorKey.currentContext!).carInstallmentTitle,
       description:
-          'Car installment request allows you to buy a vehicle through monthly payments.',
+          S.of(NavigationService.navigatorKey.currentContext!).carInstallmentDesc,
       onTap: (){
         NavigationService.navigatorKey.currentContext?.pushNamed(Routes.webPage,arguments: 'https://evhubtl.com/تقديم-طلب-تقسيط-سياراه/');
 
@@ -298,9 +318,9 @@ class ServicesCubit extends Cubit<ServicesState> {
     ),
     CarServicesModel(
       image: 'images/png/carwash.png',
-      title: 'Car Wash',
+      title: S.of(NavigationService.navigatorKey.currentContext!).carWashTitle,
       description:
-          'Car wash cleans and refreshes your vehicle’s exterior and interior.',
+      S.of(NavigationService.navigatorKey.currentContext!).carWashDesc,
       onTap: (){
         NavigationService.navigatorKey.currentContext?.pushNamed(Routes.webPage,arguments: 'https://evhubtl.com/تقديم-طلب-تقسيط-سياراه/');
       }
@@ -311,9 +331,9 @@ class ServicesCubit extends Cubit<ServicesState> {
   List<CarServicesModel> listChoosenServices = [
     CarServicesModel(
       image: 'images/png/insurance.png',
-      title: 'Insurance',
+      title:  S.of(NavigationService.navigatorKey.currentContext!).insurance,
       description:
-          'Car insurance covers your vehicle and damages in case of accidents or theft.',
+      S.of(NavigationService.navigatorKey.currentContext!).insuranceAppDesc,
       onTap: (){
         NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,  arguments: AddServiceArguments(icon: 'images/png/insurance.png', title: 'Insurance'),
  );
@@ -321,27 +341,27 @@ class ServicesCubit extends Cubit<ServicesState> {
     ),
     CarServicesModel(
       image: 'images/png/carservice.png',
-      title: 'Car Service',
+      title:  S.of(NavigationService.navigatorKey.currentContext!).carServiceTitle,
       description:
-          'Car service keeps your vehicle running smoothly with regular maintenance and checks.',
+      S.of(NavigationService.navigatorKey.currentContext!).carServiceDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon: 'images/png/carservice.png', title:  'Car Service'),);
         }
     ),
     CarServicesModel(
       image: 'images/png/carprotection.png',
-      title: 'Car Protection Film',
+      title: S.of(NavigationService.navigatorKey.currentContext!).Carprotectionfilm,
       description:
-          'Car protection film shields your car’s paint from scratches, chips, and UV damage.',
+      S.of(NavigationService.navigatorKey.currentContext!).CarprotectionfilmDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon: 'images/png/carprotection.png', title:   'Car Protection Film'), );
         }
     ),
     CarServicesModel(
       image: 'images/png/establishcharge.png',
-      title: 'Establishing Charging',
+      title: S.of(NavigationService.navigatorKey.currentContext!).establishingChargingTitle,
       description:
-          'Establishing charging ensures safe and convenient power access for electric vehicles.',
+          S.of(NavigationService.navigatorKey.currentContext!).establishingChargingDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:  'images/png/establishcharge.png', title:  'Establishing Charging'), );
         }
@@ -349,27 +369,26 @@ class ServicesCubit extends Cubit<ServicesState> {
 
     CarServicesModel(
       image: 'images/png/carParts.png',
-      title: 'Car Parts',
-      description:
-          'Car parts are essential components that keep your vehicle functioning properly.',
+      title: S.of(NavigationService.navigatorKey.currentContext!).carPartsTitle,
+      description: S.of(NavigationService.navigatorKey.currentContext!).carPartsDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:  'images/png/carParts.png', title:  'Car Parts'), );
         }
     ),
     CarServicesModel(
       image: 'images/png/solarEnergy.png',
-      title: 'Solar Energy',
+      title: S.of(NavigationService.navigatorKey.currentContext!).solarEnergyTitle,
       description:
-          'Solar energy powers devices and systems using clean, renewable sunlight.',
+      S.of(NavigationService.navigatorKey.currentContext!).solarEnergyDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:   'images/png/solarEnergy.png', title:'Solar Energy'),  );
         }
     ),
     CarServicesModel(
       image: 'images/png/carAcces.png',
-      title: 'Car Accessories',
+      title: S.of(NavigationService.navigatorKey.currentContext!).carAccessoriesTitle,
       description:
-          'Car accessories enhance your vehicle’s comfort, style, and functionality',
+      S.of(NavigationService.navigatorKey.currentContext!).carAccessoriesDesc,
         onTap: (){
           NavigationService.navigatorKey.currentContext?.pushNamed(Routes.addServices,arguments: AddServiceArguments(icon:   'images/png/carAcces.png', title:'Car Accessories'),  );
         }

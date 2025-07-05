@@ -44,7 +44,8 @@ class SignupStateUi extends StatelessWidget {
           ShowDialogError.showErrorDialog(
               context,
               "attention", // Pass the "attention" title here
-              'some thing went wrong '
+              'some thing went wrong ',
+              'Try again'
           );
         }
       },

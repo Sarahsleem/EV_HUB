@@ -70,7 +70,7 @@ class ProfileModel {
     return {
       'name': this.name,
       'email': this.email,
-      'phone_number': this.phoneNumber,
+      'phone': this.phoneNumber,
       'role': this.role,
       'image': this.image,
     };
@@ -81,7 +81,7 @@ class ProfileModel {
       id: map['user_id'],
       name: map['name'] ,
       email: map['email'] ,
-      phoneNumber: map['phone_number'] ,
+      phoneNumber: map['phone'] ,
       role: map['role'] ,
       image: map['image'] ,
     );

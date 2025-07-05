@@ -1,4 +1,5 @@
 import '../../../services/data/model/service_model.dart';
+import 'car_acc_model.dart';
 
 class Insurance {
   final int id;
@@ -18,6 +19,8 @@ class Insurance {
   final Meta? meta;
   final List<String> classList;
   final Acf acf;
+  final Ratings? ratings;
+
   final String? featuredImage; // ✅ Added
   final Links? links;
 
@@ -37,6 +40,7 @@ class Insurance {
     this.featuredMedia,
     this.template,
     this.meta,
+    this.ratings,
     required this.classList,
     required this.acf,
     this.featuredImage, // ✅ Added
@@ -55,6 +59,7 @@ class Insurance {
       status: json['status'],
       type: json['type'],
       link: json['link'],
+      ratings: Ratings.fromJson(json['ratings']),
       title: json['title']["rendered"]??'',
       content: json['content']["rendered"] ?? '',
       featuredMedia: json['featured_media'],

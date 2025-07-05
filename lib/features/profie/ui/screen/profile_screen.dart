@@ -1,4 +1,3 @@
-
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/networking/dio_factory.dart';
 import 'package:evhub/core/routing/routes.dart';
@@ -36,10 +35,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     ProfileCubit.get(context).getProfile();
+    print(ProfileCubit.get(context).profileUser.toString());
   }
 
   Future<void> _launchDeleteAccountURL(BuildContext context) async {
-    context.pushNamed(Routes.webPage,arguments: 'https://evhubtl.com/delete-account');
+    context.pushNamed(
+      Routes.webPage,
+      arguments: 'https://evhubtl.com/delete-account',
+    );
 
     // final deleteappUrl = Uri.parse("https://evhubtl.com/delete-account");
     //
@@ -57,88 +60,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //   );
     // }
   }
+
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
-if (state is ProfileLoading) {
-return const Skeletonizer(
-enabled: true,
-child: UiLoadingProfileScreen(),
-);
-}
-if (ProfileCubit.get(context).profileUser != null) {
-        return
-
-        Scaffold(
-          body: Stack(
-            children: [
-              // Background Image
-              Positioned.fill(
-                child: Image.asset(
-                  'images/png/gradient (3) 1 (3).png', // ضع هنا مسار الصورة المناسبة لك
-                  fit: BoxFit.cover,
+        if (state is ProfileLoading) {
+          return const Skeletonizer(
+            enabled: true,
+            child: UiLoadingProfileScreen(),
+          );
+        }
+        if (ProfileCubit.get(context).profileUser != null) {
+          return Scaffold(
+            body: Stack(
+              children: [
+                // Background Image
+                Positioned.fill(
+                  child: Image.asset(
+                    'images/png/gradient (3) 1 (3).png', // ضع هنا مسار الصورة المناسبة لك
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
 
-              // Overlay for slight darkening if needed
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withOpacity(0.5), // optional: تعتيم للخلفية لتحسين التباين
+                // Overlay for slight darkening if needed
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.black.withOpacity(
+                      0.5,
+                    ), // optional: تعتيم للخلفية لتحسين التباين
+                  ),
                 ),
-              ),
 
-              // Main content
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 60),
-                    CircleAvatr(user: ProfileCubit.get(context).profileUser!.name!),
-                    SizedBox(height: 14),
-                    ContactDetails(
-                      title: S.of(context).YourEmail,
-                      content: ProfileCubit.get(context).profileUser!.email!,
-                      img: 'images/png/mail-01.svg',
-                    ),
-                    SizedBox(height: 14),
-                    ContactDetails(
-                      title: S.of(context).phonenumber,
-                      content: ProfileCubit.get(context).profileUser!.phoneNumber??'',
-                      img: 'images/png/call.svg',
-                    ),
-                    SizedBox(height: 14),
-                    ContactDetails(
-                      title: 'City',
-                      content: ProfileCubit.get(context).profileUser!.role!,
-                      img: '',
-                    ),
-                    SizedBox(height: 140),
-                    GestureDetector(
-                      onTap: () => _launchDeleteAccountURL(context) ,
-                      child: Center(
-                        child: Text(
-                          'Delete Your Account',
-                          style: TextStyles.latoBold12red,
-                        ),
+                // Main content
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 60),
+                      CircleAvatr(
+                        user: ProfileCubit.get(context).profileUser!.name!,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 14),
+                      ContactDetails(
+                        title: S.of(context).YourEmail,
+                        content: ProfileCubit.get(context).profileUser!.email!,
+                        img: 'images/png/mail-01.svg',
+                      ),
+                      SizedBox(height: 14),
+                      ContactDetails(
+                        title: S.of(context).phonenumber,
+                        content:
+                            ProfileCubit.get(
+                              context,
+                            ).profileUser!.phoneNumber ??
+                            '',
+                        img: 'images/png/call.svg',
+                      ),
+                      // SizedBox(height: 14),
+                      // ContactDetails(
+                      //   title: 'City',
+                      //   content: ProfileCubit.get(context).profileUser!.role!,
+                      //   img: '',
+                      // ),
+                     // SizedBox(height: 140),
+                      // GestureDetector(
+                      //   onTap: () => _launchDeleteAccountURL(context),
+                      //   child: Center(
+                      //     child: Text(
+                      //       'Delete Your Account',
+                      //       style: TextStyles.latoBold12red,
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-
-
-}
+              ],
+            ),
+          );
+        }
         return SizedBox();
-      }
+      },
     );
   }
 }
+
 // BlocBuilder<ProfileCubit, ProfileState>(
 // builder: (context, state) {
 // if (state is ProfileLoading) {

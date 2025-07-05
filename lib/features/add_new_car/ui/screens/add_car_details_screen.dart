@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/image_network.dart';
+import '../../../../generated/l10n.dart';
 
 class AddCarDetails extends StatefulWidget {
   const AddCarDetails({super.key});
@@ -65,14 +66,14 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: 'Add Your ',
+                                text: S.of(context).AddYour,
                                 style: TextStyles.inter18WhiteMedium.copyWith(
                                   fontSize: 28.4.sp,
                                   color: Colors.white.withOpacity(0.42),
                                 ),
                               ),
                               TextSpan(
-                                text: 'New Car Details',
+                                text: S.of(context).NewCarDetails,
                                 style: TextStyles.inter18WhiteMedium.copyWith(
                                   fontSize: 28.4.sp,
                                 ),
@@ -140,7 +141,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         vertical: 5.h,
                       ),
                       margin: EdgeInsets.symmetric(vertical: 8.h),
-                      width: 197.w,
+                      width: 210.w,
                       //height: 39.h,
                       decoration: BoxDecoration(
                         color: Color(0x5743585e),
@@ -163,7 +164,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                                 borderRadius: BorderRadius.circular(21.47.r),
                               ),
                               child: Text(
-                                'new',
+                                S.of(context).New,
                                 style: TextStyles.inter12WhiteRegular.copyWith(
                                   fontSize: 13.48.sp,
                                 ),
@@ -184,7 +185,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                                 borderRadius: BorderRadius.circular(21.47.r),
                               ),
                               child: Text(
-                                'Used',
+                                S.of(context).Used,
                                 style: TextStyles.inter12WhiteRegular.copyWith(
                                   fontSize: 13.48.sp,
                                 ),
@@ -209,14 +210,15 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                     child: Column(
                       children: [
                         CustomInput(
-                          title: 'Title',
+                          title: S.of(context).
+                          Title,
                           image: 'images/png/title.png',
                           endWidget: SizedBox(
                             width: 247.w,
                             height: 52.5.h,
                             child: AppTextFormField(
                               controller: title,
-                              hintText: 'your details car title',
+                              hintText: S.of(context).yourdetailscartitle,
                               backgroundColor: Colors.transparent,
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -228,14 +230,14 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         ),
                         verticalSpace(26),
                         CustomInput(
-                          title: 'Description',
+                          title: S.of(context).Description,
                           image: 'images/png/desc.png',
                           endWidget: SizedBox(
                             width: 247.w,
                             //height: 52.5.h,
                             child: AppTextFormField(
                               controller: description,
-                              hintText: 'your car Description',
+                              hintText: S.of(context).yourcarDescription,
                               backgroundColor: Colors.transparent,
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -280,7 +282,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                                       ),
                                       SizedBox(height: 8.h),
                                       Text(
-                                        'Add Your Main Car Image',
+                                        S.of(context).AddYourMainCarImage,
                                         style: TextStyles.inter10GreySemiBold,
                                       ),
                                     ],
@@ -340,11 +342,11 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                                         ),
                                         SizedBox(height: 8.h),
                                         Text(
-                                          'Add Your Car Images',
+                                          S.of(context).AddYourCarImages,
                                           style: TextStyles.inter10GreySemiBold,
                                         ),
                                         Text(
-                                          'max. 8 Photos',
+                                          S.of(context).maxPhotos,
                                           style: TextStyles.inter10GreySemiBold,
                                         ),
                                       ],
@@ -377,7 +379,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
 
                         verticalSpace(16),
                         CustomInput(
-                          title: 'Price',
+                          title: S.of(context).price,
                           image: 'images/png/price.png',
                           endWidget: SizedBox(
                             width: 247.w,
@@ -385,7 +387,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                             child: AppTextFormField(
                               controller: price,
                               keyboardType: TextInputType.phone,
-                              hintText: 'LE',
+                              hintText: S.of(context).LE,
                               backgroundColor: Colors.transparent,
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -397,7 +399,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         ),
                         verticalSpace(30),
                         CustomInput(
-                          title: 'Engine Power',
+                          title: S.of(context).EnginePower,
                           image: 'images/png/ep.png',
                           endWidget: SizedBox(
                             width: 247.w,
@@ -417,7 +419,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         ),
                         verticalSpace(30),
                         CustomInput(
-                          title: 'Battery Capacity',
+                          title: S.of(context).BatteryCapacity,
                           image: 'images/png/bc.png',
                           endWidget: SizedBox(
                             width: 247.w,
@@ -461,7 +463,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         ):SizedBox.shrink(),
                         verticalSpace(30),
                         CustomInput(
-                          title: 'Used Since',
+                          title: S.of(context).usedSince,
                           image: 'images/png/us.png',
                           endWidget: SizedBox(
                             width: 247.w,
@@ -489,7 +491,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         ),
                         verticalSpace(30),
                         CustomInput(
-                          title: 'Body Style',
+                          title: S.of(context).BodyStyle,
                           image: 'images/png/bs.png',
                           endWidget: SizedBox(
                             width: 247.w,
@@ -521,7 +523,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                                 : chargeTypes.first;
 
                             return CustomInput(
-                              title: 'Charge Type',
+                              title: S.of(context).ChargeType,
                               image: 'images/png/ct.png',
                               endWidget: SizedBox(
                                 width: 247.w,
@@ -548,7 +550,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                   verticalSpace(16),
                   Center(
                     child: AppTextButton(
-                      buttonText: 'Submit',
+                      buttonText: S.of(context).Submit,
                       backgroundColor: ColorsManager.darkBlue.withOpacity(0.27),
                       buttonWidth: 310,
                       buttonHeight: 55.h,
@@ -633,7 +635,7 @@ class CarModelSelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Car Model',
+          S.of(context).carModel,
           style: TextStyle(
             color: Colors.white.withOpacity(0.6),
             fontSize: 14.sp,

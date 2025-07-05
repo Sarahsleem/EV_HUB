@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../generated/l10n.dart';
 import '../../add_new_car/data/model/field_model.dart';
 import '../logic/search_cubit.dart';
 
@@ -40,9 +41,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Car Filter",
+                    S.of(context).CarFilter,
                     style: TextStyles.inter14WhiteSemiBold.copyWith(
-                      fontSize: 19.4,
+                      fontSize: 19.4.sp,
                     ),
                   ),
                   BlocBuilder<SearchCubit, SearchState>(
@@ -54,7 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           minPrice.clear();
                         },
                         child: Text(
-                          "Reset all",
+                          S.of(context).Resetall,
                           style: TextStyles.inter18WhiteMedium.copyWith(
                             fontSize: 14.sp,
                           ),
@@ -80,7 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide.none,
                       ),
-                      hintText: 'Choose car brand',
+                      hintText: S.of(context).ChoosecarBrand,
 
                       hintStyle: const TextStyle(color: Colors.white70),
                     ),
@@ -114,13 +115,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
               /// Type Toggle
               _buildToggle(
-                'Type',
-                ['Used', 'New'],
+                S.of(context).Type,
+                [S.of(context).Used, S.of(context).New],
                 SearchCubit.get(context).selectedCondition,
                 (val) {
-                  setState(
-                    () => SearchCubit.get(context).selectedCondition = val,
-                  );
+                  SearchCubit.get(context).selectCondition(val);
                 },
               ),
 
@@ -132,7 +131,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   return Column(
                     children: [
                       CustomDropdown(
-                        hint: 'Choose car style',
+                        hint: S.of(context).Choosecarmodel,
                         items: buildDropdownItems(
                           SearchCubit.get(context).carStyles,
                         ),
@@ -145,7 +144,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       verticalSpace(20),
                       CustomDropdown(
-                        hint: 'Choose year',
+                        hint: S.of(context).Chooseyear,
                         items: buildDropdownItems(
                           SearchCubit.get(context).yearsSince,
                         ),
@@ -166,7 +165,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       // ),
                       verticalSpace(20),
                       CustomDropdown(
-                        hint: 'Choose car model',
+                        hint: S.of(context).Choosecarmodel,
                         items: buildDropdownItems(
                           SearchCubit.get(context).carModel,
                         ),
@@ -186,18 +185,18 @@ class _SearchScreenState extends State<SearchScreen> {
               const SizedBox(height: 20),
 
               /// Price Range
-              Text("Price range", style: TextStyles.inter14WhiteSemiBold),
+              Text(S.of(context).Pricerange, style: TextStyles.inter14WhiteSemiBold),
               verticalSpace(20),
               Row(
                 children: [
-                  Expanded(child: _buildMinMaxField("Min", minPrice)),
+                  Expanded(child: _buildMinMaxField(S.of(context).Min, minPrice)),
                   const SizedBox(width: 10),
-                  Expanded(child: _buildMinMaxField("Max", maxPrice)),
+                  Expanded(child: _buildMinMaxField(S.of(context).Max, maxPrice)),
                 ],
               ),
               verticalSpace(40),
               AppTextButton(
-                buttonText: 'Search',
+                buttonText: S.of(context).Search,
                 textStyle: TextStyles.inter18WhiteMedium,
                 onPressed: () {
                   try {
@@ -214,7 +213,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            "Min price cannot be greater than Max price",
+                            S.of(context).Minpricecane,
                           ),
                         ),
                       );

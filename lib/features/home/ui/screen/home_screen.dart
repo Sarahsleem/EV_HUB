@@ -6,6 +6,7 @@ import 'package:evhub/core/helpers/spacing.dart';
 import 'package:evhub/core/routing/routes.dart';
 import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/core/theming/styles.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:evhub/core/widgets/app_text_button.dart';
 import 'package:evhub/core/widgets/app_text_form_field.dart';
 import 'package:evhub/core/widgets/image_network.dart';
@@ -14,21 +15,27 @@ import 'package:evhub/features/home/ui/widgets/ADS_widget.dart';
 import 'package:evhub/features/home/ui/widgets/Ads_loader.dart';
 import 'package:evhub/features/profie/logic/profile_cubit.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
+import 'package:evhub/features/wish_list/logic/wish_list_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
+import '../../../../core/db/cash_helper.dart';
+import '../../../../core/localization/cubit/localization_cubit.dart';
+import '../../../../core/networking/dio_factory.dart';
 import '../../../../core/widgets/brands_loader.dart';
 import '../../../../ev_hub.dart';
+import '../../../../generated/l10n.dart';
 import '../../../home/ui/widgets/custom_search.dart';
+import '../widgets/service_loader.dart';
+import '../widgets/ui_profile_loader.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,52 +44,65 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    _getCurrentLocation();
+    super.initState();
+  }
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   LatLng? _currentLocation;
   bool _isLocationLoading = false;
   String? errorMessage;
 
   // New string representation for the UI
   String _locationLabel = "";
-Future<void> _getCurrentLocation() async {
-  setState(() => _isLocationLoading = true);
-  try {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) throw Exception("Location services are disabled.");
+  Future<void> _getCurrentLocation() async {
+    setState(() => _isLocationLoading = true);
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) throw Exception("Location services are disabled.");
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
-        throw Exception("Location permissions are denied.");
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception("Location permissions are denied.");
+        }
       }
+
+      Position position = await Geolocator.getCurrentPosition();
+      _currentLocation = LatLng(position.latitude, position.longitude);
+
+      // Get the placemark (city, country, etc.)
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      Placemark placemark = placemarks.first;
+      String placeName =
+          placemark.locality ??
+          placemark.subAdministrativeArea ??
+          placemark.administrativeArea ??
+          'Unknown';
+
+      setState(() {
+        _locationLabel = placeName;
+
+        _isLocationLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLocationLoading = false;
+        errorMessage = "Failed to get current location: $e";
+        _locationLabel = "....";
+      });
     }
-
-    Position position = await Geolocator.getCurrentPosition();
-    _currentLocation = LatLng(position.latitude, position.longitude);
-
-    // Get the placemark (city, country, etc.)
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-
-    Placemark placemark = placemarks.first;
-    String placeName = placemark.locality ?? placemark.subAdministrativeArea ?? placemark.administrativeArea ?? 'Unknown';
-
-    setState(() {
-      _locationLabel = placeName;
-      _isLocationLoading = false;
-    });
-  } catch (e) {
-    setState(() {
-      _isLocationLoading = false;
-      errorMessage = "Failed to get current location: $e";
-      _locationLabel = "Location not available";
-    });
   }
-}
 
   // @override
   // void initState() {
@@ -96,6 +116,7 @@ Future<void> _getCurrentLocation() async {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      color: Colors.white,
       onRefresh: () async {
         HomeCubit.get(context).loadHomeData();
         ServicesCubit.get(context).getServices();
@@ -139,7 +160,7 @@ Future<void> _getCurrentLocation() async {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Your Location',
+                            S.of(context).YourLocation,
                             style: TextStyles.latoWhite12Bold,
                           ),
                           Text(
@@ -156,11 +177,11 @@ Future<void> _getCurrentLocation() async {
                   ),
                   GestureDetector(
                     onTap: () {
-                      context.pushNamed(Routes.MyCarsScreen);
+                      context.pushNamed(Routes.myCarsScreen);
                     },
                     child: CircleAvatar(
-                      child: Image.asset('images/png/pirson.png'),
                       radius: 25.r,
+                      child: Image.asset('images/png/pirson.png'),
                     ),
                   ),
                 ],
@@ -176,7 +197,7 @@ Future<void> _getCurrentLocation() async {
                       context.pushNamed(Routes.stationsScreen);
                     },
                     child: Text(
-                      'Battery Low?\nFind a Charger',
+                      S.of(context).BatteryLow,
                       style: TextStyles.latoWhite12Bold.copyWith(
                         fontSize: 34.sp,
                       ),
@@ -253,7 +274,8 @@ Future<void> _getCurrentLocation() async {
                             backgroundColor: ColorsManager.lightDarkBlue,
                             radius: 27.r,
                             child: Text(
-                              'see\n All',
+                              textAlign: TextAlign.center,
+                              S.of(context).Seeall,
                               style: TextStyles.font12WhiteRegular,
                             ),
                           ),
@@ -331,7 +353,7 @@ Future<void> _getCurrentLocation() async {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Electric Cars',
+                          S.of(context).ElectricCars,
                           style: TextStyles.lato15SemiBoldBlack,
                         ),
                         horizontalSpace(4),
@@ -346,7 +368,7 @@ Future<void> _getCurrentLocation() async {
                                   );
                                 },
                                 child: Text(
-                                  'See all',
+                                  S.of(context).Seeall,
                                   style: TextStyles.lato13RegularGrey,
                                 ),
                               ),
@@ -462,46 +484,77 @@ Future<void> _getCurrentLocation() async {
                                         radius: 0,
                                       ),
                                       //Image.asset('images/png/imageCar.png'),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '      Explore',
-                                            style:
-                                                TextStyles.lato12MediumDarkBlue,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 9.h,
-                                              horizontal: 11.w,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Color(0xff22323B),
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(12.r),
-                                                bottomRight: Radius.circular(
-                                                  19.r,
-                                                ),
-                                              ),
-                                            ),
+                                      BlocBuilder<WishListCubit, WishListState>(
+                                        builder: (context, state) {
+                                          final cubit = WishListCubit.get(context);
+                                          final carId = cars[index].id!;
+                                          final isFavorite = cubit.favCars.any((car) => car.id == carId);
+
+                                          final isUpdatingThisCar =
+                                              (state is AddToFavoritesLoadingState || state is RemoveFromFavoritesLoadingState) &&
+                                                  cubit.updatingCarId == carId;
+                                          return GestureDetector(
+                                            onTap: () {
+                                              if (isFavorite) {
+                                                cubit.removeFromFavorites(carId);
+                                                cubit.favCars.removeWhere((car) => car.id == carId);
+                                              } else {
+                                                cubit.addToFavorites(carId);
+                                                cubit.favCars.add(cars[index]);
+                                              }
+                                            },
                                             child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Image.asset(
-                                                  ImagesManager.fav,
-                                                  height: 16.h,
-                                                  width: 16.w,
-                                                ),
                                                 Text(
-                                                  'add to Fav',
+                                                  S.of(context).Explore,
                                                   style:
                                                       TextStyles
-                                                          .latoWhite12Bold,
+                                                          .lato12MediumDarkBlue.copyWith(
+                                                    fontSize: 10.sp,),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 9.h,
+                                                    horizontal: 11.w,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff22323B),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                12.r,
+                                                              ),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                19.r,
+                                                              ),
+                                                        ),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        isFavorite ? ImagesManager.favFilled : ImagesManager.fav,
+
+                                                        height: 16.h,
+                                                        width: 16.w,
+                                                      ),
+                                                      Text(
+                                                        S.of(context).addtoFav,
+                                                        style:
+                                                            TextStyles
+                                                                .latoWhite12Bold,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),
@@ -516,34 +569,34 @@ Future<void> _getCurrentLocation() async {
                   ),
                 
                   verticalSpace(17),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 21.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Car Brands',
-                          style: TextStyles.lato15SemiBoldBlack,
-                        ),
-                        horizontalSpace(4),
-                        GestureDetector(
-                          child: Row(
-                            children: [
-                              Text(
-                                'See all',
-                                style: TextStyles.lato13RegularGrey,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                color: ColorsManager.gry,
-                                size: 18.sp,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 21.w),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text(
+                  //         S.of(context).CarBrands,
+                  //         style: TextStyles.lato15SemiBoldBlack,
+                  //       ),
+                  //       horizontalSpace(4),
+                  //       GestureDetector(
+                  //         child: Row(
+                  //           children: [
+                  //             Text(
+                  //               S.of(context).Seeall,
+                  //               style: TextStyles.lato13RegularGrey,
+                  //             ),
+                  //             Icon(
+                  //               Icons.arrow_forward_ios_rounded,
+                  //               color: ColorsManager.gry,
+                  //               size: 18.sp,
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   verticalSpace(16),
                   // In your widget tree:
                   BlocBuilder<HomeCubit, HomeState>(
@@ -590,7 +643,10 @@ Future<void> _getCurrentLocation() async {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Services', style: TextStyles.lato15SemiBoldBlack),
+                        Text(
+                          S.of(context).Services,
+                          style: TextStyles.lato15SemiBoldBlack,
+                        ),
                         horizontalSpace(4),
                         GestureDetector(
                           onTap: () {
@@ -599,7 +655,7 @@ Future<void> _getCurrentLocation() async {
                           child: Row(
                             children: [
                               Text(
-                                'See all',
+                                S.of(context).Seeall,
                                 style: TextStyles.lato13RegularGrey,
                               ),
                               Icon(
@@ -619,7 +675,7 @@ Future<void> _getCurrentLocation() async {
                     child: BlocBuilder<ServicesCubit, ServicesState>(
                       builder: (context, state) {
                         if (state is ServicesLoading) {
-                          return Center(child: CircularProgressIndicator());
+                          return Center(child: ServiceLoder());
                         }
                         return ListView.separated(
                           padding: EdgeInsetsDirectional.only(
@@ -673,6 +729,9 @@ Future<void> _getCurrentLocation() async {
                                       height: 38.h,
                                       width: 40.w,
                                     ),
+                                    buildStarDisplay(ServicesCubit.get(
+                                      context,
+                                    ).serviceCenters[index].ratings?.average??0),
                                     Text(
                                       ServicesCubit.get(
                                         context,
@@ -724,15 +783,15 @@ Future<void> _getCurrentLocation() async {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'sell',
+                                    S.of(context).sell,
                                     style: TextStyles.lato21Regulargrey,
                                   ),
                                   Text(
-                                    'your car',
+                                    S.of(context).yourcar,
                                     style: TextStyles.lato21SemiBoldDarkBlue,
                                   ),
                                   AppTextButton(
-                                    buttonText: 'sell now',
+                                    buttonText: S.of(context).sellnow,
                                     textStyle: TextStyles.latoWhite12Bold,
                                     onPressed: () {
                                       context.pushNamed(
@@ -750,11 +809,20 @@ Future<void> _getCurrentLocation() async {
                           ],
                         ),
                       ),
-                      Positioned(
+                      LocalizationCubit.get(context).locale.languageCode == 'en' ?Positioned(
                         right: 0,
                         child: Image.asset(
                           ImagesManager.sellCar,
                           height: 185.h,
+                        ),
+                      ):Positioned(
+                        left: 0,
+                        child: Transform.flip(
+                          flipX: true,
+                          child: Image.asset(
+                            ImagesManager.sellCar,
+                            height: 185.h,
+                          ),
                         ),
                       ),
                     ],
@@ -836,108 +904,168 @@ class CustomDrawer extends StatelessWidget {
                       onTap: () {
                         context.pushNamed(Routes.profile);
                       },
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 28,
-                            backgroundImage: AssetImage(
-                              'images/png/pirson.png',
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      child: BlocBuilder<ProfileCubit, ProfileState>(
+                        builder: (context, state) {
+                          if (state is ProfileLoading) {
+                            return UiLoadingProfile();
+                          }
+                          return Row(
                             children: [
-                              Text(
-                                ProfileCubit.get(context).profileUser!.name ??
-                                    "",
-                                style: GoogleFonts.lato(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700,
+                              const CircleAvatar(
+                                radius: 28,
+                                backgroundImage: AssetImage(
+                                  'images/png/pirson.png',
                                 ),
                               ),
-                              Text(
-                                ProfileCubit.get(context).profileUser!.email ??
-                                    "",
-                                style: GoogleFonts.lato(
-                                  color: Colors.white70,
-                                  fontSize: 12,
-                                ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    ProfileCubit.get(
+                                          context,
+                                        ).profileUser?.name ??
+                                        "",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  Text(
+                                    ProfileCubit.get(
+                                          context,
+                                        ).profileUser?.email ??
+                                        "",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 40),
 
                     // Menu
-                    ..._buildMenuItem(context, "Home", Icons.home_outlined, () {
-                      context.pop();
-                    }),
                     ..._buildMenuItem(
                       context,
-                      "My Cars",
-                      Icons.directions_car,
+                      S.of(context).Home,
+                      Icons.home_outlined,
                       () {
-                        context.pushNamed(Routes.MyCarsScreen);
+                        context.pop();
                       },
                     ),
                     ..._buildMenuItem(
                       context,
-                      "Favourite",
+                      S.of(context).myCars,
+                      Icons.directions_car,
+                      () {
+                        context.pushNamed(Routes.myCarsScreen);
+                      },
+                    ),
+                    ..._buildMenuItem(
+                      context,
+                      S.of(context).Favourite,
                       Icons.favorite_border,
-                      () {},
+                      () {
+                        context.pushNamed(Routes.favouriteResult);
+                      },
+                    ),..._buildMenuItem(
+                      context,
+                      S.of(context).Blogs,
+                      Icons.article_outlined,
+                      () {
+                        context.pushNamed(Routes.postsScreen);
+                      },
                     ),
                     ..._buildMenuItem(
                       context,
-                      "Help & FAQ",
+                      S.of(context).HelpFAQ,
                       Icons.help_outline,
-                      () {},
+                      () {
+                        context.pushNamed(Routes.qfaScreen);
+                      },
                     ),
+                    // ..._buildMenuItem(
+                    //   context,
+                    //   S.of(context).ContactUs,
+                    //   Icons.call_outlined,
+                    //   () {},
+                    // ),
                     ..._buildMenuItem(
                       context,
-                      "Contact Us",
-                      Icons.call_outlined,
-                      () {},
-                    ),
-                    ..._buildMenuItem(
-                      context,
-                      "Settings",
+                      S.of(context).Settings,
                       Icons.settings_outlined,
-                      () {},
+                      () {
+                        context.pushNamed(Routes.settingsScreen);
+                      },
+                    ),..._buildMenuItem(
+                      context,
+                      S.of(context).Logout,
+                      Icons.logout,
+                          () {
+                        // TODO: handle logout logic
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                            title:  Text(S.of(context).SureuouwanttoLogout),
+                            // content:  Text(
+                            //   'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+                            // ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => context.pop(),
+                                child:  Text(S.of(context).Cancel),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context.pushNamedAndRemoveUntil(Routes.signInScreen, predicate: (route) => false);
+                                  CashHelper.clear();
+                                  DioFactory.removeTokenIntoHeaderAfterLogout();
+                                },
+                                child:  Text(S.of(context).Logout),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
 
-                    const Spacer(),
-
-                    const Divider(
-                      color: Color(0xFF1A7EFE),
-                      thickness: 0.5,
-                      height: 1,
-                    ),
-                    const SizedBox(height: 18),
-
-                    // Language switch
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.language,
-                          color: Colors.white70,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          "English",
-                          style: GoogleFonts.lato(color: Colors.white),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "العربية",
-                          style: GoogleFonts.lato(color: Colors.white),
-                        ),
-                      ],
-                    ),
+                    // const Spacer(),
+                    //
+                    // const Divider(
+                    //   color: Color(0xFF1A7EFE),
+                    //   thickness: 0.5,
+                    //   height: 1,
+                    // ),
+                    // const SizedBox(height: 18),
+                    //
+                    // // Language switch
+                    // Row(
+                    //   children: [
+                    //     const Icon(
+                    //       Icons.language,
+                    //       color: Colors.white70,
+                    //       size: 18,
+                    //     ),
+                    //     const SizedBox(width: 10),
+                    //     Text(
+                    //       S.of(context).English,
+                    //       style: GoogleFonts.lato(color: Colors.white),
+                    //     ),
+                    //     const Spacer(),
+                    //     Text(
+                    //       S.of(context).Arabic,
+                    //       style: GoogleFonts.lato(color: Colors.white),
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -976,4 +1104,16 @@ class CustomDrawer extends StatelessWidget {
       const SizedBox(height: 4),
     ];
   }
+}
+Widget buildStarDisplay(num rating) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: List.generate(5, (index) {
+      return Icon(
+        index < rating ? Icons.star : Icons.star_border,
+        color: Color(0xff1A76FE),
+        size: 10,
+      );
+    }),
+  );
 }

@@ -1,5 +1,6 @@
 import '../../../services/data/model/service_model.dart';
 import '../../../services/data/model/service_model.dart';
+import 'car_acc_model.dart';
 
 class CarParts {
   final int id;
@@ -19,7 +20,8 @@ class CarParts {
   final Meta? meta;
   final List<String> classList;
   final Acf acf;
-  final String? featuredImage; // ✅ Added
+  final String? featuredImage;
+  final Ratings? ratings;
   final Links? links;
 
   CarParts({
@@ -40,6 +42,7 @@ class CarParts {
     this.meta,
     required this.classList,
     required this.acf,
+    this.ratings,
     this.featuredImage, // ✅ Added
     this.links,
   });
@@ -56,6 +59,7 @@ class CarParts {
       status: json['status'],
       type: json['type'],
       link: json['link'],
+      ratings: Ratings.fromJson(json['ratings']),
       title: json['title']['rendered']??'',
       content: json['content']["rendered"] ?? '',
       featuredMedia: json['featured_media'],
