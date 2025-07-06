@@ -150,7 +150,7 @@ class TextStyles {
   static TextStyle font14WhiteRegular = GoogleFonts.poppins(
     fontSize: 14.sp,
     fontWeight: FontWeightHelper.regular,
-    //color: Colors.white,
+    color: Colors.white,
   );
   static TextStyle font18PurpleMedium = GoogleFonts.poppins(
     fontSize: 18.sp,

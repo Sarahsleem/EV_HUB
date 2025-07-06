@@ -7,6 +7,7 @@ import 'package:evhub/core/theming/colors.dart';
 import 'package:evhub/core/widgets/app_text_button.dart';
 import 'package:evhub/features/home/data/model/company_model.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +18,10 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/widgets/image_network.dart';
+import '../../../core/theming/font_weight.dart';
+import '../../../generated/l10n.dart';
+import '../../used_cars/ui/screen/used_car.dart';
+import '../../wish_list/logic/wish_list_cubit.dart';
 
 class ShowroomScreen extends StatefulWidget {
   const ShowroomScreen({super.key, required this.company});
@@ -66,13 +71,13 @@ class _ShowroomScreenState extends State<ShowroomScreen> {
           ),
 
           SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  // Top Bar
-                  Row(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                // Top Bar
+                Padding(
+                  padding:EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
@@ -81,7 +86,7 @@ class _ShowroomScreenState extends State<ShowroomScreen> {
                             color: Colors.white, size: 24.sp),
                       ),
                       Text(
-                        'Showroom',
+                        S.of(context).showrooms,
                         style: TextStyle(fontSize: 18.sp, color: Colors.white),
                       ),
                       Row(
@@ -117,299 +122,323 @@ class _ShowroomScreenState extends State<ShowroomScreen> {
                       ),
                     ],
                   ),
+                ),
 
-                  SizedBox(height: 140.h),
+                SizedBox(height: 140.h),
 
-                  // صورة الحساب
-                  CircleAvatar(
-                    radius: 35.r,
-                    backgroundImage: widget.company.profileImage.isNotEmpty
-                        ? NetworkImage(widget.company.profileImage)
-                        : const AssetImage('images/png/user_placeholder.png')
-                            as ImageProvider,
+                // صورة الحساب
+                CircleAvatar(
+                  radius: 35.r,
+                  backgroundImage: widget.company.profileImage.isNotEmpty
+                      ? NetworkImage(widget.company.profileImage)
+                      : const AssetImage('images/png/user_placeholder.png')
+                          as ImageProvider,
+                ),
+
+                SizedBox(height: 12.h),
+
+                Center(
+                  child: Text(
+                    widget.company.displayName,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 28.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
+                ),
 
-                  SizedBox(height: 12.h),
-
+                if (widget.company.bio.isNotEmpty)
                   Center(
                     child: Text(
-                      widget.company.displayName,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 28.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                      widget.company.bio,
+                      style:
+                          TextStyle(fontSize: 16.sp, color: Colors.white70),
                     ),
                   ),
 
-                  if (widget.company.bio.isNotEmpty)
-                    Center(
-                      child: Text(
-                        widget.company.bio,
-                        style:
-                            TextStyle(fontSize: 16.sp, color: Colors.white70),
+                SizedBox(height: 20.h),
+
+                if (widget.company.location.isNotEmpty)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.location_on,
+                          size: 16, color: Colors.white),
+                      SizedBox(width: 4.w),
+                      Text(
+                        "Tap to view on map",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+
+                SizedBox(height: 20.h),
+
+                if (widget.company.location.isNotEmpty)
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20.w),
+                    height: 120.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      image: const DecorationImage(
+                        image: AssetImage('images/png/map.png'),
+                        fit: BoxFit.cover,
                       ),
                     ),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: AppTextButton(
+                        buttonText: "Location",
+                        borderRadius: 16.8.r,
+                        textStyle: TextStyles.lato9SemiBoldWhite,
+                        backgroundColor: const Color(0xad22323b),
+                        buttonWidth: 101,
+                        buttonHeight: 16.h,
+                        onPressed: () async {
+                          final Uri url = Uri.parse(widget.company.location);
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url,
+                                mode: LaunchMode.externalApplication);
+                          } else {
+                            print('Could not launch $url');
+                          }
+                        },
+                      ),
+                    ),
+                  ),
 
-                  SizedBox(height: 20.h),
+                SizedBox(height: 20.h),
 
-                  if (widget.company.location.isNotEmpty)
-                    Row(
+                if (widget.company.userEmail.isNotEmpty)
+                  GestureDetector(
+                    onTap: () async {
+                      final Uri url = Uri.parse("mailto:${widget.company.userEmail}");
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Cannot open email')),
+                        );
+                      }
+                    },
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.location_on,
-                            size: 16, color: Colors.white),
-                        SizedBox(width: 4.w),
+                        Image.asset('images/png/world.png',
+                            width: 16.w, height: 16.h),
+                        horizontalSpace(4.w),
                         Text(
-                          "Tap to view on map",
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-
-                  SizedBox(height: 20.h),
-
-                  if (widget.company.location.isNotEmpty)
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20.w),
-                      height: 120.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.r),
-                        image: const DecorationImage(
-                          image: AssetImage('images/png/map.png'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: AppTextButton(
-                          buttonText: "Location",
-                          borderRadius: 16.8.r,
-                          textStyle: TextStyles.lato9SemiBoldWhite,
-                          backgroundColor: const Color(0xad22323b),
-                          buttonWidth: 101,
-                          buttonHeight: 16.h,
-                          onPressed: () async {
-                            final Uri url = Uri.parse(widget.company.location);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url,
-                                  mode: LaunchMode.externalApplication);
-                            } else {
-                              print('Could not launch $url');
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-
-                  SizedBox(height: 20.h),
-
-                  if (widget.company.userEmail.isNotEmpty)
-                    GestureDetector(
-                      onTap: () async {
-                        final Uri url = Uri.parse("mailto:${widget.company.userEmail}");
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Cannot open email')),
-                          );
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset('images/png/world.png',
-                              width: 16.w, height: 16.h),
-                          horizontalSpace(4.w),
-                          Text(
-                            widget.company.userEmail,
-                            style: TextStyle(
-                              color: Colors.white70,
-                              decoration: TextDecoration.underline,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  
-                  //    verticalSpace(16),
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: 21.w),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       Text(
-                  //         'Electric Cars',
-                  //         style: TextStyles.lato15SemiBoldBlack,
-                  //       ),
-                  //       horizontalSpace(4),
-                  //       GestureDetector(
-                  //         child: Row(
-                  //           children: [
-                  //             GestureDetector(
-                  //               onTap: () {
-                  //                 context.pushNamed(
-                  //                   Routes.carsScreen,
-                  //                   arguments: HomeCubit.get(context).cars,
-                  //                 );
-                  //               },
-                  //               child: Text(
-                  //                 'See all',
-                  //                 style: TextStyles.lato13RegularGrey,
-                  //               ),
-                  //             ),
-                  //             Icon(
-                  //               Icons.arrow_forward_ios_rounded,
-                  //               color: ColorsManager.gry,
-                  //               size: 18.sp,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  
-                  verticalSpace(12),
-                  BlocBuilder<HomeCubit, HomeState>(
-  builder: (context, state) {
-    if (state is HomeLoadingCarsByAuthorState) {
-      return const Center(child: CircularProgressIndicator());
-    } else if (state is HomeSuccessCarsByAuthorState) {
-      var cars = state.authorCars;
-      return SizedBox(
-        height: 217.h,
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: const ScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          itemCount: cars.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                context.pushNamed(
-                  Routes.carDetails,
-                  arguments: cars[index],
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(19.r),
-                  color: const Color(0xffEFEFEF),
-                ),
-                height: 217.h,
-                width: 165.w,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: 11.0.h,
-                        left: 11.w,
-                        right: 11.w,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            width: 80.w,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  cars[index].title ?? '',
-                                  style: TextStyles.lato17BoldDarkBlue.copyWith(
-                                    fontSize: 14.sp,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  cars[index].carBrand?[0]["name"] ?? '',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyles.latogrey12Medium,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            NumberFormat("#,###").format(
-                              double.tryParse(
-                                    cars[index].acf?["price"]?.toString() ?? '',
-                                  ) ??
-                                  0,
-                            ),
-                            style: TextStyles.lato12MediumDarkBlue,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                    AppCachedNetworkImage(
-                      image: cars[index].featuredImage ?? '',
-                      height: 110.h,
-                      fit: BoxFit.cover,
-                      radius: 0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('   Explore',
-                            style: TextStyles.lato12MediumDarkBlue),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 9.h,
-                            horizontal: 11.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff22323B),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(12.r),
-                              bottomRight: Radius.circular(19.r),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                ImagesManager.fav,
-                                height: 16.h,
-                                width: 16.w,
-                              ),
-                              Text(
-                                'add to Fav',
-                                style: TextStyles.latoWhite12Bold,
-                              ),
-                            ],
+                          widget.company.userEmail,
+                          style: TextStyle(
+                            color: Colors.white70,
+                            decoration: TextDecoration.underline,
+                            fontSize: 12.sp,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+
+                //    verticalSpace(16),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 21.w),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         'Electric Cars',
+                //         style: TextStyles.lato15SemiBoldBlack,
+                //       ),
+                //       horizontalSpace(4),
+                //       GestureDetector(
+                //         child: Row(
+                //           children: [
+                //             GestureDetector(
+                //               onTap: () {
+                //                 context.pushNamed(
+                //                   Routes.carsScreen,
+                //                   arguments: HomeCubit.get(context).cars,
+                //                 );
+                //               },
+                //               child: Text(
+                //                 'See all',
+                //                 style: TextStyles.lato13RegularGrey,
+                //               ),
+                //             ),
+                //             Icon(
+                //               Icons.arrow_forward_ios_rounded,
+                //               color: ColorsManager.gry,
+                //               size: 18.sp,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+
+                verticalSpace(12),
+                BlocBuilder<HomeCubit, HomeState>(
+              builder: (context, state) {
+                if (state is HomeLoadingCarsByAuthorState) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is HomeSuccessCarsByAuthorState) {
+                  var cars = state.authorCars;
+                  return SizedBox(
+                   // height: 27.h,
+                    child: ListView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      itemCount: cars.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+            onTap: () {
+              context.pushNamed( Routes.carDetails, arguments:cars[index]);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 12.w,
+                vertical: 23.h,
               ),
-            );
-          },
-        ),
-      );
-    } else if (state is HomeErrorCarsByAuthorState) {
-      return Center(
-        child: Text(
-          "❌ Error: ${state.message}",
-          style: const TextStyle(color: Colors.white),
-        ),
-      );
-    }
+              decoration: BoxDecoration(
+                color: Color(0xff1C2F39),
+                borderRadius: BorderRadius.circular(24.r),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 150.w,
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              cars[index].title ?? '',
+                              style: TextStyles.inter18WhiteMedium
+                                  .copyWith(fontSize: 15.3.sp),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              cars[index].carBrand?[0]["name"],
+                              style: TextStyles.inter13greyRegular
+                                  .copyWith(fontSize: 15.3.sp),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            S.of(context).StartFrom,
+                            style: TextStyles.inter13greyRegular,
+                          ),
+                          Text(
+                            formatLocalizedPrice(cars[index].acf?["price"], S.of(context).LE),
+                            style: TextStyles.inter13greyRegular
+                                .copyWith(
+                              fontSize: 15.3.sp,
+                              fontWeight: FontWeightHelper.medium,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  verticalSpace(10),
+                  AppCachedNetworkImage(
+                    image: cars[index].featuredImage,
+                    height: 160.h,
+                    width: 304.w,
+                    radius: 20.r,
+                  ),
+                  verticalSpace(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      cars[index].acf!["km"]==null?SizedBox.shrink():Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [Image.asset("images/png/carused.png",height: 22.h,width: 22.w),Text(formatKm(cars[index].acf!["km"]),style: TextStyles.inter18WhiteMedium,)],),
+                          Text(
+                            S.of(context).New,
+                            style: TextStyles.inter16greyMedium
+                                .copyWith(fontSize: 11.sp),
+                          ),
+                          Text(
+                            S.of(context).GoodCondition,
+                            style: TextStyles.inter16greyMedium
+                                .copyWith(fontSize: 11.sp),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        width:  cars[index].acf!["km"]==null?225.w:140.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(59.r),
+                          color: Color(0x2ed9d9d9),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            S.of(context).Explore,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      BlocBuilder<WishListCubit, WishListState>(
+                        builder: (context, state) {
+                          final cubit = WishListCubit.get(context);
+                          final isFavorite = cubit.favCars.any((car) => car.id == cars[index].id);
 
-    return const SizedBox.shrink();
-  },
-),
+                          return GestureDetector(
+                            onTap: () {
+                              if (isFavorite) {
+                                cubit.removeFromFavorites(cars[index].id!);
+                                cubit.favCars.removeWhere((car) => car.id == cars[index].id);
+                              } else {
+                                cubit.addToFavorites(cars[index].id!);
+                                cubit.favCars.add(cars[index]);
+                              }
+                              //cubit.emit(GetFavoritesSuccessState(cubit.favCars));
+                            },
+                            child: CircleAvatar(
+                              backgroundColor: const Color(0xff1B262C),
+                              child: Icon(
+                                CupertinoIcons.heart_fill,
+                                color: isFavorite ? Colors.red : const Color(0xa8ffffff),
+                                size: 20.sp,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
 
-                  
+                    ],
+                  ),
                 ],
               ),
+            ),
+                        );
+                      },
+                    ),
+                  );
+                } else if (state is HomeErrorCarsByAuthorState) {
+                  return SizedBox.shrink();
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
+
+verticalSpace(130)
+              ],
             ),
           ),
         ],

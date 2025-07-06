@@ -42,3 +42,9 @@ class HomeErrorCarsByAuthorState extends HomeState {
   final String message;
   HomeErrorCarsByAuthorState(this.message);
 }
+class CarByBrandLoading extends HomeState{}
+class CarByBrandSuccess extends HomeState{}
+class CarByBrandFailure extends HomeState{}
+class SortByMaxPrice extends HomeState{}
+class SortByMinPrice extends HomeState{}
+class SortByLastArrived extends HomeState{}

@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/assets/images.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/colors.dart';
+import '../../../../generated/l10n.dart';
 
 class ChooseCountry extends StatelessWidget {
   const ChooseCountry({super.key});
@@ -50,7 +51,7 @@ class ChooseCountry extends StatelessWidget {
                 ),
               ),
             ),
-            Center(child: Text('Soon',textAlign: TextAlign.center, style: TextStyles.lato17BoldDarkBlue.copyWith(color: Color(
+            Center(child: Text(S.of(context).Soon,textAlign: TextAlign.center, style: TextStyles.lato17BoldDarkBlue.copyWith(color: Color(
                 0x75000000)))),
             verticalSpace(20),
             Padding(
@@ -79,7 +80,7 @@ class ChooseCountry extends StatelessWidget {
             verticalSpace(100),
             Center(
               child: AppTextButton(
-                buttonText: 'Start',
+                buttonText: S.of(context).Start,
                 textStyle: TextStyles.lato12MediumDarkBlue.copyWith(color: Colors.white,fontSize: 20.sp),
                 onPressed: () {
                   context.pushNamed(Routes.onboardingScreen);

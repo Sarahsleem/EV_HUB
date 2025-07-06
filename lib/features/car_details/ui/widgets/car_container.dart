@@ -61,13 +61,14 @@ class CarDetailCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              SizedBox(
+                width: 200.w,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      car.carBrand?[0]["name"],
-
+                      car.title ?? "Model",
+                overflow: TextOverflow.clip,
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
@@ -79,7 +80,8 @@ class CarDetailCard extends StatelessWidget {
 
                         Flexible(
                           child: Text(
-                            car.title ?? "Model",
+                            car.carBrand?[0]["name"],
+
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,

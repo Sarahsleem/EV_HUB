@@ -244,7 +244,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
      ),
    );
   }
-}class CustomAppBar extends StatelessWidget {
+}
+class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
 
   @override

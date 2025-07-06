@@ -615,12 +615,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: (context, index) {
                                 final brand =
                                     HomeCubit.get(context).carBrands[index];
-                                return AppCachedNetworkImage(
-                                  fit: BoxFit.contain,
-                                  radius: 30.r,
-                                  image: brand.acf.brandLogo.url,
-                                  height: 64.h,
-                                  width: 64.w,
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.pushNamed(Routes.carBrandScreen,arguments: HomeCubit.get(context).carBrands[index].name);
+                                  },
+                                  child: AppCachedNetworkImage(
+                                    fit: BoxFit.contain,
+                                    radius: 30.r,
+                                    image: brand.acf.brandLogo.url,
+                                    height: 64.h,
+                                    width: 64.w,
+                                  ),
                                 );
                               },
                               separatorBuilder:

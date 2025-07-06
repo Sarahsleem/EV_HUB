@@ -210,7 +210,22 @@
   "AddedToFavorites": "Added to Favorites",
   "User": "User",
   "DeleteYourAccount": "Delete Your Account",
-  "ResetPassword": "Reset Password"
+  "ResetPassword": "Reset Password",
+  "OldPassword": "Old Password",
+  "NewPassword": "New Password",
+  "Pleaseenteranewpassword": "Please enter a new password",
+  "ConfirmNewPassword": "Confirm New Password",
+  "Pleaseconfirmyournewpassword": "Please confirm your new password",
+  "Passwordsdonotmatch": "Passwords don't match",
+  "Pleaseenteryouroldpassword": "Please enter your old password",
+  "attention": "Attention",
+  "passwordChangedSuccessfully": "Password changed successfully",
+  "Success": "Success",
+  "continueText": "Continue",
+  "Start": "Start",
+  "Soon": "Soon",
+  "Choose": "Choose\n",
+  "Country": "Country"
 
 
 

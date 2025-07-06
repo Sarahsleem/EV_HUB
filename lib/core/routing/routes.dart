@@ -72,4 +72,8 @@ class Routes {
 
   static  const String resetPassword='/resetPassword';
 
+  static const String carBrandScreen='/carBrandScreen';
+
+  static const String carOwnerProfile='/carOwnerProfile';
+
 }

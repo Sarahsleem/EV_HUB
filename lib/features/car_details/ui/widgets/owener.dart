@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:evhub/core/helpers/extensions.dart';
+import 'package:evhub/core/routing/routes.dart';
 import 'package:evhub/features/car_details/data/user_model.dart';
 import 'package:evhub/features/home/logic/home_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -216,30 +218,35 @@ class OwnerAndLocationSection extends StatelessWidget {
                   children: [
                     // Owner Info Card
                     Expanded(
-                      child: ContactInfoCard(
-                        name: user.name,
-                        role: "Car Owner",
-                        imageUrl:
-                            user.profileImage ??
-                            "https://via.placeholder.com/150",
-                        onTap: () {
-                          print("Contact Card Tapped!");
-                          // Example action: Show a dialog with phone number
-                          showDialog(
-                            context: context,
-                            builder:
-                                (_) => AlertDialog(
-                                  title: Text(user.name),
-                                  content: Text("Phone: ${user.phoneNumber}"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text("Close"),
-                                    ),
-                                  ],
-                                ),
-                          );
+                      child: GestureDetector(
+                        onTap: (){
+                          context.pushNamed(Routes.carOwnerProfile,arguments: user);
                         },
+                        child: ContactInfoCard(
+                          name: user.name,
+                          role: "Car Owner",
+                          imageUrl:
+                              user.profileImage ??
+                              "https://via.placeholder.com/150",
+                          onTap: () {
+                            print("Contact Card Tapped!");
+                            // Example action: Show a dialog with phone number
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (_) => AlertDialog(
+                                    title: Text(user.name),
+                                    content: Text("Phone: ${user.phoneNumber}"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text("Close"),
+                                      ),
+                                    ],
+                                  ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16), // Space between cards

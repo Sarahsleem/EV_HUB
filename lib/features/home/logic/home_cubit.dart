@@ -27,6 +27,7 @@ List<AdsModel> ads2=[];
 List<AdsModel> ads1=[];
 List<Brand> carBrands=[];
 List<Car> cars=[];
+List<Car> authorCars=[];
   int visibleBrandsCount = 7;
   void loadMoreCars() {
     if (visibleBrandsCount < cars.length) {
@@ -34,6 +35,7 @@ List<Car> cars=[];
       emit(LoadMoreCarsState()); // Create a dummy state
     }
   }
+
    Future<void> getCarsByAuthor(int authorId) async {
     emit(HomeLoadingCarsByAuthorState());
     try {
@@ -64,6 +66,7 @@ Future<void> getAds2()async{
   });
 
 }
+
   Future<UserModel?> fetchUserById(int userId) async {
     try {
       Dio dio = Dio();
@@ -140,13 +143,50 @@ Future<void> getCars()async{
   }
 
 }
+  final List<String> sortOptions = [S.of(NavigationService.navigatorKey.currentContext!).MaxPrice,S.of(NavigationService.navigatorKey.currentContext!).MinPrice, S.of(NavigationService.navigatorKey.currentContext!).LastArrived];
+  String selectedSort = S.of(NavigationService.navigatorKey.currentContext!).MaxPrice;
+  void sortBy(String sort) {
+    if (carsByBrand.isEmpty) return;
+
+    switch (sort) {
+      case 'Max Price'||'أعلى سعر':
+        carsByBrand
+            .sort((a, b) => (b.acf?['price'] ?? 0).compareTo(a.acf?['price'] ?? 0));
+        emit(SortByMaxPrice());
+        break;
+
+      case 'Min Price'||'أقل سعر':
+        carsByBrand.sort((a, b) => (a.acf?['price'] ?? 0).compareTo(b.acf?['price'] ?? 0));
+        emit(SortByMinPrice());
+        break;
+
+      case 'Last Arrived'||'آخر الإضافات':
+        carsByBrand.sort((a, b) => (b.date ?? '').compareTo(a.date ?? ''));
+        emit(SortByLastArrived());
+        break;
+    }
+  }
 List<Feature> features=[
   Feature(image:ImagesManager.insurance, title: S.of(NavigationService.navigatorKey.currentContext!).insurance, route: 'Insurance',),
   Feature(image: ImagesManager.protection, title:  S.of(NavigationService.navigatorKey.currentContext!).protection, route:'Car Protection Film', ),
   Feature(image: ImagesManager.stations, title:  S.of(NavigationService.navigatorKey.currentContext!).Chargingstations, route:'', ),
 
 ];
+  List<Car>carsByBrand=[];
+  Future<void> getCarsByBrands(String selectedBrand) async {
+    emit(CarByBrandLoading());
 
+    final cars = await homeRepo.searchCars(
+      brandName: selectedBrand.isNotEmpty ? selectedBrand : null,
+
+    );
+    cars.fold((l){ emit(CarByBrandFailure());}, (cars) {
+      carsByBrand=cars;
+      emit(CarByBrandSuccess());
+    });
+
+
+  }
   // void loadMoreBrands() {
   //   if (visibleBrandsCount < carBrands.length) {
   //     visibleBrandsCount = (visibleBrandsCount + 7).clamp(0, carBrands.length);

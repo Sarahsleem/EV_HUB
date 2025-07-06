@@ -1,4 +1,5 @@
 import 'package:evhub/features/add_services/ui/screen/chose_service.dart';
+import 'package:evhub/features/car_details/data/user_model.dart';
 import 'package:evhub/features/edit_car/logic/edit_car_cubit.dart';
 import 'package:evhub/features/add_services/ui/screen/add_services_screen.dart';
 import 'package:evhub/features/car_details/ui/sceen/car_details.dart';
@@ -28,12 +29,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/add_new_car/logic/add_new_car_cubit.dart';
 import '../../features/add_new_car/ui/screens/add_car_details_screen.dart';
 import '../../features/add_new_car/ui/screens/choose_brand_screen.dart';
+import '../../features/car_details/ui/sceen/car_owner_profile.dart';
 import '../../features/edit_car/ui/edit_car_page.dart';
 import '../../features/forget_password/logic/forget_password_cubit.dart';
 import '../../features/forget_password/ui/screen/forget_password_email.dart';
 import '../../features/forget_password/ui/screen/forget_password_otp.dart';
 import '../../features/home/logic/home_cubit.dart';
 import '../../features/home/ui/screen/all_cars_screen.dart';
+import '../../features/home/ui/screen/car_brands_screen.dart';
 import '../../features/home/ui/screen/home_screen.dart';
 import '../../features/home/ui/screen/qfa_screen.dart';
 import '../../features/navbar/logic/nav_bar_cubit.dart';
@@ -75,7 +78,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => ChooseCountry());
 
       case Routes.verifyCode:
-
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
@@ -93,7 +95,7 @@ class AppRouter {
         );
       case Routes.qfaScreen:
         return MaterialPageRoute(builder: (_) => const HelpFaqScreen());
-        case Routes.settingsScreen:
+      case Routes.settingsScreen:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case Routes.stationsScreen:
         return MaterialPageRoute(builder: (_) => EVStationFinder());
@@ -105,14 +107,37 @@ class AppRouter {
                 child: CarScreen(data: settings.arguments as Car),
               ),
         );
-        case Routes.showroom:
+      case Routes.carOwnerProfile:
         return MaterialPageRoute(
           builder:
-              (_) => BlocProvider.value(
+              (_) => MultiBlocProvider(
+  providers: [
+    BlocProvider.value(
                 value: getIt<HomeCubit>(),
-                child: ShowroomScreen (company: settings.arguments as CompanyModel),
+),
+    BlocProvider.value(
+      value: getIt<WishListCubit>(),
+    ),
+  ],
+  child: CarOwnerProfile(
+                  userModel: settings.arguments as UserModel,
+                ),
+),
+        );
+      case Routes.showroom:
+        return MaterialPageRoute(
+          builder:
+              (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: getIt<HomeCubit>()),
+                  BlocProvider.value(value: getIt<WishListCubit>()),
+                ],
+                child: ShowroomScreen(
+                  company: settings.arguments as CompanyModel,
+                ),
               ),
-        );case Routes.resetPassword:
+        );
+      case Routes.resetPassword:
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider.value(
@@ -184,7 +209,7 @@ class AppRouter {
                 child: AllService(),
               ),
         );
-          case Routes.chooseservice:
+      case Routes.chooseservice:
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider.value(
@@ -234,6 +259,17 @@ class AppRouter {
                 ),
               ),
         );
+      case Routes.carBrandScreen:
+        return MaterialPageRoute(
+          builder:
+              (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: getIt<HomeCubit>()),
+                  BlocProvider.value(value: getIt<WishListCubit>()),
+                ],
+                child: CarBrandScreen(carsResult: settings.arguments as String),
+              ),
+        );
       case Routes.favouriteResult:
         return MaterialPageRoute(
           builder:
@@ -242,27 +278,24 @@ class AppRouter {
                 child: WishListScreen(),
               ),
         );
-        case Routes.postsScreen:
+      case Routes.postsScreen:
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider.value(
                 value: getIt<PostsCubit>(),
                 child: PostsUi(),
               ),
-        ); case Routes.postsDetailsScreen:
+        );
+      case Routes.postsDetailsScreen:
         return MaterialPageRoute(
           builder:
               (_) => MultiBlocProvider(
-  providers: [
-    BlocProvider.value(
-                value: getIt<PostsCubit>(),
-),
-    BlocProvider.value(
-      value:  getIt<ServicesCubit>(),
-    ),
-  ],
-  child: PostDetails(postModel: settings.arguments as PostModel,),
-),
+                providers: [
+                  BlocProvider.value(value: getIt<PostsCubit>()),
+                  BlocProvider.value(value: getIt<ServicesCubit>()),
+                ],
+                child: PostDetails(postModel: settings.arguments as PostModel),
+              ),
         );
       case Routes.addNewChooseBrand:
         return MaterialPageRoute(
@@ -337,18 +370,15 @@ class AppRouter {
                 child: MyCars(),
               ),
         );
-    case Routes.addServices:
-  final args = settings.arguments as AddServiceArguments;
-  return MaterialPageRoute(
-    builder: (_) => BlocProvider(
-      create: (context) => getIt<ServicesCubit>(),
-      child: AddNewServiceScreen(
-        icon: args.icon,
-        title: args.title,
-      ),
-    ),
-  );
-
+      case Routes.addServices:
+        final args = settings.arguments as AddServiceArguments;
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (context) => getIt<ServicesCubit>(),
+                child: AddNewServiceScreen(icon: args.icon, title: args.title),
+              ),
+        );
 
       case Routes.profile:
         return MaterialPageRoute(

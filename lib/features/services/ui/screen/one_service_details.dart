@@ -229,24 +229,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                   //   ),
                   // ),
                   SizedBox(height: 16.h),
-                  BlocBuilder<ServicesCubit, ServicesState>(
-                    builder: (context, state) {
-                      return StarRating(
-                        initialRating: 0,
-                        comment: contetController,
-                        onRatingChanged: (rating) {
-                          ServicesCubit.get(context).changeRating(rating);
-                        },
-                        onSend: () {
-                          ServicesCubit.get(context).postComment(
-                            contetController.text,
-                            widget.data.id,
-                            ServicesCubit.get(context).rating as int,
-                          );
-                        },
-                      );
-                    },
-                  ),
+
                   verticalSpace(15),
                   // Map Card
                   Container(
@@ -338,10 +321,54 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                             fontSize: 12.sp,
                           ),
                         ),
+
                       ],
                     ),
-                  ),
-
+                  ),verticalSpace(20),
+                  BlocBuilder<ServicesCubit, ServicesState>(
+                    builder: (context, state) {
+                      return StarRating(
+                        initialRating: 0,
+                        comment: contetController,
+                        onRatingChanged: (rating) {
+                          ServicesCubit.get(context).changeRating(rating);
+                        },
+                        onSend: () {
+                          ServicesCubit.get(context).postComment(
+                            contetController.text,
+                            widget.data.id,
+                            ServicesCubit.get(context).rating as int,
+                          );
+                        },
+                      );
+                    },
+                  ),verticalSpace(20),
+                  ...widget.data.ratings.details.map((comment) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 10.h),
+                      child: Container(
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              comment.author,
+                              style: TextStyles.inter14WhiteSemiBold,
+                            ),
+                            verticalSpace(6),
+                            Text(
+                              comment.content,
+                              style: TextStyles.inter12WhiteRegular,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ],
               ),
             ),

@@ -1,5 +1,8 @@
 import 'package:evhub/core/helpers/extensions.dart';
 import 'package:evhub/core/helpers/spacing.dart';
+import 'package:evhub/features/setting/data/model/reset_password_model.dart';
+import 'package:evhub/features/setting/logic/setting_cubit.dart';
+import 'package:evhub/features/setting/ui/widget/reset_password_status_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -28,9 +31,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       // Call API or perform logic
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password reset request submitted')),
-      );
+     SettingCubit.get(context).changeMyPassword(ResetPasswordModel(oldPassword: oldPasswordController.text, newPassword: newPasswordController.text));
     }
   }
 
@@ -60,7 +61,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   controller: oldPasswordController,
                   obscureText: !oldPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: 'Old Password',
+                    labelStyle: TextStyles.font14WhiteRegular, floatingLabelStyle: TextStyles.font14WhiteRegular,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: ColorsManager.kPrimaryColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    labelText: S.of(context).OldPassword,
                     suffixIcon: IconButton(
                       icon: Icon(
                         oldPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -73,16 +79,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                   ),
                   validator: (value) =>
-                  value == null || value.isEmpty ? 'Please enter your old password' : null,
+                  value == null || value.isEmpty ? S.of(context).Pleaseenteryouroldpassword : null,
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 26.h),
             
                 // New password
                 TextFormField(
                   controller: newPasswordController,
                   obscureText: !newPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: 'New Password',
+                    labelStyle: TextStyles.font14WhiteRegular,
+                    floatingLabelStyle: TextStyles.font14WhiteRegular,
+                    labelText: S.of(context).NewPassword,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: ColorsManager.kPrimaryColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         newPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -95,16 +107,23 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                   ),
                   validator: (value) =>
-                  value == null || value.isEmpty ? 'Please enter a new password' : null,
+                  value == null || value.isEmpty ? S.of(context).Pleaseenteranewpassword : null,
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 26.h),
             
                 // Confirm new password
                 TextFormField(
                   controller: confirmPasswordController,
                   obscureText: !confirmPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: 'Confirm New Password',
+labelStyle: TextStyles.font14WhiteRegular,
+                    floatingLabelStyle: TextStyles.font14WhiteRegular,
+                    labelText:S.of(context).ConfirmNewPassword,
+                    focusedBorder: OutlineInputBorder(
+
+                      borderSide: BorderSide(color: ColorsManager.kPrimaryColor),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -117,17 +136,25 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'Please confirm your new password';
-                    if (value != newPasswordController.text) return 'Passwords do not match';
+                    if (value == null || value.isEmpty) return S.of(context).Pleaseconfirmyournewpassword;
+                    if (value != newPasswordController.text) return S.of(context).Passwordsdonotmatch;
                     return null;
                   },
                 ),
-                SizedBox(height: 32.h),
-            
+                SizedBox(height: 42.h),
+
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+
+                    backgroundColor: ColorsManager.kPrimaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: _submit,
-                  child: Text('Reset Password'),
+                  child: Text(S.of(context).ResetPassword, style: TextStyles.inter18WhiteMedium,),
                 ),
+                ResetPasswordStatusUi(),
               ],
             ),
           ),

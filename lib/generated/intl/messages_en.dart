@@ -57,11 +57,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "Chargingstations": MessageLookupByLibrary.simpleMessage(
       "Charging stations",
     ),
+    "Choose": MessageLookupByLibrary.simpleMessage("Choose\n"),
     "ChoosecarBrand": MessageLookupByLibrary.simpleMessage("Choose car Brand"),
     "Choosecarmodel": MessageLookupByLibrary.simpleMessage("Choose car model"),
     "Choosecarstyle": MessageLookupByLibrary.simpleMessage("Choose car style"),
     "Chooseyear": MessageLookupByLibrary.simpleMessage("Choose year"),
+    "ConfirmNewPassword": MessageLookupByLibrary.simpleMessage(
+      "Confirm New Password",
+    ),
     "ContactUs": MessageLookupByLibrary.simpleMessage("Contact Us"),
+    "Country": MessageLookupByLibrary.simpleMessage("Country"),
     "Dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "DarkMode": MessageLookupByLibrary.simpleMessage("Dark Mode"),
     "DeleteYourAccount": MessageLookupByLibrary.simpleMessage(
@@ -105,10 +110,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "MotorSpeed": MessageLookupByLibrary.simpleMessage("Motor Speed"),
     "New": MessageLookupByLibrary.simpleMessage("New"),
     "NewCarDetails": MessageLookupByLibrary.simpleMessage("New Car Details"),
+    "NewPassword": MessageLookupByLibrary.simpleMessage("New Password"),
     "Newcars": MessageLookupByLibrary.simpleMessage("New Cars"),
     "Nicetomeetyou": MessageLookupByLibrary.simpleMessage("Nice to meet you"),
     "NoCarsFound": MessageLookupByLibrary.simpleMessage("No Cars Found"),
     "Ok": MessageLookupByLibrary.simpleMessage("Ok"),
+    "OldPassword": MessageLookupByLibrary.simpleMessage("Old Password"),
+    "Passwordsdonotmatch": MessageLookupByLibrary.simpleMessage(
+      "Passwords don\'t match",
+    ),
+    "Pleaseconfirmyournewpassword": MessageLookupByLibrary.simpleMessage(
+      "Please confirm your new password",
+    ),
+    "Pleaseenteranewpassword": MessageLookupByLibrary.simpleMessage(
+      "Please enter a new password",
+    ),
+    "Pleaseenteryouroldpassword": MessageLookupByLibrary.simpleMessage(
+      "Please enter your old password",
+    ),
     "Price": MessageLookupByLibrary.simpleMessage("Price"),
     "PriceNotAvailable": MessageLookupByLibrary.simpleMessage(
       "Price Not Available",
@@ -127,8 +146,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "Seeall": MessageLookupByLibrary.simpleMessage("See all"),
     "Services": MessageLookupByLibrary.simpleMessage("Services"),
     "Settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "Soon": MessageLookupByLibrary.simpleMessage("Soon"),
+    "Start": MessageLookupByLibrary.simpleMessage("Start"),
     "StartFrom": MessageLookupByLibrary.simpleMessage("Start From"),
     "Submit": MessageLookupByLibrary.simpleMessage("Submit"),
+    "Success": MessageLookupByLibrary.simpleMessage("Success"),
     "SureuouwanttoLogout": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to logout?",
     ),
@@ -157,6 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Already have an account?",
     ),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
+    "attention": MessageLookupByLibrary.simpleMessage("Attention"),
     "bikes": MessageLookupByLibrary.simpleMessage("Bikes"),
     "brands": MessageLookupByLibrary.simpleMessage("Brands"),
     "carAccessoriesDesc": MessageLookupByLibrary.simpleMessage(
@@ -214,6 +237,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Connection to the server failed due to internet connection",
         ),
     "contactUs": MessageLookupByLibrary.simpleMessage("Contact Us"),
+    "continueText": MessageLookupByLibrary.simpleMessage("Continue"),
     "continueasguest": MessageLookupByLibrary.simpleMessage(
       "Continue as guest",
     ),
@@ -284,6 +308,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "next": MessageLookupByLibrary.simpleMessage("Next"),
     "noPosts": MessageLookupByLibrary.simpleMessage("No Posts"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
+    "passwordChangedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "Password changed successfully",
+    ),
     "phone": MessageLookupByLibrary.simpleMessage("Phone"),
     "phonenumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
     "price": MessageLookupByLibrary.simpleMessage("Price"),

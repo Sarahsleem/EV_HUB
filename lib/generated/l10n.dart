@@ -1486,6 +1486,121 @@ class S {
       args: [],
     );
   }
+
+  /// `Old Password`
+  String get OldPassword {
+    return Intl.message(
+      'Old Password',
+      name: 'OldPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Password`
+  String get NewPassword {
+    return Intl.message(
+      'New Password',
+      name: 'NewPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a new password`
+  String get Pleaseenteranewpassword {
+    return Intl.message(
+      'Please enter a new password',
+      name: 'Pleaseenteranewpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm New Password`
+  String get ConfirmNewPassword {
+    return Intl.message(
+      'Confirm New Password',
+      name: 'ConfirmNewPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please confirm your new password`
+  String get Pleaseconfirmyournewpassword {
+    return Intl.message(
+      'Please confirm your new password',
+      name: 'Pleaseconfirmyournewpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passwords don't match`
+  String get Passwordsdonotmatch {
+    return Intl.message(
+      'Passwords don\'t match',
+      name: 'Passwordsdonotmatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your old password`
+  String get Pleaseenteryouroldpassword {
+    return Intl.message(
+      'Please enter your old password',
+      name: 'Pleaseenteryouroldpassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attention`
+  String get attention {
+    return Intl.message('Attention', name: 'attention', desc: '', args: []);
+  }
+
+  /// `Password changed successfully`
+  String get passwordChangedSuccessfully {
+    return Intl.message(
+      'Password changed successfully',
+      name: 'passwordChangedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get Success {
+    return Intl.message('Success', name: 'Success', desc: '', args: []);
+  }
+
+  /// `Continue`
+  String get continueText {
+    return Intl.message('Continue', name: 'continueText', desc: '', args: []);
+  }
+
+  /// `Start`
+  String get Start {
+    return Intl.message('Start', name: 'Start', desc: '', args: []);
+  }
+
+  /// `Soon`
+  String get Soon {
+    return Intl.message('Soon', name: 'Soon', desc: '', args: []);
+  }
+
+  /// `Choose\n`
+  String get Choose {
+    return Intl.message('Choose\n', name: 'Choose', desc: '', args: []);
+  }
+
+  /// `Country`
+  String get Country {
+    return Intl.message('Country', name: 'Country', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

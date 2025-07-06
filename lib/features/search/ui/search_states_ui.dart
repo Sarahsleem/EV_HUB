@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theming/colors.dart';
 import '../../../../core/widgets/show_dialog_error.dart';
 
+import '../../../generated/l10n.dart';
 import '../logic/search_cubit.dart';
 
 class SearchStateUi extends StatelessWidget {
@@ -45,9 +46,9 @@ class SearchStateUi extends StatelessWidget {
           Navigator.pop(context);
           ShowDialogError.showErrorDialog(
               context,
-              "attention", // Pass the "attention" title here
-              'some thing went wrong ',
-                  'Try again'
+              S.of(context).attention, // Pass the "attention" title here
+              S.of(context).somethingWentWrong,
+              S.of(context).tryagain
           );
         }
       },

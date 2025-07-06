@@ -6,6 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:evhub/core/networking/api_constants.dart';
 import 'package:evhub/features/home/data/model/Ads_model.dart';
 
+import '../../../../core/networking/api_error_model.dart';
+import '../../../../core/networking/error_handler.dart';
 import '../model/car_brand.dart';
 import '../model/car_model.dart';
 import '../model/company_model.dart';
@@ -13,8 +15,65 @@ import '../model/company_model.dart';
 class HomeRepo{
   Dio dio;
   HomeRepo(this.dio);
+  Future<Either<ApiErrorModel,List<Car>>> getCarsByAuthor(String authorId)async{
 
+    try{
+      var response =await dio.get('/wp/v2/cars?status=published&author=$authorId');
+      List<Car> cars = (response.data as List)
+          .map((car) => Car.fromMap(car))
+          .toList();
+      return right(cars);
+    }catch(e){
+      return left(ApiErrorHandler.handle(e));
+    }
+  }
+  Future<Either<ApiErrorModel,List<Car>>> searchCars({
+    String? brandName,
+    String? modelName,
+    String? conditionName,
+    String? colorName,
+    String? usedSinceName,
+    String? bodyStyleName,
+    String? className,
+    String? carClassName,
+    int? priceMin,
+    int? priceMax,
+  }) async {
+    try {
+      final Map<String, dynamic> queryParams = {
+        if (brandName != null) 'car-brand': brandName,
+        if (modelName != null) 'model': modelName,
+        if (conditionName != null) 'condition': conditionName,
+        if (colorName != null) 'color': colorName,
+        if (usedSinceName != null) 'used-since': usedSinceName,
+        if (bodyStyleName != null) 'body-style': bodyStyleName,
+        if (className != null) 'class': className,
+        if (carClassName != null) 'car_class': carClassName,
+        if (priceMin != null) 'price_min': priceMin.toString(),
+        if (priceMax != null) 'price_max': priceMax.toString(),
+      };
 
+      final response = await dio.get(
+        'https://evhubtl.com/wp-json/custom-api/v1/search-cars',
+        queryParameters: queryParams,
+      );
+
+      if (response.data is List) {
+        return right( (response.data as List).map((car) => Car.fromMap(car)).toList());
+      } else {
+        throw Exception('Unexpected data format: Expected List but got ${response.data.runtimeType}');
+      }
+    } on DioException catch (e) {
+      print(e.response!.data);
+      return left(ApiErrorHandler.handle(e.response!.data));
+      // log('DioException during search: ${e.message}');
+      throw Exception('Search failed: ${e.message}');
+    } catch (e) {
+      print(e);
+      return left(ApiErrorHandler.handle(e));
+
+    }
+  }
 
 
    Future<List<Car>> fetchCarsByAuthor(int authorId) async {
