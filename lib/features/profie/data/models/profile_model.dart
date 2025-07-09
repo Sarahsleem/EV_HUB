@@ -54,7 +54,7 @@ class ProfileModel {
     String? email,
     String? phoneNumber,
     String? role,
-    Null? image,
+    String? image,
   }) {
     return ProfileModel(
       id: id??this.id,
@@ -72,7 +72,7 @@ class ProfileModel {
       'email': this.email,
       'phone': this.phoneNumber,
       'role': this.role,
-      'image': this.image,
+      'profile_image': this.image,
     };
   }
 
@@ -83,7 +83,7 @@ class ProfileModel {
       email: map['email'] ,
       phoneNumber: map['phone'] ,
       role: map['role'] ,
-      image: map['image'] ,
+      image: map['profile_image'] ,
     );
   }
 

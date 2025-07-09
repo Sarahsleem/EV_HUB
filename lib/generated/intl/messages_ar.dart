@@ -281,6 +281,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "phone": MessageLookupByLibrary.simpleMessage("الهاتف"),
     "phonenumber": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
     "price": MessageLookupByLibrary.simpleMessage("السعر"),
+    "profileUpdatedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث الملف الشخصي بنجاح",
+    ),
     "protection": MessageLookupByLibrary.simpleMessage("حماية"),
     "protectionFilmDesc": MessageLookupByLibrary.simpleMessage(
       "تحمي طبقة حماية الطلاء سيارتك من الخدوش والتشققات وأشعة الشمس.",

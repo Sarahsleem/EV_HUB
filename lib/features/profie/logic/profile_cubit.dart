@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../../core/db/cached_app.dart';
+import '../data/models/updated_profle_model.dart';
 import '../data/repo/profile_repo.dart';
 
 part 'profile_state.dart';
@@ -31,12 +32,17 @@ profileUser=CachedApp.getCachedData(CachedDataType.profile.name);
             profileUser = profileApi;
             CachedApp.saveData(profileUser,CachedDataType.profile.name);
             CashHelper.putInt(key: Keys.userId, value: profileApi.id!,);
-            CashHelper.putString(key: Keys.name, value: profileApi.name!);
-            CashHelper.putString(key: Keys.email, value: profileApi.email!);
+            CashHelper.setStringSecured(key: Keys.name, value: profileApi.name!);
+            CashHelper.setStringSecured(key: Keys.email, value: profileApi.email!);
             emit(ProfileSuccess());
           },
         );
       }
     }
+  }
+  Future<void> updateProfile(UpdatedProfileModel data)async{
+    emit(UpdateProfileLoading());
+    final result = await profileRepo.updataProfile(data);
+    result.fold((l) => emit(UpdateProfileError()), (r) => emit(UpdateProfileSuccess()));
   }
 }

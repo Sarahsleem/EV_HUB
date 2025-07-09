@@ -5,12 +5,16 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:evhub/core/networking/api_constants.dart';
 import 'package:evhub/features/home/data/model/Ads_model.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../core/networking/api_error_model.dart';
 import '../../../../core/networking/error_handler.dart';
 import '../model/car_brand.dart';
 import '../model/car_model.dart';
 import '../model/company_model.dart';
+List<Brand> parseBrands(List<dynamic> data) {
+  return data.map((e) => Brand.fromJson(e)).toList();
+}
 
 class HomeRepo{
   Dio dio;
@@ -123,38 +127,30 @@ try{
 return left('f');
   }
 }
-  Future<Either<String,List<Brand>>> fetchBrands( int count) async {
+  Future<Either<String, List<Brand>>> fetchBrands(int count) async {
     try {
       final response = await dio.get(
         'https://evhubtl.com/wp-json/wp/v2/car-brand?per_page=$count',
         options: Options(
-          validateStatus: (status) => status! < 500, // Allow status codes less than 500
+          validateStatus: (status) => status! < 500,
         ),
       );
 
-      // log('Response Status Code: ${response.statusCode}');
-      // log('Response Data: ${response.data}');
-
       if (response.statusCode == 200) {
         if (response.data is List) {
-          return right ((response.data as List).map((brandData) => Brand.fromJson(brandData)).toList());
+          final List<dynamic> rawData = response.data;
+          final parsed = await compute(parseBrands, rawData); // 🚀 compute
+          return right(parsed);
         } else {
           return left('Unexpected data format: Expected List but got ${response.data.runtimeType}');
-         // throw Exception('Unexpected data format: Expected List but got ${response.data.runtimeType}');
         }
       } else {
-        // throw Exception('Failed to load brands, status code: ${response.statusCode}');
         return left('Failed to load brands, status code: ${response.statusCode}');
-
       }
     } on DioException catch (e) {
-      // log('DioException: ${e.message}');
-      // throw Exception('Failed to load brands: ${e.message}');
-      return left(e.message!);
-
+      return left(e.message ?? 'Unknown Dio error');
     } catch (e) {
-     // log('Error fetching brands: $e');
-      throw Exception('Failed to load brands');
+      return left('Failed to load brands');
     }
   }
   Future<Either<String,List<Car>>> fetchCars() async {

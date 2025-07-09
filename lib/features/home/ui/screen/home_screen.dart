@@ -175,15 +175,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      context.pushNamed(Routes.myCarsScreen);
-                    },
-                    child: CircleAvatar(
-                      radius: 25.r,
-                      child: Image.asset('images/png/pirson.png'),
-                    ),
-                  ),
+                  BlocBuilder<ProfileCubit, ProfileState>(
+  builder: (context, state) {
+    return AppCachedNetworkImage(
+                    image: ProfileCubit.get(context).profileUser?.image??'',height: 50.h,width: 50.w,radius: 25.r,);
+  },
+),
                 ],
               ),
             ),
@@ -569,34 +566,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 
                   verticalSpace(17),
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: 21.w),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       Text(
-                  //         S.of(context).CarBrands,
-                  //         style: TextStyles.lato15SemiBoldBlack,
-                  //       ),
-                  //       horizontalSpace(4),
-                  //       GestureDetector(
-                  //         child: Row(
-                  //           children: [
-                  //             Text(
-                  //               S.of(context).Seeall,
-                  //               style: TextStyles.lato13RegularGrey,
-                  //             ),
-                  //             Icon(
-                  //               Icons.arrow_forward_ios_rounded,
-                  //               color: ColorsManager.gry,
-                  //               size: 18.sp,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 21.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          S.of(context).CarBrands,
+                          style: TextStyles.lato15SemiBoldBlack,
+                        ),
+                        horizontalSpace(4),
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed(Routes.carBrandScreen,arguments: HomeCubit.get(context).carBrands[0].name);
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                S.of(context).Seeall,
+                                style: TextStyles.lato13RegularGrey,
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: ColorsManager.gry,
+                                size: 18.sp,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   verticalSpace(16),
                   // In your widget tree:
                   BlocBuilder<HomeCubit, HomeState>(
@@ -916,12 +916,13 @@ class CustomDrawer extends StatelessWidget {
                           }
                           return Row(
                             children: [
-                              const CircleAvatar(
-                                radius: 28,
-                                backgroundImage: AssetImage(
-                                  'images/png/pirson.png',
-                                ),
-                              ),
+                              AppCachedNetworkImage(
+                                image: ProfileCubit.get(
+                                  context,
+                              ).profileUser?.image ?? "",
+                                height: 54.h,
+                                width: 54.w,
+                                radius: 28.r,),
                               const SizedBox(width: 12),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -938,10 +939,15 @@ class CustomDrawer extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    ProfileCubit.get(
-                                          context,
-                                        ).profileUser?.email ??
+                                   "${ProfileCubit
+                                        .get(
+                                      context,
+                                    )
+                                        .profileUser
+                                        ?.email}" ??
                                         "",
+                                    overflow: TextOverflow.clip,
+                                    softWrap: true,
                                     style: GoogleFonts.lato(
                                       color: Colors.white70,
                                       fontSize: 12,

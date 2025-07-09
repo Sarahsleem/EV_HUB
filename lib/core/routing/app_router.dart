@@ -14,7 +14,9 @@ import 'package:evhub/features/new_cars/logic/new_cars_cubit.dart';
 import 'package:evhub/features/new_cars/ui/screens/new_cars_screen.dart';
 import 'package:evhub/features/otp/logic/otp_cubit.dart';
 import 'package:evhub/features/posts/logic/posts_cubit.dart';
+import 'package:evhub/features/profie/data/models/profile_model.dart';
 import 'package:evhub/features/profie/logic/profile_cubit.dart';
+import 'package:evhub/features/profie/ui/screen/edit_profile.dart';
 import 'package:evhub/features/search/ui/search_result.dart';
 import 'package:evhub/features/services/logic/services_cubit.dart';
 import 'package:evhub/features/services/ui/screen/service_list_details_screen.dart';
@@ -383,9 +385,16 @@ class AppRouter {
       case Routes.profile:
         return MaterialPageRoute(
           builder:
-              (_) => BlocProvider(
-                create: (context) => getIt<ProfileCubit>(),
+              (_) => BlocProvider.value(
+                value:  getIt<ProfileCubit>(),
                 child: ProfileScreen(),
+              ),
+        );   case Routes.editProfile:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider.value(
+                value:  getIt<ProfileCubit>(),
+                child: EditProfile(userModel: settings.arguments as ProfileModel,),
               ),
         );
       case Routes.signInScreen:

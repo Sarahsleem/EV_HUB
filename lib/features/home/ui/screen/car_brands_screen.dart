@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/routing/routes.dart';
 import '../../../../core/theming/colors.dart';
 import '../../../../core/theming/font_weight.dart';
 import '../../../../core/theming/styles.dart';
+import '../../../../core/widgets/brands_loader.dart';
 import '../../../../core/widgets/image_network.dart';
 import '../../../../generated/l10n.dart';
 import '../../../search/logic/search_cubit.dart';
@@ -45,10 +47,87 @@ class _CarBrandScreenState extends State<CarBrandScreen> {
         child: SafeArea(
           child: ListView(
             children: [
-              CustomAppBar(brand: widget.carsResult,),
+              verticalSpace(10),
+              // CustomAppBar(brand: widget.carsResult,),
+              BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state) {
+                  if (state is HomeLoadingBrandsState) {
+                    return Center(child: BrandLoader());
+                  }  if (HomeCubit.get(
+                    context,
+                  ).carBrands.isEmpty) {
+                    return  SizedBox.shrink();
+                  }
+                  else {
+                    return SizedBox(
+                      height: 74.h,
+                      child: LazyLoadScrollView(
+                        isLoading:  state is LoadMoreBrandsState,
+                        scrollDirection: Axis.horizontal,
+                        onEndOfPage: HomeCubit.get(context).loadMoreBrands,
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                HomeCubit.get(context).chooseBrand(
+                                  HomeCubit.get(context).carBrands[index].id,
+                                );
+                                HomeCubit.get(context).getCarsByBrands( HomeCubit.get(context).carBrands[index].name);                              },
+                              child: Opacity(
+                                opacity: HomeCubit.get(
+                                  context,
+                                ).selectedBrandId==HomeCubit.get(
+                                  context,
+                                ).carBrands[index].id
 
+                                    ?1:0.31,
+                                child: Container(
+                                  height: 64.h,
+                                  padding: EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(40.r),
+                                    // border: Border.all(
+                                    //   color:
+                                    //   NewCarsCubit.get(
+                                    //     context,
+                                    //   ).selectedBrandId==HomeCubit.get(
+                                    //                 context,
+                                    //               ).carBrands[index].id
+                                    //
+                                    //           ? ColorsManager.kPrimaryColor
+                                    //           : ColorsManager.borderGrey,
+                                    //   width: 1.3,
+                                    // ),
+                                  ),
+                                  child: AppCachedNetworkImage(
+                                    fit: BoxFit.contain,
+                                    radius: 30.r,
+                                    image:
+                                    HomeCubit.get(
+                                      context,
+                                    ).carBrands[index].acf.brandLogo.url,
+                                    height: 64.h,
+                                    width: 64.w,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return horizontalSpace(4);
+                          },
+                          itemCount: HomeCubit.get(context).visibleBrandsCount,
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
 
-              verticalSpace(17),
+              verticalSpace(10),
 
               BlocBuilder<HomeCubit,HomeState>(
                 builder: (context, state) {
@@ -90,6 +169,7 @@ class _CarBrandScreenState extends State<CarBrandScreen> {
               );
   },
 ),
+
               verticalSpace(13),
               BlocBuilder<HomeCubit,HomeState>(
                 builder: (context, state) {

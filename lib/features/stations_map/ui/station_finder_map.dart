@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
-import 'package:evhub/features/stations_map/data/models/evstation_model.dart';
 import 'package:evhub/features/stations_map/data/models/station_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,10 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
-
-import '../../../core/helpers/spacing.dart';
-import '../../../core/theming/colors.dart';
-import '../../../core/theming/styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EVStationFinder extends StatefulWidget {
   const EVStationFinder({super.key});
@@ -29,21 +25,21 @@ class _EVStationFinderState extends State<EVStationFinder> {
   BitmapDescriptor? customMarkerIcon;
 
   GoogleMapController? mapController;
-  final LatLng _initialLocation = const LatLng(30.0444, 31.2357); // Default location (Cairo)
+  final LatLng _initialLocation = const LatLng(30.0444, 31.2357); // Default: Cairo
   Set<Marker> markers = {};
   LatLng? _currentLocation;
-
-  String? _mapStyle;
-  Station? selectedStation;  // Store the selected station details
-  Map<String, String>? travelInfo;
   Set<Polyline> polylines = {};
 
-  List<Station> stations = []; // List to store fetched stations
+  String? _mapStyle;
+  Station? selectedStation;
+  Map<String, String>? travelInfo;
+  List<Station> stations = [];
 
   @override
   void initState() {
     super.initState();
     _loadMapStyle();
+    _getCurrentLocation();
     _loadCustomMarker();
   }
 
@@ -53,9 +49,7 @@ class _EVStationFinderState extends State<EVStationFinder> {
 
   Future<void> _loadCustomMarker() async {
     final bitmap = await getMarkerIconFromAsset('images/png/Group 94.png');
-    setState(() {
-      customMarkerIcon = bitmap;
-    });
+    setState(() => customMarkerIcon = bitmap);
   }
 
   Future<BitmapDescriptor> getMarkerIconFromAsset(String path, {int width = 100}) async {
@@ -83,12 +77,18 @@ class _EVStationFinderState extends State<EVStationFinder> {
       }
 
       Position position = await Geolocator.getCurrentPosition();
+      final LatLng currentLatLng = LatLng(position.latitude, position.longitude);
+
       setState(() {
-        _currentLocation = LatLng(position.latitude, position.longitude);
+        _currentLocation = currentLatLng;
         _isLocationLoading = false;
       });
 
-      fetchEVStations(position.latitude, position.longitude); // Fetch stations after getting location
+      mapController?.animateCamera(
+        CameraUpdate.newLatLngZoom(currentLatLng, 14.0),
+      );
+
+      fetchEVStations(position.latitude, position.longitude);
     } catch (e) {
       setState(() {
         _isLocationLoading = false;
@@ -96,85 +96,145 @@ class _EVStationFinderState extends State<EVStationFinder> {
       });
     }
   }
-Future<void> fetchEVStations(double latitude, double longitude) async {
-  setState(() {
-    isLoading = true;
-    errorMessage = "";
-  });
 
-  try {
-    final response = await Dio().get(
-      'https://evhubtl.com/wp-json/wp/v2/stations', // API to fetch stations
-    );
-
-    // تحقق من وجود response.data والـ statusCode
-    if (response.statusCode == 200 && response.data != null) {
-      final List results = response.data is List ? response.data : [];
-      print("Fetched Stations: $results");
-
-      setState(() {
-        isLoading = false;
-        markers.clear();  // Clear previous markers
-        stations = results.map((json) => Station.fromJson(json)).toList(); // Map API data to Station model
-
-        // Add markers for each station
-        for (var station in stations) {
-          final String? mapL = station.acf.mapL;
-          final String? mapE = station.acf.mapE;
-
-          // تحقق إذا كانت الإحداثيات موجودة وصحيحة
-          final double lat = (mapL != null && mapL.isNotEmpty) ? double.parse(mapL) : 0.0;
-          final double lng = (mapE != null && mapE.isNotEmpty) ? double.parse(mapE) : 0.0;
-
-          // طباعة الإحداثيات للتأكد من صحتها
-          print("Adding marker for station: ${station.title.rendered}, Lat: $lat, Lng: $lng");
-
-          if (lat != 0.0 && lng != 0.0) {
-            markers.add(
-              Marker(
-                markerId: MarkerId(station.id.toString()),
-                position: LatLng(lat, lng),  // Use the parsed latitude and longitude
-                icon: customMarkerIcon ?? BitmapDescriptor.defaultMarker,
-                onTap: () {
-                  setState(() {
-                    selectedStation = station;  // Set selected station
-                    travelInfo = null;  // Reset travel info
-                  });
-                },
-              ),
-            );
-          }
-        }
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-        errorMessage = "Error: ${response.data['error_message'] ?? response.data['status']}";
-      });
-    }
-  } catch (e) {
+  Future<void> fetchEVStations(double latitude, double longitude) async {
     setState(() {
-      isLoading = false;
-      errorMessage = "An error occurred: $e";
+      isLoading = true;
+      errorMessage = "";
     });
-    print("Error fetching data: $e");  // طباعة الأخطاء إذا حدثت
-  }
-}
-double _getValidCoordinate(String? coordinate) {
-  // تحويل الإحداثيات إلى double إذا كانت القيمة صالحة، وإذا كانت غير صالحة نعيد 0.0
-  if (coordinate != null && coordinate.isNotEmpty) {
+
     try {
-      final double value = double.parse(coordinate);
-      return value.isFinite ? value : 0.0; // التحقق من القيمة النهائية
+      final response = await Dio().get(
+        'https://evhubtl.com/wp-json/wp/v2/stations',
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final List results = response.data is List ? response.data : [];
+
+        setState(() {
+          isLoading = false;
+          markers.clear();
+          stations = results.map((json) => Station.fromJson(json)).toList();
+
+          for (var station in stations) {
+            final double lat = _getValidCoordinate(station.acf.mapL);
+            final double lng = _getValidCoordinate(station.acf.mapE);
+
+            if (lat != 0.0 && lng != 0.0) {
+              markers.add(
+                Marker(
+                  markerId: MarkerId(station.id.toString()),
+                  position: LatLng(lat, lng),
+                  icon: customMarkerIcon ?? BitmapDescriptor.defaultMarker,
+                  onTap: () async {
+                    setState(() {
+                      selectedStation = station;
+                      travelInfo = null;
+                      polylines.clear();
+                    });
+
+                    if (_currentLocation != null) {
+                      await _getTravelInfo(_currentLocation!, LatLng(lat, lng));
+                    }
+                  },
+                ),
+              );
+            }
+          }
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = "Error: ${response.data['error_message'] ?? response.data['status']}";
+        });
+      }
     } catch (e) {
-      return 0.0;  // إذا كانت القيمة غير قابلة للتحويل إلى double نعيد 0.0
+      setState(() {
+        isLoading = false;
+        errorMessage = "An error occurred: $e";
+      });
     }
   }
-  return 0.0;  // إعادة قيمة افتراضية إذا كانت القيمة فارغة أو null
-}
-String _buildCustomAddress(Station station) {
-    // Since there's no addressComponents, we display the station's name instead
-    return station.title.rendered;  // Just using the title as the address
+
+  double _getValidCoordinate(String? coordinate) {
+    if (coordinate != null && coordinate.isNotEmpty) {
+      try {
+        final double value = double.parse(coordinate);
+        return value.isFinite ? value : 0.0;
+      } catch (_) {
+        return 0.0;
+      }
+    }
+    return 0.0;
+  }
+
+  Future<void> _getTravelInfo(LatLng origin, LatLng destination) async {
+    final url =
+        'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}'
+        '&destination=${destination.latitude},${destination.longitude}&key=$apiKey';
+
+    try {
+      final response = await Dio().get(url);
+      final data = response.data;
+
+      if (data['status'] == 'OK') {
+        final route = data['routes'][0];
+        final leg = route['legs'][0];
+
+        setState(() {
+          travelInfo = {
+            'duration': leg['duration']['text'],
+            'distance': leg['distance']['text'],
+          };
+          polylines.add(
+            Polyline(
+              polylineId: const PolylineId('route'),
+              points: _decodePolyline(route['overview_polyline']['points']),
+              color: Colors.blue,
+              width: 4,
+            ),
+          );
+        });
+      }
+    } catch (e) {
+      print("Travel info error: $e");
+    }
+  }
+
+  List<LatLng> _decodePolyline(String encoded) {
+    List<LatLng> points = [];
+    int index = 0, len = encoded.length;
+    int lat = 0, lng = 0;
+
+    while (index < len) {
+      int b, shift = 0, result = 0;
+
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lng += dlng;
+
+      points.add(LatLng(lat / 1E5, lng / 1E5));
+    }
+
+    return points;
+  }
+
+  String _buildCustomAddress(Station station) {
+    return station.title.rendered;
   }
 
   @override
@@ -182,7 +242,6 @@ String _buildCustomAddress(Station station) {
     return Scaffold(
       body: Stack(
         children: [
-          // Map
           Positioned.fill(
             child: GoogleMap(
               onMapCreated: (controller) {
@@ -196,106 +255,149 @@ String _buildCustomAddress(Station station) {
                 zoom: 12.0,
               ),
               markers: markers,
+              polylines: polylines,
               myLocationButtonEnabled: false,
               myLocationEnabled: true,
             ),
           ),
-          // App Bar, Station Card, etc...
-          if (selectedStation != null)
-          Positioned(
-  bottom: 90,
-  left: 16,
-  right: 16,
-  child: Container(
-    height: 130,
-    width: double.infinity,
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: const Color(0xDD063A34), // نفس اللون بنسبة 87%
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
+          if (selectedStation != null)Positioned(
+          bottom: 90,
+          left: 16,
+          right: 16,
+          child: Container(
+          // The height can now be adjusted or be determined by its children
+          // height: 250.h, // You might want to remove or adjust this
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          decoration: BoxDecoration(
+          color: const Color(0xDD063A34),
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: [
+          BoxShadow(
           color: Colors.black.withOpacity(0.2),
-          blurRadius: 8,
+          blurRadius: 8.r,
           offset: const Offset(0, 4),
-        ),
-      ],
     ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // العنوان + الوقت والمسافة
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              selectedStation!.title.rendered,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            RichText(
-              text: TextSpan(
-                children: [
-                  const TextSpan(
-                    text: '10 min ',
-                    style: TextStyle(
-                      color: Color(0xFF00FFD1),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '(3 km)',
-                    style: TextStyle(
-                      color: Colors.grey.shade300,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(
-          _buildCustomAddress(selectedStation!),
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.grey.shade300,
-          ),
-        ),
-        const Spacer(),
-        // نوع الشاحن
-        Row(
-          children: const [
-            Icon(Icons.bolt, color: Colors.white, size: 16),
-            SizedBox(width: 4),
-            Text(
-              'Type 2',
-              style: TextStyle(color: Colors.white, fontSize: 14),
-            ),
-            SizedBox(width: 8),
-            Text(
-              '22kW AC',
-              style: TextStyle(color: Colors.white, fontSize: 14),
-            ),
-          ],
-        ),
-      ],
-    ),
-  ),
-)
     ],
+    ),
+    child: Row( // <-- Changed from Column to Row for side-by-side layout
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    // All the text information is wrapped in an Expanded widget
+    Expanded(
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min, // To make the column fit its content
+    children: [
+    // Title + travel info
+    Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+    Expanded(
+    child: Text(
+    selectedStation!.title.rendered,
+    style: TextStyle(
+    overflow: TextOverflow.ellipsis,
+    fontSize: 18.sp,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+    ),
+    ),
+    ),
+    RichText(
+    text: TextSpan(
+    children: [
+    TextSpan(
+    text: travelInfo?['duration'] ?? '--',
+    style: TextStyle(
+    color: const Color(0xFF00FFD1),
+    fontSize: 16.sp,
+    fontWeight: FontWeight.bold,
+    ),
+    ),
+    TextSpan(
+    text: ' (${travelInfo?['distance'] ?? '--'})',
+    style: TextStyle(
+    color: Colors.grey.shade300,
+    fontSize: 14.sp,
+    ),
+    ),
+    ],
+    ),
+    ),
+    ],
+    ),
+    SizedBox(height: 4.h),
+    Text(
+    _buildCustomAddress(selectedStation!),
+    style: TextStyle(
+    fontSize: 13.sp,
+    color: Colors.grey.shade300,
+    ),
+    ),
+    SizedBox(height: 12.h),
+
+    // 🔌 Connector Info
+    Wrap(
+    spacing: 12.w,
+    runSpacing: 6.h,
+    children: selectedStation!.connectorStatus.map((connector) {
+    return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+    const Icon(Icons.bolt, color: Colors.white, size: 16),
+    SizedBox(width: 4.w),
+    Text(
+    connector.name,
+    style: const TextStyle(color: Colors.white),
+    ),
+    ],
+    );
+    }).toList(),
+    ),
+    ],
+    ),
+    ),
+    SizedBox(width: 16.w), // <-- Adds spacing between text and button
+
+    // 🟢 NEW Circle Navigate Button
+    FloatingActionButton(
+    onPressed: () async {
+    if (_currentLocation != null && selectedStation != null) {
+    final lat = double.tryParse(selectedStation!.acf.mapL) ?? 0.0;
+    final lng = double.tryParse(selectedStation!.acf.mapE) ?? 0.0;
+
+    final googleMapsUrl =
+    "https://www.google.com/maps/dir/?api=1&origin=${_currentLocation!.latitude},${_currentLocation!.longitude}&destination=$lat,$lng&travelmode=driving";
+
+    if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
+    await launchUrl(Uri.parse(googleMapsUrl),
+    mode: LaunchMode.externalApplication);
+    } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+    content: Text('Could not launch Google Maps')),
+    );
+    }
+    }
+    print('Start Trip to ${selectedStation!.title.rendered}');
+    },
+    backgroundColor: const Color(0xFF00FFD1), // Same vibrant color
+    foregroundColor: Colors.black, // Same icon/foreground color
+    elevation: 4.0,
+    heroTag: null, // Set to null to avoid Hero animation issues
+    child: const Icon(Icons.navigation),
+    ),
+    ],
+    ),
+    ),
+    ) ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _getCurrentLocation,
-        child: _isLocationLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : const Icon(Icons.my_location),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _getCurrentLocation,
+      //   child: _isLocationLoading
+      //       ? const CircularProgressIndicator(color: Colors.white)
+      //       : const Icon(Icons.my_location),
+      // ),
     );
   }
 }

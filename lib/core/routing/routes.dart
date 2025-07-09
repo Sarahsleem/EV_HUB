@@ -76,4 +76,6 @@ class Routes {
 
   static const String carOwnerProfile='/carOwnerProfile';
 
+  static const String editProfile='/editProfile';
+
 }

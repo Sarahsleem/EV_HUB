@@ -67,6 +67,7 @@ dependencies:
   geolocator: ^13.0.3
   geocoding: ^4.0.0 
   flutter_html: ^3.0.0
+  font_awesome_flutter: ^10.8.0
   
 
 
@@ -97,6 +98,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/png/
+    - images/png/edit.png
     - assets/map_style.json
 
 #    - images/svg/

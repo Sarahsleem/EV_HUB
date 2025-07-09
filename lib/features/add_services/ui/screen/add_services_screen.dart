@@ -15,6 +15,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../generated/l10n.dart';
+
 
 class AddNewServiceScreen extends StatefulWidget {
   final String icon;
@@ -36,6 +38,7 @@ class _AddNewServiceScreenState extends State<AddNewServiceScreen> {
   final phoneController = TextEditingController();
   final whatsappController = TextEditingController();
   final locationController = TextEditingController();
+  final websiteController = TextEditingController();
   final personalNameController = TextEditingController();
   final personalPhoneController = TextEditingController();
 
@@ -123,18 +126,19 @@ class _AddNewServiceScreenState extends State<AddNewServiceScreen> {
                         _buildPhoneInput("Company Phone Number", phoneController),
                         _buildPhoneInput("Company Whatsapp Number", whatsappController),
                         _buildInput("Company Location", "add location", 60, locationController),
-                        const Divider(height: 32),
-                        Text(
-                          "Personal Details",
-                          style: GoogleFonts.lato(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16.sp,
-                            color: const Color(0xFF9B9B9B),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildInput("Your Name", "add your name", 60, personalNameController),
-                        _buildPhoneInput("Your Phone Number", personalPhoneController),
+                        _buildInput("Company Website", "add website", 60, websiteController),
+                        // const Divider(height: 32),
+                        // Text(
+                        //   "Personal Details",
+                        //   style: GoogleFonts.lato(
+                        //     fontWeight: FontWeight.w700,
+                        //     fontSize: 16.sp,
+                        //     color: const Color(0xFF9B9B9B),
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 12),
+                        // _buildInput("Your Name", "add your name", 60, personalNameController),
+                        // _buildPhoneInput("Your Phone Number", personalPhoneController),
                         const SizedBox(height: 24),
                         SizedBox(
                           height: 50,
@@ -147,7 +151,7 @@ class _AddNewServiceScreenState extends State<AddNewServiceScreen> {
                               ),
                             ),
                             child: Text(
-                              "Submit",
+                              S.of(context).Submit,
                               style: GoogleFonts.lato(
                                 color: Colors.white,
                                 fontSize: 16.sp,
@@ -215,7 +219,7 @@ class _AddNewServiceScreenState extends State<AddNewServiceScreen> {
       addressLocation: Location(lat: lat ?? 0.0, lng: lng ?? 0.0),
       companyImage: logoImage!.path,
       cover: coverImage!.path,
-      website: "", // optional
+      website: websiteController.text, // optional
     );
 
     context.read<ServicesCubit>().createInsurance(insuranceData);

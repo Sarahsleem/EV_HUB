@@ -314,6 +314,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "phone": MessageLookupByLibrary.simpleMessage("Phone"),
     "phonenumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
     "price": MessageLookupByLibrary.simpleMessage("Price"),
+    "profileUpdatedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "Profile updated successfully",
+    ),
     "protection": MessageLookupByLibrary.simpleMessage("protection"),
     "protectionFilmDesc": MessageLookupByLibrary.simpleMessage(
       "Car protection film shields your car’s paint from scratches, chips, and UV damage.",

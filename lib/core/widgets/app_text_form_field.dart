@@ -25,7 +25,7 @@ class AppTextFormField extends StatelessWidget {
   final Function(String)? onFieldSubmitted;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
-  final FocusNode? focusNode;
+  final FocusNode? focusNode;final int? maxLine;
   const AppTextFormField({
     super.key,
     this.contentPadding,
@@ -43,13 +43,13 @@ class AppTextFormField extends StatelessWidget {
     this.onFieldSubmitted,
     this.readOnly,
     this.borderRadius,
-    this.prefexIcon, this.focusNode, this.inputFormatters, this.keyboardType,
+    this.prefexIcon, this.focusNode, this.inputFormatters, this.keyboardType, this.maxLine,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-maxLines: 5,
+maxLines: maxLine??5,
       minLines: 1,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,

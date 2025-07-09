@@ -32,7 +32,7 @@ class UiLoadingProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 60),
-                CircleAvatr(user:"sncjksd mmmk" ,),
+                CircleAvatr(user:"sncjksd mmmk", image: '' ,),
                 SizedBox(height: 14),
                 ContactDetails(
                   title: ' Your Email',

@@ -101,6 +101,18 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             verticalSpace(8),
                             AppTextFormField(
+                              maxLine: 1,
+                              // onFieldSubmitted: (value) async {
+                              //   if (formKey.currentState!.validate()) {
+                              //     // Perform login
+                              //     await SignInCubit.get(context).login(
+                              //       SignIn(
+                              //         phone: _phoneController.text,
+                              //         password: _passwordController.text,
+                              //       ),
+                              //     );
+                              //   }
+                              // },
                               borderRadius: 16.5,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 15.w,
@@ -409,6 +421,28 @@ verticalSpace(8),
                                                               ),
                                                               verticalSpace(8),
                                                               AppTextFormField(
+                                                                maxLine: 1,
+                                                                onFieldSubmitted: (value){
+                                                                  () async {
+                                                                    //context.pushNamed(Routes.navigationBar);
+                                                                    if (formKey
+                                                                        .currentState!
+                                                                        .validate()) {
+                                                                      await signUpCubit.signUp(
+                                                                        SignUp(
+                                                                          name:
+                                                                          _nameController.text,
+                                                                          email:
+                                                                          _emailController.text,
+                                                                          phone:
+                                                                          _phoneController.text,
+                                                                          password:
+                                                                          _passwordController.text,
+                                                                        ),
+                                                                      );
+                                                                    }
+                                                                  };
+                                                                },
                                                                 borderRadius:
                                                                     16.5,
                                                                 contentPadding:

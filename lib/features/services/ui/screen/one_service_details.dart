@@ -442,11 +442,11 @@ class _StarRatingState extends State<StarRating> {
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 237.w,
+              width: 200.w,
               child: AppTextFormField(
 backgroundColor: Color(0x17d9d9d9),
                 controller: widget.comment,
@@ -456,7 +456,7 @@ backgroundColor: Color(0x17d9d9d9),
                   onPressed: widget.onSend,
                   icon:
                   state is AddCommentLoading
-                      ? SizedBox(height:20.h,width:20.w,child: CircularProgressIndicator(color: Colors.white))
+                      ? SizedBox(height:15.h,width:15.w,child: CircularProgressIndicator(color: Colors.white))
                       : Icon(Icons.send),
                 ),
               ),

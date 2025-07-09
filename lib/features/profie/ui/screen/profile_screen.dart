@@ -100,7 +100,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       SizedBox(height: 60),
                       CircleAvatr(
-                        user: ProfileCubit.get(context).profileUser!.name!,
+
+                        user: ProfileCubit.get(context).profileUser!.name!, image: ProfileCubit.get(context).profileUser!.image??''
                       ),
                       SizedBox(height: 14),
                       ContactDetails(

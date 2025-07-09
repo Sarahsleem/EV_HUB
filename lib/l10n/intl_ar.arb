@@ -211,7 +211,8 @@
   "AddedToFavorites": "تمت الاضافة للمفضلة",
   "User": "المستخدم",
   "DeleteYourAccount": "حذف حسابك",
-  "ResetPassword": "اعادة تعيين كلمة المرور"
+  "ResetPassword": "اعادة تعيين كلمة المرور",
+  "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح"
 
 
 

@@ -173,6 +173,14 @@ List<Feature> features=[
 
 ];
   List<Car>carsByBrand=[];
+
+  int selectedBrandId=0;
+
+  chooseBrand(int id){
+    selectedBrandId=id;
+
+    emit(ChooseBrandState());
+  }
   Future<void> getCarsByBrands(String selectedBrand) async {
     emit(CarByBrandLoading());
 

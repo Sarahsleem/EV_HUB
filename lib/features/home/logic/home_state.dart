@@ -48,3 +48,4 @@ class CarByBrandFailure extends HomeState{}
 class SortByMaxPrice extends HomeState{}
 class SortByMinPrice extends HomeState{}
 class SortByLastArrived extends HomeState{}
+class ChooseBrandState extends HomeState{}

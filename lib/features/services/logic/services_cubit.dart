@@ -219,8 +219,9 @@ class ServicesCubit extends Cubit<ServicesState> {
   }
 Future<void> postComment(String content, int postId,int rating) async {
     emit(AddCommentLoading());
-    String? name = CashHelper.getString(key: Keys.name);
-    String ?email = CashHelper.getString(key: Keys.email);
+    String? name = await CashHelper.getStringSecured(key: Keys.name);
+    String ?email = await CashHelper.getStringSecured(key: Keys.email);
+    print('em$email');
   var respo = await servicesRepo.postComment(AddReviewModel(post: postId, rating: rating, content: content, authorName: name, authorEmail: email));
   respo.fold(
     (l) {

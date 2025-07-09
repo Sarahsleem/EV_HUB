@@ -17,7 +17,7 @@ class CachedApp {
     cachedData.clear();
   }
 
-  void removeFromCache(String key) {
+  static dynamic removeFromCache(String key) {
     cachedData.remove(key);
   }
 
